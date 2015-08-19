@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="layout">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="author" content="Kurt Bendl">
+  <link rel="shortcut icon" href="../static/ico/favicon.png">
+
+  <title><tal:if tal:condition="title | nothing">${title}</tal:if><tal:if tal:condition="page_title | nothing">${page_title}</tal:if> - NREL Computational Science</title>
+  <tal:if tal:condition="description | nothing">
+    <meta name="description" tal:attributes="content description">
+  </tal:if>
+
+
+  <tal:if tal:condition="page_description | nothing">
+    <meta name="description" tal:attributes="content page_description">
+  </tal:if>
+
+
+
+    <more metal:define-slot="head-more"></more>
+
+    <link rel="stylesheet"
+          href="${request.static_url('nportal:static/bs/css/bootstrap.min.css')}"/>
+    <link rel="stylesheet"
+          href="${request.static_url('nportal:static/bs/css/bootstrap.css.map')}"/>
+    <link rel="stylesheet"
+          href="${request.static_url('nportal:static/bs/css/bootstrap-theme.min.css')}"/>
+    <link rel="stylesheet"
+          href="${request.static_url('nportal:static/bs/css/bootstrap-theme.css.map')}"/>
+
+    <link rel="stylesheet"
+          href="${request.static_url('nportal:static/nportal.css')}"/>
+
+
+
+
+
+</head>
+
+<body class="template-">
+<header>
+  <!--! Fixed navbar -->
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="${request.application_url}"><i class="fa fa-stethoscope"></i>
+            Allocations Home</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li tal:condition="logged_in | nothing"><a
+              href="${request.application_url}/my_allocations"> My Allocations</a></li>
+              <!--! class='ttb' data-toggle="tooltip" title=""
+                            data-original-title="Requires authentication" -->
+
+            <!--!
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> #### <b class="caret"></b></a>
+
+              <ul class="dropdown-menu">
+                <li><a href="/#"> #### </a></li>
+                <li><a href="/#"> #### </a></li>
+                <li><a href="/#"> #### </a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header"> #### </li>
+                <li><a href="/#"> #### </a></li>
+                <li><a href="/#"> #### </a></li>
+              </ul>
+            </li>
+            -->
+
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li tal:condition="logged_in | nothing">
+               <a href="${request.application_url}/logout">Logout
+                   <tal:u tal:replace="logged_in | nothing" />
+               </a>
+            </li>
+
+            <li tal:condition="not logged_in | nothing">
+               <a href="${request.application_url}/login">Login</a>
+            </li>
+
+
+            <!--! pyramid.security.has_permission('permission_name', resource, request)-->
+
+            <li class="dropdown"><!-- tal:condition="logged_in | nothing" -->
+              <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown"><b class="caret"></b>
+                <span class='ttb' data-toggle="tooltip" title=""
+                  data-original-title="Admins Only">Utils</span></a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-header">Allocations</li>
+                <li><a href="${request.application_url}/allocations_list" title="List the Allocations"> - List</a></li>
+
+
+                <li class="divider"></li>
+                <li class="dropdown-header bg-warning">Admin-only tasks below</li>
+
+
+                <li class="dropdown-header">Allocations</li>
+                <li><a href="${request.application_url}/allocations_list_all" title="List the Allocations"> - View ALL Allocations</a></li>
+                <li><a href="${request.application_url}/alloc/add" title="add a new allocation" class="text-warning"> - Add a new Allocation</a></li>
+                <li><a href="${request.application_url}/csv/alloc_data_downloads.csv" title="Download current Allocation Info" class="text-warning"> - DL Current Allocs/CSV</a></li>
+
+                <li class="dropdown-header">Users</li>
+
+                <li><a href="${request.application_url}/manage/alloc_import_users" class="text-warning">Import AD User Data</a></li>
+
+                <li><a href="${request.application_url}/user/list"> - List users</a></li>
+                <li><a href="${request.application_url}/user/add"> - Add Users</a></li>
+
+
+                <li class="dropdown-header">AD Groups</li>
+
+                <li><a href="${request.application_url}/adgroups/list">List AD Groups</a></li>
+                <li><a href="${request.application_url}/adgroups/add">Add an AD Group</a></li>
+
+                <li class="divider"></li>
+                <li class="dropdown-header">Centers</li>
+                <li><a href="${request.application_url}/center/list"> - List</a></li>
+                <li><a href="${request.application_url}/center/add"> - Add</a></li>
+
+                <li class="divider"></li>
+                <li class="dropdown-header">Areas</li>
+                <li><a href="${request.application_url}/area/"> - List</a></li>
+                <li><a href="${request.application_url}/area/add"> - Add</a></li>
+
+                <li class="divider"></li>
+                <li class="dropdown-header">Info - ToDo</li>
+                <li><a href="/#">Query - ToDo</a></li>
+                <li><a href="/#">Docs - ToDo</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+        <!--!/.nav-collapse -->
+
+
+        <!--!
+        <span tal:repeat="menu view.site_menu">
+         <tal:block tal:condition="menu.current">
+           <span>${menu.title}</span>
+         </tal:block>
+         <tal:block tal:condition="not menu.current">
+           <span><a href="/${menu.href}">${menu.title}</a></span>
+         </tal:block>
+         <tal:block tal:condition="not repeat.menu.end">
+           <span tal:omit-tag="">|</span>
+         </tal:block>
+        </span>
+        -->
+
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="content">
+
+  <!--! Jumbotron! -->
+  <div class="jumbotron"
+    tal:condition="title_jumbotron | nothing">
+    <h1>${title}</h1>
+    <div tal:condition="description-jumbotron  | nothing">
+      <p>${description_jumbotron}</p>
+    </div>
+  </div>
+
+
+
+
+
+  <div metal:define-slot="content">
+
+  </div>
+
+
+
+    Cog: <i class="fa fa-cog"></i>
+
+</div>
+</body>
+</html>
