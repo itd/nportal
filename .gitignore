@@ -1,6 +1,8 @@
 # project-specific ignores
 #_junk.txt
 *.sqlite
+nportal.egg-info
+
 pyramid_ldap3
 ###############################
 .svn

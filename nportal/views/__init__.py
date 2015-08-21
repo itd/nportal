@@ -3,7 +3,7 @@ import re
 from io import StringIO
 import csv
 
-TITLE = "HPC Allocations"
+TITLE = "NREL High Performance Computing"
 
 SITE_MENU = [
         {'href': '', 'title': 'Home'},
@@ -22,7 +22,7 @@ conn_err_msg = """\
         The application is having a problem using your SQL database.
         The problem might be caused by one of the following things:
 
-        1.  You may need to run the "initialize_allocations_db" script
+        1.  You may need to run the "initialize_nportal_db" script
             to initialize your database tables.  Check your virtual
             environment's "bin" directory for this script and try to run it.
 

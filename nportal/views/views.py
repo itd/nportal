@@ -4,17 +4,19 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.view import view_config
 from sqlalchemy.exc import DBAPIError
+import deform
 from deform import (decorator, default_renderer, field, form, widget)
-from .models import (
+from nportal.models import (
     DBSession,
-    MyModel,
+    SiteModel,
+    UserAccountModel
     )
 
 
-@view_config(route_name='default', renderer='templates/mytemplate.pt')
-def my_view(request):
+@view_config(route_name='home', renderer='../templates/mytemplate.pt')
+def site_view(request):
     try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+        one = DBSession.query(SiteModel).filter(SiteModel.name == 'one').first()
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return {'one': one, 'project': 'nportal'}
@@ -42,19 +44,19 @@ try it again.
 class AccountViews(object):
     def __init__(self, request):
         self.request = request
-        renderer = get_renderer("templates/_layout.pt")
+        renderer = get_renderer("../templates/_layout.pt")
         self.layout = renderer.implementation().macros['layout']
 
     @reify
     def reqts(self):
         return self.home_form.get_widget_resources()
 
-    @reify
-    def home(self):
-        schema = HomePage()
-        return deform.Form(schema, buttons=('submit',))
+#    @reify
+#    def home(self):
+#        schema = HomePage()
+#        return deform.Form(schema, buttons=('submit',))
 
     @reify
     def changepass(self):
-        schema = UserAccount()
+        schema = UserAccountModel()
         return deform.Form(schema, buttons=('submit',))

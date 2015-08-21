@@ -1,0 +1,8 @@
+<div metal:use-macro="view.layout">
+  <div metal:fill-slot="content" class="main-content">
+
+    <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+
+    <div id="request_new_account_form" tal:content="structure form"></div>
+  </div>
+</div>

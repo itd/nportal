@@ -55,7 +55,7 @@
             <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="${request.application_url}"><i class="fa fa-stethoscope"></i>
-            Allocations Home</a>
+            NREL Nexus Portal Home</a>
         </div>
 
         <div class="navbar-collapse collapse">

@@ -1,4 +1,6 @@
 from pyramid.config import Configurator
+from pyramid.renderers import JSONP
+
 from sqlalchemy import engine_from_config
 
 from .models import (
@@ -22,7 +24,7 @@ def main(global_config, **settings):
 
     config.add_renderer('jsonp', JSONP(param_name='callback'))
     config.add_renderer(name='csv',
-                        factory='allocations.views.CSVRenderer')
+                        factory='nportal.views.CSVRenderer')
 
     # views
     # config.add_static_view('static', 'static', cache_max_age=1)
@@ -32,6 +34,8 @@ def main(global_config, **settings):
 
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
+    config.add_route('request_user_account', '/request_user_account')
+    config.add_route('request_received_view', '/request_received')
 
     config.scan()
     return config.make_wsgi_app()
