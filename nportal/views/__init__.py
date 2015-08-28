@@ -16,7 +16,7 @@ SITE_MENU = [
 strip_whitespace = lambda v: v.strip(' \t\n\r') if v is not None else v
 # replaces multiple spaces with a single space
 remove_multiple_spaces = lambda v: re.sub(' +', ' ', v)
-
+rm_spaces = lambda v: v.replace(' ', '')
 
 conn_err_msg = """\
         The application is having a problem using your SQL database.
