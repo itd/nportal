@@ -27,10 +27,9 @@ def main(global_config, **settings):
                         factory='nportal.views.CSVRenderer')
 
     # views
-    # config.add_static_view('static', 'static', cache_max_age=1)
-    # config.add_static_view('static', 'nportal:static/', cache_max_age=1)
+    config.add_static_view('static', 'static', cache_max_age=1)
     config.add_static_view('deform', 'deform:static')
-    config.add_static_view('static', 'static', cache_max_age=1)  ## 3600
+    #config.add_static_view('static', 'static', cache_max_age=1)  ## 3600
 
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
