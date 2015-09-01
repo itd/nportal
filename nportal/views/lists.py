@@ -317,3 +317,13 @@ us_states = [
     ("PW", "Palau")
     ]
 
+employment_positions = [
+    ('lab_scientist', 'Laboratory Scientist'),
+    ('lab_staff', 'Lab Support Staff'),
+    ('industry_user', 'Industry User'),
+    ('vendor_support', 'Vendor Support Staff'),
+    ('prof', 'Professor'),
+    ('postdoc', 'Post-doctorate'),
+    ('student', 'Student'),
+    ('other', 'Other')
+    ]

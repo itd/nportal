@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>test - NREL ESIF High Performance Computing</title>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+  <!--[if lt IE 9]>
+  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="icon" href="static/ico/favicon.ico" type="image/x-icon">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="yes">
+  <!-- <link rel="apple-touch-icon-precomposed" href="xxx.png">-->
+
+       <link rel="stylesheet"
+          href="${request.static_url('nportal:static/fa/css/font-awesome.min.css')}" />
+
+
+
+  </head>
+ <body>
+
+  <div class="container">
+   <h2>test</h2>
+
+<p>
+  <i class="fa fa-stethoscope"></i>
+  <i class="fa fa-camera-retro fa-5x"></i>
+</p>
+
+
+
+</div>
+
+ </body>
+</html>

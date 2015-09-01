@@ -1,29 +1,17 @@
 from pyramid.response import Response
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
+# from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.view import view_config
 from sqlalchemy.exc import DBAPIError
 import deform
-from deform import (decorator, default_renderer, field, form, widget)
+# from deform import (decorator, default_renderer, field, form, widget)
 from nportal.models import (
     DBSession,
     SiteModel,
     UserAccountModel
-    )
+)
 
-
-@view_config(route_name='home', renderer='../templates/mytemplate.pt')
-def site_view(request):
-    try:
-        one = DBSession.query(SiteModel).filter(SiteModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'nportal'}
-
-
-# New User Account Request Application Form
-# new_user_account_app.pt
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
@@ -41,22 +29,34 @@ After you fix the problem, please restart the Pyramid application to
 try it again.
 """
 
+
 class AccountViews(object):
     def __init__(self, request):
         self.request = request
         renderer = get_renderer("../templates/_layout.pt")
         self.layout = renderer.implementation().macros['layout']
 
-    @reify
-    def reqts(self):
-        return self.home_form.get_widget_resources()
+    # @reify
+    # def reqts(self):
+    #     return self.home_fform.get_widget_resources()
 
-#    @reify
-#    def home(self):
-#        schema = HomePage()
-#        return deform.Form(schema, buttons=('submit',))
+    #    @reify
+    #    def home(self):
+    #        schema = HomePage()
+    #        return deform.Form(schema, buttons=('submit',))
 
     @reify
     def changepass(self):
         schema = UserAccountModel()
         return deform.Form(schema, buttons=('submit',))
+
+    # @view_config(route_name='home', renderer='../templates/home.pt')
+    @view_config(route_name='home', renderer='../templates/test.pt')
+    def home_view(request):
+        try:
+            one = DBSession.query(SiteModel).filter(
+                SiteModel.name == 'one').first()
+        except DBAPIError:
+            return Response(conn_err_msg, content_type='text/plain',
+                            status_int=500)
+        return {'one': one, 'project': 'nportal'}

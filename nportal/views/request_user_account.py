@@ -1,4 +1,6 @@
 import datetime
+import string
+
 # from pyramid.response import Response
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
@@ -11,15 +13,31 @@ import deform
 import deform.widget
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
+import htmllaundry
+from htmllaundry import sanitize
 
 from nportal.models import (
     DBSession,
     UserAccountModel
-)
+    )
 
-from nportal.views import strip_whitespace, remove_multiple_spaces
-from .lists import (us_states, country_codes)
+from nportal.views import (strip_whitespace,
+                           remove_multiple_spaces,
+                           rm_spaces
+                           )
 
+from .lists import (us_states, country_codes, employment_positions)
+
+
+def phoneValidator(node, value):
+    """ checks to make sure that the value looks like a phone number """
+    allowed = set(string.ascii_lowercase + string.digits +
+                  ' ' + '.' + '+' + '(' + ')' + '-')
+    tval = set(value) <= allowed
+
+    if not tval:
+        raise colander.Invalid(node,
+               '%r is not a valid telephone number format' % value)
 
 @colander.deferred
 def deferred_country_widget(node, kw):
@@ -101,7 +119,7 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='Street Address',
         description='',
-        validator=colander.Length(min=0, max=400),
+        validator=colander.Length(min=0, max=200),
         widget=widget.TextAreaWidget(),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='street'
@@ -147,37 +165,153 @@ class AddAccountSchema(colander.MappingSchema):
         oid='country'
     )
 
-    #   mail
+    mail = colander.SchemaNode(
+        colander.String(),
+        title='EMail',
+        description='Your primary email account',
+        validator=colander.Email(msg="Please provide a valid EMail address"),
+        preparer=[rm_spaces, htmllaundry.sanitize],
+        oid='mail'
+    )
+    phone = colander.SchemaNode(
+        colander.String(),
+        title='Telephone',
+        description='Please provide your primary telephone number',
+        validator=phoneValidator(),
+        #widget=,
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='phone'
+    )
 
-    #   phone
+    cell = colander.SchemaNode(
+        colander.String(),
+        title='Cell',
+        description='We will use your cell phone number for verification',
+        validator=phoneValidator(),
+        #widget=,
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='cell'
+    )
 
-    #   cell
+    employerType = colander.SchemaNode(
+        colander.String(),
+        title='Employer Type',
+        description='',
+        validator=colander.Length(min=0, max=64),
+        #widget=,
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='employerType'
+    )
 
-    #   employerType
+    employerSponsor = colander.SchemaNode(
+        colander.Boolean(),
+        title='Employment/Institution supporting this work',
+        description='click if the same as employer above',
+        widget=widget.CheckboxWidget(),
+        oid='employerSponsor'
+    )
 
-    #   employerSponsor
+    employerSponsorName = colander.SchemaNode(
+        colander.String(),
+        title='Sponsor Name',
+        description='''If the name of the sponsor is not
+                    listed above, please list it here''',
+        validator=colander.Length(min=0, max=128),
+        widget=widget.TextInputWidget(),
+        missing=unicode(''),
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='employerSponsorName'
+    )
 
-    #   employerSponsorName
+    shipAddrSame = colander.SchemaNode(
+        colander.Bool(),
+        title='Shipping Address',
+        description='click if this is the same as above',
+        widget=widget.CheckboxWidget(),
+        oid='shipAddrSame'
+    )
 
-    #   shipAddrSame
+    shipAddr = colander.SchemaNode(
+        colander.String(),
+        missing=None,
+        title='Address',
+        description='Your shipping address - in case we need to send you a physical VPN token.',
+        validator=colander.Length(min=0, max=128),
+        widget=widget.TextInputWidget(),
+        preparer=[strip_whitespace, htmllaundry.sanitize],
+        oid='shipAddr'
+    )
 
-    #   shipAddr
 
-    #   shipAddr2
+    shipAddrCity = colander.SchemaNode(
+        colander.String(),
+        title='City',
+        description='',
+        validator=colander.Length(min=0, max=128),
+        widget=widget.TextInputWidget(),
+        preparer=[strip_whitespace, remove_multiple_spaces,
+                  htmllaundry.sanitize],
+        oid='shipAddrCity'
+    )
 
-    #   shipAddrCity
+    shipAddrState = colander.SchemaNode(
+        colander.String(),
+        title='State / Province / Region',
+        description='',
+        validator=colander.Length(min=0, max=64),
+        widget=widget.TextInputWidget(),
+        preparer=[strip_whitespace, remove_multiple_spaces, sanitize],
+        oid='shipAddrCity'
+    )
 
-    #   shipAddrState
+    shipAddrPostCode = colander.SchemaNode(
+        colander.String(),
+        title='Postal Code / Zip',
+        description='',
+        validator=colander.Length(min=0, max=64),
+        widget=widget.TextInputWidget(),
+        preparer=[htmllaundry.sanitize],
+        oid='shipAddr'
+    )
 
-    #   shipAddrPostCode
+    shipAddrCountry = colander.SchemaNode(
+        colander.String(),
+        title='',
+        description='',
+        validator=colander.Length(min=0, max=64),
+        widget=deferred_country_widget,
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='shipAddrCountry',
+    )
 
-    #   shipAddrCountry
+    position = colander.SchemaNode(
+        colander.String(),
+        title='Position',
+        description='What is your position or job with this institution?',
+        validator=colander.OneOf([x[0] for x in employment_positions]),
+        widget=deform.widget.RadioChoiceWidget(values=employment_positions),
+        oid='position'
+    )
 
-    #   position
+    positionDesc = colander.SchemaNode(
+        colander.String(),
+        title='Position Description',
+        description='if other, please describe your position',
+        validator=colander.Length(min=0, max=64),
+        widget=widget.TextInputWidget(),
+        preparer=[strip_whitespace, sanitize],
+        oid='positionDesc'
+    )
 
-    #   positionDesc
-
-    #   citizen
+    citizen = colander.SchemaNode(
+        colander.String(),
+        title='',
+        description='',
+        validator=colander.Length(min=0, max=64),
+        widget=widget.TextInputWidget(),
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid=''
+    )
 
     #   citizenOf
 
@@ -247,6 +381,7 @@ class AccountRequestView(object):
     def __init__(self, request):
         self.request = request
         renderer = get_renderer("../templates/_layout.pt")
+
         self.layout = renderer.implementation().macros['layout']
         self.title = "Account Request Form"
     def render_form(self, form, appstruct=colander.null,
@@ -382,3 +517,4 @@ def _add_new_user_request(appstruct):
 
     # storagegrp=ai['storagegrp'],
     DBSession().add(submission)
+

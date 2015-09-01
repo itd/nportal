@@ -28,12 +28,12 @@
 
     <link rel="stylesheet"
           href="${request.static_url('nportal:static/bs/css/bootstrap.min.css')}"/>
-    <link rel="stylesheet"
-          href="${request.static_url('nportal:static/bs/css/bootstrap.css.map')}"/>
+
     <link rel="stylesheet"
           href="${request.static_url('nportal:static/bs/css/bootstrap-theme.min.css')}"/>
+
     <link rel="stylesheet"
-          href="${request.static_url('nportal:static/bs/css/bootstrap-theme.css.map')}"/>
+          href="${request.static_url('nportal:static/fa/css/font-awesome.min.css')}"/>
 
     <link rel="stylesheet"
           href="${request.static_url('nportal:static/nportal.css')}"/>
@@ -187,12 +187,23 @@
 
   <div metal:define-slot="content">
 
+
   </div>
 
 
 
-    Cog: <i class="fa fa-cog"></i>
-
 </div>
+<hr />
+<p>
+  <i class="fa fa-stethoscope"></i>
+  <i class="fa fa-camera-retro fa-5x"></i>
+</p>
+<hr />
+
+<script src="${request.static_url('nportal:static/jq/jquery-1.11.3.min.js')}"></script>
+<script src="${request.static_url('nportal:static/jq/jquery-1.11.3.min.map')}"></script>
+<script src="${request.static_url('nportal:static/bs/js/bootstrap.min.js')}"></script>
+<!--!<script src="${request.static_url('nportal:static/bs/js/npm.js')}"></script>-->
+
 </body>
 </html>
