@@ -327,3 +327,13 @@ employment_positions = [
     ('student', 'Student'),
     ('other', 'Other')
     ]
+
+title_prefixes = [
+    ("", "-none-"),
+    ("dr", "Dr."),
+    ("mr", "Mr."),
+    ("ms", "Ms."),
+    ("mrs", "Mrs."),
+    ("miss", "Miss")
+    ]
+

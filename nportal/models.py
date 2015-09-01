@@ -35,7 +35,7 @@ class UserAccountModel(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     cn = Column(Text)           ## Kurt Bendl
-    # titlePrefix = Column(Text)    ## Dr.
+    titlePrefix = Column(Text)    ## Dr.
     givenName = Column(String(64))  ## Kurt
     sn = Column(String(64))         ## Bendl
     middleName = Column(String(64))

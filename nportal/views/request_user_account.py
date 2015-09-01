@@ -26,7 +26,10 @@ from nportal.views import (strip_whitespace,
                            rm_spaces
                            )
 
-from .lists import (us_states, country_codes, employment_positions)
+from .lists import (us_states,
+                    country_codes,
+                    employment_positions,
+                    title_prefixes)
 
 
 def phoneValidator(node, value):
@@ -53,6 +56,16 @@ class AddAccountSchema(colander.MappingSchema):
     body = colander.SchemaNode(
         colander.String(),
         widget=deform.widget.RichTextWidget()
+    )
+
+    titlePrefix = colander.SchemaNode(
+        colander.String(),
+        title='Title/Prefix',
+        description='Your full name. How you want to be addressed.',
+        validator=colander.Length(min=2, max=64),
+        widget=widget.SelectWidget(value=title_prefixes),
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='titlePrefix'
     )
 
     cn = colander.SchemaNode(
@@ -316,18 +329,6 @@ class AddAccountSchema(colander.MappingSchema):
     #   citizenOf
 
     #   birthCountry
-
-    #   projectPI
-
-    #   projectID
-
-    #   projectWorkDesc
-
-    #   projPublishable
-
-    #   projProprietary
-
-    #   projRestricted
 
     #   nrelPreviousAccount
 
