@@ -1,90 +1,31 @@
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+/*@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);*/
 body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  color: #111;
-  background: #fefefe;
+  /*font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  /*font-weight: 300;*/
+  /*color: #111;*/
+  /*background: #fefefe;*/
 }
+
+#content {
+  margin-top: 4em;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-}
-p {
-  font-weight: 300;
-}
-.font-normal {
-  font-weight: 400;
-}
-.font-semi-bold {
-  font-weight: 600;
-}
-.font-bold {
-  font-weight: 700;
+
 }
 
-#content {
-  margin: 4.5em auto;
-}
 
 @media (max-width: 1199px) {
-  .starter-template .content h1 {
-    font-size: 45px;
-  }
-  .starter-template .content h1 .smaller {
-    font-size: 30px;
-  }
-  .starter-template .content .lead {
-    font-size: 20px;
-  }
+
 }
 @media (max-width: 991px) {
-  .starter-template {
-    margin-top: 0;
-  }
-  .starter-template .logo {
-    margin: 40px auto;
-  }
-  .starter-template .content {
-    margin-left: 0;
-    text-align: center;
-  }
-  .starter-template .content h1 {
-    margin-bottom: 20px;
-  }
-  .starter-template .links {
-    float: none;
-    text-align: center;
-    margin-top: 60px;
-  }
-  .starter-template .copyright {
-    float: none;
-    text-align: center;
-  }
+
 }
 @media (max-width: 767px) {
-  .starter-template .content h1 .smaller {
-    font-size: 25px;
-    display: block;
-  }
-  .starter-template .content .lead {
-    font-size: 16px;
-  }
-  .starter-template .links {
-    margin-top: 40px;
-  }
-  .starter-template .links ul li {
-    display: block;
-    margin: 0;
-  }
-  .starter-template .links ul li .icon-muted {
-    display: none;
-  }
-  .starter-template .copyright {
-    margin-top: 20px;
-  }
+
 }
