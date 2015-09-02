@@ -48,12 +48,13 @@ class UserAccountModel(Base):
     postalCode = Column(String(64))   ## 80401
     country = Column(String(64))      ## USA
 
-    mail = Column(Text)   ## kbendl2@hpctest.nrel.gov|xx@nrel.gov|kurt@tool.net
-    phone = Column(Text)   ## 777-777-7777
-    cell = Column(Text)   ## 666-666-6666
+    mail = Column(String(128))   ## kbendl2@hpctest.nrel.gov|xx@nrel.gov|kurt@tool.net
+    phone = Column(String(32))   ## 777-777-7777
+    cell = Column(String(32))   ## 666-666-6666
+    phonePrimary = Column(String(32))   ## 666-666-6666
 
-    employerType = Column(Text)   ## [doe, gov, university, industry, non-us, other.
-    employerSponsor = Column(Text)   ##
+    employerType = Column(String(32))   ## [doe, gov, university, industry, non-us, other.
+    employerSponsor = Column(String(128))   ##
     employerSponsorName = Column(Text)   ##
 
     shipAddrSame = Column(Boolean)   ##
