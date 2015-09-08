@@ -49,34 +49,21 @@ class UserAccountModel(Base):
     country = Column(String(64))      ## USA
 
     mail = Column(String(128))   ## kbendl2@hpctest.nrel.gov|xx@nrel.gov|kurt@tool.net
+    mailPreferred = Column(String(128))   ## kbendl2@hpctest.nrel.gov|xx@nrel.gov|kurt@tool.net
     phone = Column(String(32))   ## 777-777-7777
     cell = Column(String(32))   ## 666-666-6666
     phonePrimary = Column(String(32))   ## 666-666-6666
 
     employerType = Column(String(32))   ## [doe, gov, university, industry, non-us, other.
-    employerSponsor = Column(String(128))   ##
-    employerSponsorName = Column(Text)   ##
+    employerName = Column(String(128))   ##
+    employerAddress = Column(Text)   ##
 
     shipAddrSame = Column(Boolean)   ##
-    shipAddr = Column(String(128))   ##
-    shipAddr2 = Column(String(128))   ##
-    shipAddrCity = Column(String(128))   ##
-    shipAddrState = Column(String(128))   ##
-    shipAddrPostCode = Column(String(32))   ##
-    shipAddrCountry = Column(String(64))   ##
-    position = Column(String(128))   ##
-    positionDesc = Column(Text)   ##
+    shipAddr = Column(Text)   ##
 
-    citizen = Column(String(10))   ##
+    citizenType = Column(String(10))   ##
     citizenOf = Column(Text)   ##
     birthCountry = Column(String(3))   ##
-
-    projectPI = Column(String(64))   ##
-    projectID = Column(String(16))   ##
-    projectWorkDesc = Column(Text)   ##
-    projPublishable = Column(Boolean)   ##
-    projProprietary = Column(Boolean)   ##
-    projRestricted = Column(Boolean)   ##
 
     nrelPreviousAccount = Column(Boolean)   ##
     nrelExistingAccount = Column(Boolean)   ##
