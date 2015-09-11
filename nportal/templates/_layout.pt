@@ -27,20 +27,20 @@
     <more metal:define-slot="head-more"></more>
 
     <link rel="stylesheet"
-          href="${request.static_url('nportal:static/bs/css/bootstrap.min.css')}"/>
+          href="${request.static_url('nportal:static/bs/css/bootstrap.min.css')}?v3.3.5"/>
 
     <link rel="stylesheet"
-          href="${request.static_url('nportal:static/bs/css/bootstrap-theme.min.css')}"/>
+          href="${request.static_url('nportal:static/bs/css/bootstrap-theme.min.css')}v3.3.5"/>
 
     <link rel="stylesheet"
-          href="${request.static_url('nportal:static/fa/css/font-awesome.min.css')}"/>
+          href="${request.static_url('nportal:static/fa/css/font-awesome.min.css')}v4.0.0"/>
 
     <link rel="stylesheet"
           href="${request.static_url('nportal:static/nportal.css')}"/>
 
 
-
-
+  <!--?<link rel="stylesheet" href="static/bs/css/bootstrap.css.map" />-->
+  <!--?<link rel="stylesheet" href="static/bs/css/bootstrap-theme.css.map" />-->
 
 </head>
 
@@ -194,10 +194,10 @@
 
 </div>
 <hr />
-<p>
-  <i class="fa fa-stethoscope"></i>
-  <i class="fa fa-camera-retro fa-5x"></i>
-</p>
+<!--?<p>-->
+  <!--?<i class="fa fa-stethoscope"></i>-->
+  <!--?<i class="fa fa-camera-retro fa-5x"></i>-->
+<!--?</p>-->
 <hr />
 
 <script src="${request.static_url('nportal:static/jq/jquery-1.11.3.min.js')}"></script>

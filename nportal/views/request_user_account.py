@@ -28,11 +28,13 @@ from nportal.views import (strip_whitespace,
 
 from .lists import (us_states,
                     country_codes,
+                    true_false,
                     employment_positions,
-                    title_prefixes)
+                    title_prefixes,
+                    citizen_types)
 
 
-def phoneValidator(node, value):
+def phone_validator(node, value):
     """ checks to make sure that the value looks like a phone number """
     allowed = set(string.ascii_lowercase + string.digits +
                   ' ' + '.' + '+' + '(' + ')' + '-')
@@ -41,6 +43,24 @@ def phoneValidator(node, value):
     if not tval:
         raise colander.Invalid(node,
                '%r is not a valid telephone number format' % value)
+
+
+def cyber_validator(node, value):
+    if not value:
+        raise colander.Invalid(node, 'You must agree to the Cyber Policies')
+
+
+def cou_validator(node, value):
+    if not value:
+        raise colander.Invalid(node,
+            'You must agree to the Conditions of Use Policies')
+
+
+def stor_validator(node, value):
+    if not value:
+        raise colander.Invalid(node,
+                               'You must agree to the HPC Storage Policies')
+
 
 @colander.deferred
 def deferred_country_widget(node, kw):
@@ -51,11 +71,46 @@ def deferred_state_widget(node, kw):
     us_states_data = kw.get('us_states_data', [])
     return widget.SelectWidget(values=us_states_data)
 
+email_confirm_widget = deform.widget.CheckedInputWidget(
+            subject='Email',
+            confirm_subject='Confirm Email',
+            )
+
+
 class AddAccountSchema(colander.MappingSchema):
     page_title = colander.SchemaNode(colander.String())
     body = colander.SchemaNode(
         colander.String(),
         widget=deform.widget.RichTextWidget()
+    )
+
+    cou = colander.SchemaNode(
+        colander.Boolean(),
+        title='COU Acceptance',
+        description='Check this if you have read and agree '
+                    'to the cyber security policies.',
+        widget=deform.widget.CheckboxWidget(),
+        oid='cou'
+    )
+
+    #   storTimestamp
+    stor = colander.SchemaNode(
+        colander.Boolean(),
+        title='Storage Acceptance',
+        description='Check this if you have read and agree '
+                    'to the Center\'s storage policies.',
+        widget=deform.widget.CheckboxWidget(),
+        oid='stor'
+    )
+    #   cybeTimestamp
+    cyber = colander.SchemaNode(
+        colander.Boolean(),
+        title='Cyber Security Policy Acceptance',
+        description='Check this if you have read and agree to abide by '
+                    'the Center\'s Cyber Security policies.',
+        widget=deform.widget.CheckboxWidget(),
+        validator=cyber_validator,
+        oid='stor'
     )
 
     titlePrefix = colander.SchemaNode(
@@ -182,17 +237,17 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='EMail',
         description='Your primary email account',
-        validator=colander.Email(msg="Please provide a valid EMail address"),
+        validator=colander.Email(msg="Please provide a valid Email address"),
         preparer=[rm_spaces, htmllaundry.sanitize],
+        widget=email_confirm_widget,
         oid='mail'
     )
     phone = colander.SchemaNode(
         colander.String(),
         title='Telephone',
         description='Please provide your primary telephone number',
-        validator=phoneValidator(),
-        #widget=,
         preparer=[strip_whitespace, remove_multiple_spaces],
+        validator=phone_validator,
         oid='phone'
     )
 
@@ -200,7 +255,7 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='Cell',
         description='We will use your cell phone number for verification',
-        validator=phoneValidator(),
+        validator=phone_validator,
         #widget=,
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='cell'
@@ -216,25 +271,25 @@ class AddAccountSchema(colander.MappingSchema):
         oid='employerType'
     )
 
-    employerSponsor = colander.SchemaNode(
-        colander.Boolean(),
-        title='Employment/Institution supporting this work',
-        description='click if the same as employer above',
-        widget=widget.CheckboxWidget(),
-        oid='employerSponsor'
-    )
-
-    employerSponsorName = colander.SchemaNode(
-        colander.String(),
-        title='Sponsor Name',
-        description='''If the name of the sponsor is not
-                    listed above, please list it here''',
-        validator=colander.Length(min=0, max=128),
-        widget=widget.TextInputWidget(),
-        missing=unicode(''),
-        preparer=[strip_whitespace, remove_multiple_spaces],
-        oid='employerSponsorName'
-    )
+    # employerSponsor = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='Employment/Institution supporting this work',
+    #     description='click if the same as employer above',
+    #     widget=widget.CheckboxWidget(),
+    #     oid='employerSponsor'
+    # )
+    #
+    # employerSponsorName = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Sponsor Name',
+    #     description='''If the name of the sponsor is not
+    #                 listed above, please list it here''',
+    #     validator=colander.Length(min=0, max=128),
+    #     widget=widget.TextInputWidget(),
+    #     missing=unicode(''),
+    #     preparer=[strip_whitespace, remove_multiple_spaces],
+    #     oid='employerSponsorName'
+    # )
 
     shipAddrSame = colander.SchemaNode(
         colander.Bool(),
@@ -296,86 +351,99 @@ class AddAccountSchema(colander.MappingSchema):
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='shipAddrCountry',
     )
+    #
+    # position = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Position',
+    #     description='What is your position or job with this institution?',
+    #     validator=colander.OneOf([x[0] for x in employment_positions]),
+    #     widget=deform.widget.RadioChoiceWidget(values=employment_positions),
+    #     oid='position'
+    # )
+    #
+    # positionDesc = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Position Description',
+    #     description='if other, please describe your position',
+    #     validator=colander.Length(min=0, max=64),
+    #     widget=widget.TextInputWidget(),
+    #     preparer=[strip_whitespace, sanitize],
+    #     oid='positionDesc'
+    # )
 
-    position = colander.SchemaNode(
-        colander.String(),
-        title='Position',
-        description='What is your position or job with this institution?',
-        validator=colander.OneOf([x[0] for x in employment_positions]),
-        widget=deform.widget.RadioChoiceWidget(values=employment_positions),
-        oid='position'
+    citizenStatus = colander.SchemaNode(
+        colander.Boolean(),
+        title='Citizenship Status',
+        description='Select the option that is most true for you',
+        validator=colander.OneOf([x[0] for x in citizen_types]),
+        widget=deform.widget.RadioChoiceWidget(values=citizen_types),
+        oid='citizenStatus'
     )
 
-    positionDesc = colander.SchemaNode(
-        colander.String(),
-        title='Position Description',
-        description='if other, please describe your position',
-        validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(),
-        preparer=[strip_whitespace, sanitize],
-        oid='positionDesc'
-    )
+    # citizenType = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='multiCitizen',
+    #     description='I have multiple Citizenships',
+    #     widget=deform.widget.RadioChoiceWidget(values=citizen_types),
+    #     oid='citizen'
+    # )
 
-    citizen = colander.SchemaNode(
+    citizenOf = colander.SchemaNode(
         colander.String(),
-        title='',
-        description='',
-        validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(),
-        preparer=[strip_whitespace, remove_multiple_spaces],
-        oid=''
+        title='Citizen of',
+        description='If you one or more citizenships, '
+                    'please select them from the list',
+        validator=colander.ContainsOnly([x[0] for x in citizen_types]),
+        widget=deferred_country_widget,
+        oid='citizenOf',
     )
-
-    #   citizenOf
 
     #   birthCountry
 
-    #   nrelPreviousAccount
+    nrelExistingAccount = colander.SchemaNode(
+        colander.Boolean(),
+        title='NREL Account',
+        description='If you have, or have previously used, an '
+                    'NREL HPC account, check this.',
+        widget=deform.widget.CheckboxWidget(),
+        oid='nrelExistingAccount'
+    )
 
-    #   nrelExistingAccount
-
-    #   nrelExistingUserID
-
-    #   nrelUserID
+    nrelUserID = colander.SchemaNode(
+        colander.String(),
+        title='NREL UserID',
+        description='If you have --or have previously used-- an NREL userid, '
+                    'please enter it here.',
+        validator=colander.Length(min=1, max=16),
+        widget=widget.TextInputWidget(),
+        preparer=[htmllaundry.sanitize],
+        oid='nrelUserID'
+    )
 
     #   preferredUID
+    preferredUID = colander.SchemaNode(
+        colander.String(),
+        title='Preferred UserID',
+        description="If you've never had an NREL account or userid, please "
+                    "tell us what you'd like to use for a login userID.",
+        validator=colander.Length(min=1, max=16),
+        widget=widget.TextInputWidget(),
+        preparer=[htmllaundry.sanitize],
+        oid='preferredUID'
+    )
 
-    #   comments = colander.SchemaNode(
-    #       colander.String(),
-    #       widget=deform.widget.RichTextWidget()
-    #   )
+    comments = colander.SchemaNode(
+        colander.String(),
+        widget=deform.widget.TextAreaWidget(rows=6, columns=60),
+        preparer=[htmllaundry.sanitize],
+        validator=colander.Length(max=1000),
+        oid='comments'
+    )
 
     #   subTimestamp
-
     #   couTimestamp
-
-    cou = colander.SchemaNode(
-        colander.Boolean(),
-        title='COU Acceptance',
-        description='Check this if you have read and agree '
-                    'to the cyber security policies.',
-        widget=deform.widget.CheckboxWidget(),
-        oid='cou'
-    )
-
     #   storTimestamp
-    stor = colander.SchemaNode(
-        colander.Boolean(),
-        title='Storage Acceptance',
-        description='Check this if you have read and agree '
-                    'to the Center\'s storage policies.',
-        widget=deform.widget.CheckboxWidget(),
-        oid='stor'
-    )
-    #   cybeTimestamp
-    cyber = colander.SchemaNode(
-        colander.Boolean(),
-        title='Cyber Security Policy Acceptance',
-        description='Check this if you have read and agree to abide by '
-                    'the Center\'s Cyber Security policies.',
-        widget=deform.widget.CheckboxWidget(),
-        oid='stor'
-    )
+    #   cyberTimestamp
 
 
 class AccountRequestView(object):
@@ -385,6 +453,7 @@ class AccountRequestView(object):
 
         self.layout = renderer.implementation().macros['layout']
         self.title = "Account Request Form"
+
     def render_form(self, form, appstruct=colander.null,
                     submitted='submit',
                     success=None, readonly=False):
@@ -481,35 +550,36 @@ def _add_new_user_request(appstruct):
                                ).filter(UserAccountModel.userid == i).one()
              for i in ai['users']]
 
-    # q1 = q2 = q3 = q4 = None
-    # if ai['q1']:
-    #     q1 = int(ai['q1'])
-    # if ai['q2']:
-    #     q2 = int(ai['q2'])
-    # if ai['q3']:
-    #     q3 = int(ai['q3'])
-    # if ai['q4']:
-    #     q4 = int(ai['q4'])
-    # q1 = [None, int(ai['q1'])][ai['q1']]
-    # q2 = [None, int(ai['q2'])][ai['q2']]
-    # q3 = [None, int(ai['q3'])][ai['q3']]
-    # q4 = [None, int(ai['q4'])][ai['q4']]
-    # q2 = int(ai['q2']),
-    # q3 = int(ai['q3']),
-    # q4 = int(ai['q4'])
-
     submission = UserAccountModel(
         cn=ai['allocid'],
+        titlePrefix=ai['titlePrefix'],
         givenName=ai['handleid'],
         sn=ai['pi'],
         middleName=ai['system'],
-        suffix=users,
+        suffix=ai['suffix'],
+
         userTitle=ai['nodehours'],
         street=ai['pspace'],
         l=ai['mspace'],
         st=ai['adgroup'],
-        postalCode=ai['startdate'],
-        country=ai['enddate'],
+        postalCode=ai['postalCode'],
+        country=ai['country'],
+        mail=ai['mail'],
+        mailPreferred=ai['mailPreferred'],
+        phone=ai['phone'],
+        cell=ai['cell'],
+        phonePrimary=ai['phonePrimary'],
+        employerType=ai['employerType'],
+        employerName=ai['employerName'],
+        employerAddress=ai['employerAddress'],
+        shipAddrSame=ai['shipAddrSame'],
+        shipAddr=ai['shipAddr'],
+        citizenStatus=ai['citizenStatus'],
+        citizenOf=ai['citizenOf'],
+        nrelExistingAccount=ai['nrelExistingAccount'],
+        nrelUserID=ai['nrelUserID'],
+        preferredUID=ai['preferredUID'],
+        comments=ai['comments'],
         subTimestamp=now,
         couTimestamp=cou,
         storTimestamp=stor,

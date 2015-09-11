@@ -4,7 +4,8 @@
     <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
 
     <div id="defaultContent">
-      <p> &nbsp;</p>
+      <p> home &nbsp;</p>
+      <p><a href="request_user_account">request_user_account</a></p>
 
 
     </div>

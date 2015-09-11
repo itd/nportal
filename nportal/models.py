@@ -61,13 +61,10 @@ class UserAccountModel(Base):
     shipAddrSame = Column(Boolean)   ##
     shipAddr = Column(Text)   ##
 
-    citizenType = Column(String(10))   ##
+    citizenStatus = Column(String(10))   ##
     citizenOf = Column(Text)   ##
-    birthCountry = Column(String(3))   ##
 
-    nrelPreviousAccount = Column(Boolean)   ##
     nrelExistingAccount = Column(Boolean)   ##
-    nrelExistingUserID = Column(String(16))   ##
     nrelUserID = Column(String(16))  ## kbendl
     preferredUID = Column(String(16)) ## preferred userid: kbendl
 

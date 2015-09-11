@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>farscape - NREL ESIF High Performance Computing</title>
+  <title>Account Request - NREL ESIF High Performance Computing</title>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="">
@@ -25,12 +25,18 @@
 
   <link rel="stylesheet" href="nportal.css" />
 
+  <style>
+    .regform-a .checkbox span {
+    font-style: italic;
+    margin: 0 2em 0 2em;
+}
+  </style>
 
 </head>
 
 <body>
 
-  <div class="container">
+  <div class="container regform-a">
     <div class="row">
 
       <div class="col-xs-1 col-md-2">.col-xs-1 .col-md-2</div>
@@ -45,30 +51,32 @@
 
         <form>
 
-          <fieldset class="policy-acceptance">
+          <fieldset class="r-policy">
             <h3>Policy Acceptance</h3>
 
             <div class="checkbox">
-              <label for="cou">Acceptable Use Policy</label>
-              <input type="checkbox" class="form-control" id="cou">
-              <!--?<span id="helpBlock" class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of Computing Acceptable Use Policy.</span>-->
-            </div>
-
-            <div class="checkbox-group">
-              <label for="stor">Storage Policy</label>
-              <input type="checkbox" class="form-control" id="stor">
-              <span id="helpBlock" class="help-block">By submitting this application, I agree that I have read and will abide by the Storage Policy.</span>
+              <label for="cou"><input type="checkbox" class="checkbox-inline" id="cou"/>
+              Acceptable Use Policy</label>
+              <span class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of Computing Acceptable Use Policy.</span>
             </div>
 
             <div class="checkbox">
-              <label for="cyber">Cyber Security</label>
-              <input type="checkbox" class="form-control" id="cyber">
-              <span id="helpBlock" class="help-block">By submitting this application, I agree that I have read and will abide by the Cyber Security Training Document.</span>
+
+              <label for="stor"><input type="checkbox" class="checkbox-inline" id="stor"/>
+              Storage Policy</label>
+              <span class="help-block">By submitting this application, I agree that I have read and will abide by the Storage Policy.</span>
+            </div>
+
+            <div class="checkbox">
+              <label for="cyber">
+                <input type="checkbox" class="checkbox-inline" id="cyber"/>
+              Cyber Security</label>
+              <span class="help-block">By submitting this application, I agree that I have read and will abide by the Cyber Security Training Document.</span>
             </div>
           </fieldset>
 
 
-          <fieldset class="personal-info">
+          <fieldset class="r-personal">
             <legend>Personel Information</legend>
 
             <div class="form-group">
@@ -148,13 +156,13 @@
           </fieldset>
 
 
-          <fieldset>
+          <fieldset class="r-ship">
             <legend>Shipping Address Information</legend>
 
             <div class="checkbox">
-              <label for="shipAddrSame"></label>
-              <input type="checkbox" class="form-control" id="shipAddrSame">
-              <span id="helpBlock" class="help-block">click if the same as employer above.</span>
+              <label for="shipAddrSame"><input type="checkbox" class="checkbox-inline" id="shipAddrSame" />
+              Same address as above</label>
+              <span class="help-block">click if the same as employer above.</span>
             </div>
 
             <div class="form-group">
@@ -185,7 +193,7 @@
 
 
 
-          <fieldset>
+          <fieldset class="r-employ">
             <legend>Employment/Institution Information</legend>
 
             <div class="form-group">
@@ -210,22 +218,24 @@
 
           </fieldset>
 
-          <fieldset>
+          <fieldset class="r-ship">
             <legend>Shipping information</legend>
-            <div class="checkbox-group">
-              <label for="shipAddrSame">Shipping Address</label>
-              <input type="checkbox" class="form-control" id="shipAddrSame">
+            <div class="checkbox">
+              <label for="shipAddrSame">
+                <input type="checkbox" class="checkbox-inline" id="shipAddrSame" />
+              Shipping Address</label>
+
               <span id="helpBlock" class="help-block">If different from the address above</span>
             </div>
 
             <div class="form-group">
               <label for="shipAddress">Shipping Address</label>
-              <textarea class="form-control" rows="4" id="shippingAddress" placeholder="optional"></textarea>
+              <textarea class="form-control" rows="4" id="shippingAddress" placeholder="if we need to send you a token"></textarea>
             </div>
 
           </fieldset>
 
-          <fieldset>
+          <fieldset class="r-citizen">
             <legend>Citizenship Status</legend>
             <p>Please detail your citizenship status, domestic and foreign.</p>
 
@@ -256,19 +266,34 @@
 
           </fieldset>
 
+          <fieldset class="r-account">
+            <legend>Account Information</legend>
+
+            <div class="checkbox">
+              <label for="nrelExistingAccount"><input type="checkbox" class="checkbox-inline" id="nrelExistingAccount" />
+              I have an HPC account at NREL</label>
+              <span class="help-block">If you have, or have previously used, an NREL HPC account, check this.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="nrelUserID">NREL UserID</label>
+              <input type="text" class="form-control" id="nrelUserID" placeholder="example: juser"/>
+              <span class="help-block">If you have, or have previously had, and NREL userid, please enter it here.</span>
+            </div>
+            <div class="form-group">
+              <label for="preferredUID">Preferred UserID</label>
+              <input type="text" class="form-control" id="preferredUID" placeholder="example: jsmythe"/>
+              <span class="help-block">If you've never had an NREL account or userid, please tell us what you'd like to use for a login userID.</span>
+            </div>
+            <div class="form-group">
+              <label for="comments">Comments / Notes</label>
+              <textarea class="form-control" id="comments" placeholder=""></textarea>
+              <span class="help-block">If there you think we need any additional information to set up your request, please let us know.</span>
+            </div>
+
+          </fieldset>
 
 
-
-          <div class="form-group">
-            <label for="exampleInputFile">File input</label>
-            <input type="file" id="exampleInputFile">
-            <p class="help-block">Example block-level help text here.</p>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> Check me out
-            </label>
-          </div>
 
           <button type="submit" class="btn btn-default">Submit Registration Request</button>
 

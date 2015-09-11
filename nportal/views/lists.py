@@ -337,3 +337,9 @@ title_prefixes = [
     ("miss", "Miss")
     ]
 
+true_false = ((True, 'Yes'), (False, 'No'))
+
+citizen_types = (('us', 'U.S. Citizen'),
+                 ('multi', 'U.S. Citizen with Multiple Citizenships'),
+                 ('lpr', 'U.S. Lawful Permanent Resident'),
+                 ('fn', 'Not a U.S. Citizen'))
