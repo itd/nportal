@@ -1,0 +1,29 @@
+<div metal:use-macro="view.layout">
+  <div metal:fill-slot="content" class="main-content">
+
+    <!--!?<h1 tal:if tal:condition="title | nothing">${title}</h1>-->
+
+    <!--!?<tal:content="structure form"/>-->
+
+    <div class="row" tal:define="field form['givenName'];">
+      <div class="span2">
+        ${structure:field.title}
+        <span class="req" tal:condition="field.required">*</span>
+      </div>
+      <div class="span2">
+        ${structure:field.serialize()}
+      </div>
+      <div>
+          ${structure:field.description}
+      </div>
+      <ul tal:condition="field.error">
+        <li tal:repeat="error field.error.messages()"> ${structure:error}
+        </li>
+      </ul>
+
+    </div>
+
+
+  </div>
+</div>
+

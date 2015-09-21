@@ -1,8 +1,318 @@
+
 <div metal:use-macro="view.layout">
   <div metal:fill-slot="content" class="main-content">
 
-    <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+    <!--!?<h1 tal:if tal:condition="title | nothing">${title}</h1>-->
 
-    <div id="request_new_account_form" tal:content="structure form"></div>
+    <!-- div tal:content="structure form.render()"/ -->
+
+
+
+    <div class="row" tal:define="field form['givenName'];">
+      <div class="span2">
+        ${structure:field.title}
+        <span class="req" tal:condition="field.required">*</span>
+      </div>
+      <div class="span2">
+        ${structure:field.serialize()}
+      </div>
+      <div>
+        ${structure:field.description}
+      </div>
+      <ul tal:condition="field.error">
+        <li tal:repeat="error field.error.messages()"> ${structure:error}
+        </li>
+      </ul>
+
+    </div>
+
+
+    <div class="container regform-a">
+      <div class="row">
+
+        <div class="col-xs-1 col-md-2">.col-xs-1 .col-md-2</div>
+
+        <div class="col-xs-10 col-md-8">
+
+          <h2>Registration Form Mock-up</h2>
+          <p>
+
+          </p>
+
+
+          <form>
+
+            <fieldset class="r-policy">
+              <h3>Policy Acceptance</h3>
+
+              <div class="checkbox" tal:define="field form['cou'];">
+                <label for="cou">
+                   ${structure:field.serialize()} Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
+                <span class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of Computing Acceptable Use Policy.</span>
+              </div>
+
+              <div class="checkbox" tal:define="field form['stor'];">
+
+                <label for="stor">
+                 ${structure:field.serialize()} Storage Policy <span class="req" tal:condition="field.required">*</span></label>
+                <span class="help-block">By submitting this application, I agree that I have read and will abide by the Storage Policy.</span>
+              </div>
+
+              <div class="checkbox" tal:define="field form['cyber'];">
+                <label for="cyber">
+                  ${structure:field.serialize()} Cyber Security<span class="req" tal:condition="field.required">*</span></label>
+                <span class="help-block">By submitting this application, I agree that I have read and will abide by the Cyber Security Training Document.</span>
+              </div>
+            </fieldset>
+
+
+            <fieldset class="r-personal">
+              <legend>Personel Information</legend>
+
+              <div class="form-group" tal:define="field form['titlePrefix'];">
+                <label for="titlePrefix">Title / Prefix: </label>
+                ${structure:field.serialize()}
+              </div>
+
+              <div class="form-group" tal:define="field form['givenName'];">
+                <label for="givenName">First or Given Name</label>
+                 ${structure:field.serialize()}
+              </div>
+              <div class="form-group" tal:define="field form['sn'];">
+                <label for="sn">Last Name</label>
+                ${structure:field.serialize()}
+              </div>
+              <div class="form-group">
+                <label for="middle">Middle Name(s)</label>
+                <input type="text" class="form-control" id="mname">
+              </div>
+              <div class="form-group">
+                <label for="suffix">Suffix</label>
+                <input type="text" class="form-control" id="suffix" placeholder="Sr., Jr., III, etc.">
+              </div>
+
+              <div class="form-group">
+                <label for="street">Work mailing address</label>
+                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
+              </div>
+              <div class="form-group">
+                <label for="l">City</label>
+                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
+              </div>
+              <div class="form-group">
+                <label for="st">State</label>
+                <input type="text" class="form-control" id="st" placeholder="State, Province, or Region">
+              </div>
+              <div class="form-group">
+                <label for="postalCode">ZIP / Postal Code </label>
+                <input type="text" class="form-control" id="postalCode" placeholder="">
+              </div>
+
+              <div class="form-group">
+                <label for="mail">Email Address</label>
+                <input type="text" class="form-control" id="email" placeholder="Primary Email address">
+              </div>
+
+              <div class="form-group">
+                <label for="mail_confirm">Confirm Email Address</label>
+                <input type="text" class="form-control" id="confirm_email" placeholder="re-type email address">
+              </div>
+
+              <div class="form-group">
+                <label for="mailPerferred">Preferred Email Address</label>
+                <input type="text" class="form-control" id="mailPreferred" placeholder="Optional preferred email addr">
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Work Phone</label>
+                <input type="text" class="form-control" id="phone" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="cell">Cell Phone</label>
+                <input type="text" class="form-control" id="cell" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="phonePrimary">Primary Phone</label>
+                <input type="text" class="form-control" id="phonePrimary" placeholder="">
+                <span id="helpBlock" class="help-block">If different from work phone.</span>
+              </div>
+
+            </fieldset>
+
+
+            <fieldset class="r-ship">
+              <legend>Shipping Address Information</legend>
+
+              <div class="checkbox">
+                <label for="shipAddrSame">
+                  <input type="checkbox" class="checkbox-inline" id="shipAddrSame" /> Same address as above</label>
+                <span class="help-block">click if the same as employer above.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="street">Work mailing address</label>
+                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
+              </div>
+              <div class="form-group">
+                <label for="l">City</label>
+                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
+              </div>
+              <div class="form-group">
+                <label for="st">State</label>
+                <input type="text" class="form-control" id="st" placeholder="State, Province, or Region">
+              </div>
+              <div class="form-group">
+                <label for="postalCode">ZIP / Postal Code </label>
+                <input type="text" class="form-control" id="postalCode" placeholder="">
+              </div>
+
+              <div class="form-group">
+                <label for="mail">Email Address</label>
+                <input type="text" class="form-control" id="email" placeholder="Primary Email address">
+              </div>
+            </fieldset>
+
+
+
+
+
+
+            <fieldset class="r-employ">
+              <legend>Employment/Institution Information</legend>
+
+              <div class="form-group">
+                <label for="employerType">Employer Type</label>
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType1" value="doe"> DOE
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType2" value="usgovernment"> U.S. Government (Not DOE)
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType3" value="usuniversity"> U.S. University
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType3" value="usindustry"> U.S. Industry
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType4" value="foreign"> Foreign / Non-U.S. entity
+                <br>
+                <input type="radio" name="employerType" class="" id="employerType5" value="other"> Other
+              </div>
+
+              <div class="form-group">
+                <label for="employerName">Employer Name</label>
+                <input type="text" class="form-control" id="employerName" placeholder="Employer Name">
+              </div>
+              <div class="form-group">
+                <label for="employerAddress">Employer Address</label>
+                <textarea class="form-control" rows="4" id="employerAddress" placeholder=""></textarea>
+              </div>
+
+
+            </fieldset>
+
+            <fieldset class="r-ship">
+              <legend>Shipping information</legend>
+              <div class="checkbox">
+                <label for="shipAddrSame">
+                  <input type="checkbox" class="checkbox-inline" id="shipAddrSame" /> Shipping Address</label>
+
+                <span id="helpBlock" class="help-block">If different from the address above</span>
+              </div>
+
+              <div class="form-group">
+                <label for="shipAddress">Shipping Address</label>
+                <textarea class="form-control" rows="4" id="shippingAddress" placeholder="if we need to send you a token"></textarea>
+              </div>
+
+            </fieldset>
+
+            <fieldset class="r-citizen">
+              <legend>Citizenship Status</legend>
+              <p>Please detail your citizenship status, domestic and foreign.</p>
+
+              <div class="radio">
+                <label for="citizenType">Select one of the following options that best describes your U.S. citizenship status</label>
+                <br>
+                <label for="us_citizen">
+                  <input type="radio" name="citizenType" id="citizenType1" value="us_citizen"> U.S. Citizen</label>
+                <!--?<br><label for="us_multiple"><input type="radio" name="citizenType" id="citizenType2" value="us_multiple"> U.S. Citizen with Multiple Citizenship</label>-->
+                <br>
+                <label for="lpr">
+                  <input type="radio" name="citizenType" id="citizenType3" value="lpr"> Lawful Permanent Resident (LPR)</label>
+                <br>
+                <label for="non_us">
+                  <input type="radio" name="citizenType" id="citizenType3" value="non_us"> No form of U.S. Citizenship status</label>
+                <!--?<br><label for="other"><input type="radio" name="citizenType" id="citizenType4" value="other"> Other</label>-->
+              </div>
+              <!--?<div class="form-group">-->
+              <!--?<label for="citizenTypeOther">Other</label>-->
+              <!--?<input type="text" class="form-control" id="email" placeholder="IF not a U.S. citizen, other, please describe">-->
+              <!--?</div>-->
+
+
+              <div class="form-group">
+                <label for="citizenOf">If you have "Lawful Permanent Resident" status or are a non-U.S. citizen, please select your citizenship(s) below:</label>
+                <select multiple class="form-control" id="citizenOf">
+                  <option>Country 1</option>
+                  <option>Country 2</option>
+                  <option>Country 3</option>
+                  <option>Country 4</option>
+                  <option>Country 5</option>
+                </select>
+              </div>
+
+            </fieldset>
+
+            <fieldset class="r-account">
+              <legend>Account Information</legend>
+
+              <div class="checkbox">
+                <label for="nrelExistingAccount">
+                  <input type="checkbox" class="checkbox-inline" id="nrelExistingAccount" /> I have an HPC account at NREL</label>
+                <span class="help-block">If you have, or have previously used, an NREL HPC account, check this.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="nrelUserID">NREL UserID</label>
+                <input type="text" class="form-control" id="nrelUserID" placeholder="example: juser" />
+                <span class="help-block">If you have, or have previously had, and NREL userid, please enter it here.</span>
+              </div>
+              <div class="form-group">
+                <label for="preferredUID">Preferred UserID</label>
+                <input type="text" class="form-control" id="preferredUID" placeholder="example: jsmythe" />
+                <span class="help-block">If you've never had an NREL account or userid, please tell us what you'd like to use for a login userID.</span>
+              </div>
+              <div class="form-group">
+                <label for="comments">Comments / Notes</label>
+                <textarea class="form-control" id="comments" placeholder=""></textarea>
+                <span class="help-block">If there you think we need any additional information to set up your request, please let us know.</span>
+              </div>
+
+            </fieldset>
+
+
+
+            <button type="submit" class="btn btn-default">Submit Registration Request</button>
+
+
+          </form>
+
+
+
+
+        </div>
+        <div class="col-xs-1 col-md-2">
+          <!--! right column -->
+          <i class="fa fa-stethoscope">xx</i>
+          <i class="fa fa-camera-retro fa-5x">xx</i> .col-xs-1 .col-md-2
+        </div>
+
+      </div>
+      <!--! /row -->
+    </div>
+
+
+
+
+
   </div>
 </div>
+
