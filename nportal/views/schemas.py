@@ -99,7 +99,7 @@ class AddAccountSchema(colander.MappingSchema):
         title='First Name/Given Name',
         description='Your legal First Name.',
         validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(),
+        widget=widget.TextInputWidget(css_class="form-control", placeholder="foo"),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='givenName'
     )

@@ -8,23 +8,23 @@
 
 
 
-    <div class="row" tal:define="field form['givenName'];">
-      <div class="span2">
-        ${structure:field.title}
-        <span class="req" tal:condition="field.required">*</span>
-      </div>
-      <div class="span2">
-        ${structure:field.serialize()}
-      </div>
-      <div>
-        ${structure:field.description}
-      </div>
-      <ul tal:condition="field.error">
-        <li tal:repeat="error field.error.messages()"> ${structure:error}
-        </li>
-      </ul>
+    <!--?<div class="row" tal:define="field form['givenName'];">-->
+      <!--?<div class="span2">-->
+        <!--?${structure:field.title}-->
+        <!--?<span class="req" tal:condition="field.required">*</span>-->
+      <!--?</div>-->
+      <!--?<div class="span2">-->
+        <!--?${structure:field.serialize()}-->
+      <!--?</div>-->
+      <!--?<div>-->
+        <!--?${structure:field.description}-->
+      <!--?</div>-->
+      <!--?<ul tal:condition="field.error">-->
+        <!--?<li tal:repeat="error field.error.messages()"> ${structure:error}-->
+        <!--?</li>-->
+      <!--?</ul>-->
 
-    </div>
+    <!--?</div>-->
 
 
     <div class="container regform-a">
@@ -75,11 +75,11 @@
               </div>
 
               <div class="form-group" tal:define="field form['givenName'];">
-                <label for="givenName">First or Given Name</label>
+                <label for="givenName">First or Given Name<span class="req" tal:condition="field.required">*</span></label>
                  ${structure:field.serialize()}
               </div>
               <div class="form-group" tal:define="field form['sn'];">
-                <label for="sn">Last Name</label>
+                <label for="sn">Last Name<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
               </div>
               <div class="form-group">

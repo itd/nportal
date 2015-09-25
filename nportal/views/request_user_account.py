@@ -11,10 +11,21 @@ from pyramid.renderers import get_renderer
 
 import deform
 import deform.widget
+from deform import ZPTRendererFactory
+from deform import Form
+from pkg_resources import resource_filename
+
+deform_templates = resource_filename('deform', 'templates')
+search_path = ('../templates', deform_templates)
+drenderer = ZPTRendererFactory(search_path)
+
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
 # import htmllaundry
 # from htmllaundry import sanitize
+
+deform_templates = resource_filename('deform', 'templates')
+search_path = ('../templates', deform_templates)
 
 resource_registry = deform.widget.ResourceRegistry()
 
@@ -53,7 +64,7 @@ class AccountRequestView(object):
                     if response is not None:
                         return response
                 self.title = 'Form data accepted'
-                # set this to redir to /allloc/view/<allocid>
+
                 _add_new_user_request(captured)
 
             except deform.ValidationFailure as e:
@@ -100,10 +111,11 @@ class AccountRequestView(object):
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
         )
-        form = deform.Form(schema,
-                           buttons=('submit',),
-                           # action=self.request.route_url('allocation_add')
-                           )
+        form = Form(schema,
+                   renderer=drenderer,
+                   buttons=('submit',),
+                   # action=self.request.route_url('allocation_add')
+                   )
 
         #import pdb; pdb.set_trace()
         return dict(form=form)
