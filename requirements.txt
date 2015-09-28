@@ -1,10 +1,13 @@
 Chameleon==2.22
 colander==1.0
-deform==0.9.9
+-e git+https://github.com/Pylons/deform.git@885a91727f61109a269e15b14421e1fd7c570ddc#egg=deform-master
+htmllaundry==2.0
 iso8601==0.1.10
 ldap3==0.9.8.7
+lxml==3.4.4
 Mako==1.0.1
 MarkupSafe==0.23
+-e git+git@github.com:itd/nportal.git@d1c46c196f174d230b79a1d534057f82a862b1dd#egg=nportal-master
 PasteDeploy==1.5.2
 peppercorn==0.5
 psycopg2==2.6.1
@@ -16,6 +19,7 @@ pyramid-debugtoolbar==2.4.1
 pyramid-mako==1.0.2
 pyramid-tm==0.12
 repoze.lru==0.6
+six==1.9.0
 SQLAlchemy==1.0.8
 transaction==1.4.4
 translationstring==1.3

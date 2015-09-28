@@ -1,5 +1,7 @@
 from pyramid.response import Response
 from pyramid.decorator import reify
+#from pyramid import request
+from pyramid.renderers import render_to_response
 # from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.view import view_config
@@ -30,7 +32,10 @@ try it again.
 """
 
 
-class AccountViews(object):
+class BaseViews(object):
+    """
+    The base views, such as home, login, logout, etc.
+    """
     def __init__(self, request):
         self.request = request
         renderer = get_renderer("../templates/_layout.pt")
@@ -53,10 +58,19 @@ class AccountViews(object):
     # @view_config(route_name='home', renderer='../templates/home.pt')
     @view_config(route_name='home', renderer='../templates/test.pt')
     def home_view(request):
+
+        #pagename = request.matchdict['pagename']
         try:
             one = DBSession.query(SiteModel).filter(
                 SiteModel.name == 'one').first()
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
-        return {'one': one, 'project': 'nportal'}
+
+        import pdb; pdb.set_trace()
+
+        return {'one': one,
+                'project': 'nportal',
+                #pagename=pagename,
+                }
+# 'request_user_account_url': request.route_url('request_user_account')

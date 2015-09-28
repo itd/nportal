@@ -5,7 +5,7 @@
 
     <div id="defaultContent">
       <p> home &nbsp;</p>
-      <p><a href="request_user_account">request_user_account</a></p>
+      <p><a href="${request_user_account_url}">request_user_account_url</a></p>
 
 
     </div>
