@@ -50,7 +50,7 @@ class BaseViews(object):
     #        schema = HomePage()
     #        return deform.Form(schema, buttons=('submit',))
 
-    @reifyx
+    @reify
     def changepass(self):
         schema = UserAccountModel()
         return deform.Form(schema, buttons=('submit',))
