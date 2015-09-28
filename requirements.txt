@@ -1,6 +1,6 @@
 Chameleon==2.22
 colander==1.0
--e git+https://github.com/Pylons/deform.git@885a91727f61109a269e15b14421e1fd7c570ddc#egg=deform-master
+-e git+https://github.com/Pylons/deform.git#egg=deform-master
 htmllaundry==2.0
 iso8601==0.1.10
 ldap3==0.9.8.7

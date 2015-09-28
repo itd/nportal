@@ -1,15 +1,19 @@
 <div metal:use-macro="view.layout">
   <div metal:fill-slot="content" class="main-content">
 
-    <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+    <div class="row-fluid">
+      <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+    </div>
+    <div id="defaultContent" class="row-fluid">
 
-    <div id="defaultContent">
-      <p> home &nbsp;   ${one}</p>
-      <p><a href="${request.application_url}/request_user_account">request_user_account_url</a></p>
+      <h1>Account Requests and Information</h1>
+      <ul>
+        <li>Make an <a href="${request.application_url}/request_user_account">Account Request</a></li>
+      </ul>
     </div>
 
 
-    dfasdfasdfsdfasdfd
+
 
 <p>
   <!--?<i class="fa fa-stethoscope"></i>-->
