@@ -301,8 +301,8 @@
         </div>
         <div class="col-xs-1 col-md-2">
           <!--! right column -->
-          <i class="fa fa-stethoscope">xx</i>
-          <i class="fa fa-camera-retro fa-5x">xx</i> .col-xs-1 .col-md-2
+          <!--?<i class="fa fa-stethoscope">xx</i>-->
+          <!--?<i class="fa fa-camera-retro fa-5x">xx</i> .col-xs-1 .col-md-2-->
         </div>
 
       </div>
