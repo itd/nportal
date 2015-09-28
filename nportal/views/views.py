@@ -50,15 +50,15 @@ class BaseViews(object):
     #        schema = HomePage()
     #        return deform.Form(schema, buttons=('submit',))
 
-    @reify
+    @reifyx
     def changepass(self):
         schema = UserAccountModel()
         return deform.Form(schema, buttons=('submit',))
 
     # @view_config(route_name='home', renderer='../templates/home.pt')
-    @view_config(route_name='home', renderer='../templates/test.pt')
-    def home_view(request):
-
+    @view_config(route_name='home', renderer='../templates/home.pt')
+    def home_view(self):
+        request = self.request
         #pagename = request.matchdict['pagename']
         try:
             one = DBSession.query(SiteModel).filter(
@@ -71,6 +71,5 @@ class BaseViews(object):
 
         return {'one': one,
                 'project': 'nportal',
-                #pagename=pagename,
                 }
 # 'request_user_account_url': request.route_url('request_user_account')

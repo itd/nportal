@@ -4,10 +4,19 @@
     <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
 
     <div id="defaultContent">
-      <p> home &nbsp;</p>
-      <p><a href="${request_user_account_url}">request_user_account_url</a></p>
-
-
+      <p> home &nbsp;   ${one}</p>
+      <p><a href="${request.application_url}/request_user_account">request_user_account_url</a></p>
     </div>
+
+
+    dfasdfasdfsdfasdfd
+
+<p>
+  <!--?<i class="fa fa-stethoscope"></i>-->
+  <!--?<i class="fa fa-camera-retro fa-5x"></i>-->
+</p>
+
+
+
   </div>
 </div>
