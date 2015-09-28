@@ -56,7 +56,7 @@ class BaseViews(object):
         return deform.Form(schema, buttons=('submit',))
 
     # @view_config(route_name='home', renderer='../templates/home.pt')
-    @view_config(route_name='home', renderer='../templates/home.pt')
+    @view_config(route_name='homer', renderer='../templates/home.pt')
     def home_view(self):
         request = self.request
         #pagename = request.matchdict['pagename']
