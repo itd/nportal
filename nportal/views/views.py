@@ -56,18 +56,16 @@ class BaseViews(object):
         return deform.Form(schema, buttons=('submit',))
 
     # @view_config(route_name='home', renderer='../templates/home.pt')
-    @view_config(route_name='homer', renderer='../templates/home.pt')
+    @view_config(route_name='home', renderer='../templates/home.pt')
     def home_view(self):
         request = self.request
         #pagename = request.matchdict['pagename']
         try:
             one = DBSession.query(SiteModel).filter(
-                SiteModel.name == 'one').first()
+                   SiteModel.name == 'one').first().value
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
-
-        import pdb; pdb.set_trace()
 
         return {'one': one,
                 'project': 'nportal',
