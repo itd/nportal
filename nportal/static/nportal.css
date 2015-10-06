@@ -19,6 +19,10 @@ h6 {
 
 }
 
+.req {
+  color: darkred;
+  margin: 0 0px 0 0.2em;
+}
 
 @media (max-width: 1199px) {
 

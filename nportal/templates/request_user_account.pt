@@ -79,67 +79,81 @@
                  ${structure:field.serialize()}
               </div>
               <div class="form-group" tal:define="field form['sn'];">
-                <label for="sn">Last Name<span class="req" tal:condition="field.required">*</span></label>
+                <label for==${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
               </div>
-              <div class="form-group">
-                <label for="middle">Middle Name(s)</label>
-                <input type="text" class="form-control" id="mname">
+              <div class="form-group" tal:define="field form['middleName'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
-              <div class="form-group">
-                <label for="suffix">Suffix</label>
-                <input type="text" class="form-control" id="suffix" placeholder="Sr., Jr., III, etc.">
+              <div class="form-group" tal:define="field form['suffix'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
-
-              <div class="form-group">
-                <label for="street">Work mailing address</label>
-                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
+              <div class="form-group" tal:define="field form['userTitle'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
-              <div class="form-group">
-                <label for="l">City</label>
-                <input type="text" class="form-control" id="street" placeholder="123 Noe Way, Apartment 222, Rte 5">
-              </div>
-              <div class="form-group">
-                <label for="st">State</label>
-                <input type="text" class="form-control" id="st" placeholder="State, Province, or Region">
-              </div>
-              <div class="form-group">
-                <label for="postalCode">ZIP / Postal Code </label>
-                <input type="text" class="form-control" id="postalCode" placeholder="">
+              <div class="form-group" tal:define="field form['cn'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
 
-              <div class="form-group">
-                <label for="mail">Email Address</label>
-                <input type="text" class="form-control" id="email" placeholder="Primary Email address">
-              </div>
-
-              <div class="form-group">
-                <label for="mail_confirm">Confirm Email Address</label>
-                <input type="text" class="form-control" id="confirm_email" placeholder="re-type email address">
-              </div>
-
-              <div class="form-group">
-                <label for="mailPerferred">Preferred Email Address</label>
-                <input type="text" class="form-control" id="mailPreferred" placeholder="Optional preferred email addr">
-              </div>
-
-              <div class="form-group">
-                <label for="phone">Work Phone</label>
-                <input type="text" class="form-control" id="phone" placeholder="">
-              </div>
-              <div class="form-group">
-                <label for="cell">Cell Phone</label>
-                <input type="text" class="form-control" id="cell" placeholder="">
-              </div>
-              <div class="form-group">
-                <label for="phonePrimary">Primary Phone</label>
-                <input type="text" class="form-control" id="phonePrimary" placeholder="">
-                <span id="helpBlock" class="help-block">If different from work phone.</span>
+              <div class="form-group" tal:define="field form['suffix'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
 
             </fieldset>
 
 
+            <fieldset class="contact-info">
+              <legend>Contact and Mailing Address Information</legend>
+
+              <p>We will use this for contact purposes or if we need to mail anything to you.</p>
+
+              <div class="form-group" tal:define="field form['street'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+              <div class="form-group" tal:define="field form['l'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+              <div class="form-group" tal:define="field form['st'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+              <div class="form-group" tal:define="field form['postalCode'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+              <div class="form-group" tal:define="field form['country'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+
+              <p>Email and phone are used to contact you if necessary and/or for identification purposes.</p>
+
+              <div class="form-group" tal:define="field form['mail'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+
+              <div class="form-group" tal:define="field form['phone'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+
+              <div class="form-group" tal:define="field form['cell'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+              </div>
+
+
+            </fieldset>
+
+            <!--
             <fieldset class="r-ship">
               <legend>Shipping Address Information</legend>
 
@@ -171,6 +185,8 @@
                 <input type="text" class="form-control" id="email" placeholder="Primary Email address">
               </div>
             </fieldset>
+
+            -->
 
 
 

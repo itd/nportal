@@ -1,3 +1,4 @@
+import os
 import datetime
 import string
 
@@ -13,21 +14,21 @@ import deform
 import deform.widget
 from deform import ZPTRendererFactory
 from deform import Form
-from pkg_resources import resource_filename
-
-deform_templates = resource_filename('deform', 'templates')
-search_path = ('../templates', deform_templates)
-drenderer = ZPTRendererFactory(search_path)
-
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
+from pkg_resources import resource_filename
+
+resource_registry = deform.widget.ResourceRegistry()
+deform_templates = resource_filename('deform', 'templates')
+tpath = os.getcwd()
+search_path = (tpath + '/nportal/templates', deform_templates)
+
+drenderer = ZPTRendererFactory(search_path)
+# Form.set_zpt_renderer(search_path)
+
 # import htmllaundry
 # from htmllaundry import sanitize
 
-deform_templates = resource_filename('deform', 'templates')
-search_path = ('../templates', deform_templates)
-
-resource_registry = deform.widget.ResourceRegistry()
 
 from nportal.models import (
     DBSession,
@@ -111,11 +112,11 @@ class AccountRequestView(object):
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
         )
+        Form.set_zpt_renderer(search_path)
         form = Form(schema,
-                   renderer=drenderer,
-                   buttons=('submit',),
-                   # action=self.request.route_url('allocation_add')
-                   )
+                    renderer=drenderer,
+                    action=self.request.route_url('request_user_account')
+                    )
 
         #import pdb; pdb.set_trace()
         return dict(form=form)

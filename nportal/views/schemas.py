@@ -84,22 +84,12 @@ class AddAccountSchema(colander.MappingSchema):
         oid='titlePrefix'
     )
 
-    cn = colander.SchemaNode(
-        colander.String(),
-        title='Common or Nick Name',
-        description='Your full name. How you want to be addressed.',
-        validator=colander.Length(min=2, max=64),
-        widget=widget.TextInputWidget(css_class="form-control"),
-        preparer=[strip_whitespace, remove_multiple_spaces],
-        oid='cn'
-    )
-
     givenName = colander.SchemaNode(
         colander.String(),
         title='First Name/Given Name',
         description='Your legal First Name.',
         validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(css_class="form-control", placeholder="foo"),
+        widget=widget.TextInputWidget(placeholder='Your legal First Name.'),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='givenName'
     )
@@ -109,7 +99,8 @@ class AddAccountSchema(colander.MappingSchema):
         title='Last Name',
         description='Your legal family name or last name.',
         validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(css_class="form-control"),
+        widget=widget.TextInputWidget(
+            placeholder='Your legal family name or last name.'),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='sn'
     )
@@ -119,7 +110,9 @@ class AddAccountSchema(colander.MappingSchema):
         title='Middle Name',
         description='Your legal middle name if applicable.',
         validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(),
+        widget=widget.TextInputWidget(
+            placeholder='Your legal middle name if applicable.'),
+        missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='middleName'
     )
@@ -130,6 +123,7 @@ class AddAccountSchema(colander.MappingSchema):
         description='(Sr. Jr. IV, etc.)',
         validator=colander.Length(min=0, max=32),
         widget=widget.TextInputWidget(),
+        missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='suffix'
     )
@@ -140,8 +134,21 @@ class AddAccountSchema(colander.MappingSchema):
         description='A title you may currently use',
         validator=colander.Length(min=0, max=128),
         widget=widget.TextInputWidget(),
+        missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='userTitle'
+    )
+
+    cn = colander.SchemaNode(
+        colander.String(),
+        title='Common or Nick Name',
+        description='Your full name. How you want to be addressed.',
+        validator=colander.Length(min=2, max=64),
+        widget=widget.TextInputWidget(
+            placeholder='How you want to be addressed: Pat Marlinski'),
+        missing=unicode(''),
+        preparer=[strip_whitespace, remove_multiple_spaces],
+        oid='cn'
     )
 
     street = colander.SchemaNode(
@@ -149,7 +156,7 @@ class AddAccountSchema(colander.MappingSchema):
         title='Street Address',
         description='',
         validator=colander.Length(min=0, max=200),
-        widget=widget.TextAreaWidget(),
+        widget=widget.TextAreaWidget(placeholder='example: 123 Noe Way'),
         preparer=[strip_whitespace, remove_multiple_spaces],
         oid='street'
     )
@@ -209,6 +216,8 @@ class AddAccountSchema(colander.MappingSchema):
         description='Please provide your primary telephone number',
         preparer=[strip_whitespace, remove_multiple_spaces],
         validator=phone_validator,
+        widget=widget.TextInputWidget(
+            placeholder='Please provide your primary telephone number'),
         oid='phone'
     )
 
@@ -217,8 +226,10 @@ class AddAccountSchema(colander.MappingSchema):
         title='Cell',
         description='We will use your cell phone number for verification',
         validator=phone_validator,
-        #widget=,
+        missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces],
+                widget=widget.TextInputWidget(
+            placeholder='for verification and contact'),
         oid='cell'
     )
 
@@ -251,67 +262,67 @@ class AddAccountSchema(colander.MappingSchema):
     #     preparer=[strip_whitespace, remove_multiple_spaces],
     #     oid='employerSponsorName'
     # )
-
-    shipAddrSame = colander.SchemaNode(
-        colander.Bool(),
-        title='Shipping Address',
-        description='click if this is the same as above',
-        widget=widget.CheckboxWidget(),
-        oid='shipAddrSame'
-    )
-
-    shipAddr = colander.SchemaNode(
-        colander.String(),
-        missing=None,
-        title='Address',
-        description='Your shipping address - in case we need to send you a physical VPN token.',
-        validator=colander.Length(min=0, max=128),
-        widget=widget.TextInputWidget(),
-        preparer=[strip_whitespace, htmllaundry.sanitize],
-        oid='shipAddr'
-    )
-
-
-    shipAddrCity = colander.SchemaNode(
-        colander.String(),
-        title='City',
-        description='',
-        validator=colander.Length(min=0, max=128),
-        widget=widget.TextInputWidget(),
-        preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
-        oid='shipAddrCity'
-    )
-
-    shipAddrState = colander.SchemaNode(
-        colander.String(),
-        title='State / Province / Region',
-        description='',
-        validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(),
-        preparer=[strip_whitespace, remove_multiple_spaces, sanitize],
-        oid='shipAddrCity'
-    )
-
-    shipAddrPostCode = colander.SchemaNode(
-        colander.String(),
-        title='Postal Code / Zip',
-        description='',
-        validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(),
-        preparer=[htmllaundry.sanitize],
-        oid='shipAddr'
-    )
-
-    shipAddrCountry = colander.SchemaNode(
-        colander.String(),
-        title='',
-        description='',
-        validator=colander.Length(min=0, max=64),
-        widget=deferred_country_widget,
-        preparer=[strip_whitespace, remove_multiple_spaces],
-        oid='shipAddrCountry',
-    )
+    #
+    # shipAddrSame = colander.SchemaNode(
+    #     colander.Bool(),
+    #     title='Shipping Address',
+    #     description='click if this is the same as above',
+    #     widget=widget.CheckboxWidget(),
+    #     oid='shipAddrSame'
+    # )
+    #
+    # shipAddr = colander.SchemaNode(
+    #     colander.String(),
+    #     missing=None,
+    #     title='Address',
+    #     description='Your shipping address - in case we need to send you a physical VPN token.',
+    #     validator=colander.Length(min=0, max=128),
+    #     widget=widget.TextInputWidget(),
+    #     preparer=[strip_whitespace, htmllaundry.sanitize],
+    #     oid='shipAddr'
+    # )
+    #
+    #
+    # shipAddrCity = colander.SchemaNode(
+    #     colander.String(),
+    #     title='City',
+    #     description='',
+    #     validator=colander.Length(min=0, max=128),
+    #     widget=widget.TextInputWidget(),
+    #     preparer=[strip_whitespace, remove_multiple_spaces,
+    #               htmllaundry.sanitize],
+    #     oid='shipAddrCity'
+    # )
+    #
+    # shipAddrState = colander.SchemaNode(
+    #     colander.String(),
+    #     title='State / Province / Region',
+    #     description='',
+    #     validator=colander.Length(min=0, max=64),
+    #     widget=widget.TextInputWidget(),
+    #     preparer=[strip_whitespace, remove_multiple_spaces, sanitize],
+    #     oid='shipAddrCity'
+    # )
+    #
+    # shipAddrPostCode = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Postal Code / Zip',
+    #     description='',
+    #     validator=colander.Length(min=0, max=64),
+    #     widget=widget.TextInputWidget(),
+    #     preparer=[htmllaundry.sanitize],
+    #     oid='shipAddr'
+    # )
+    #
+    # shipAddrCountry = colander.SchemaNode(
+    #     colander.String(),
+    #     title='',
+    #     description='',
+    #     validator=colander.Length(min=0, max=64),
+    #     widget=deferred_country_widget,
+    #     preparer=[strip_whitespace, remove_multiple_spaces],
+    #     oid='shipAddrCountry',
+    # )
     #
     # position = colander.SchemaNode(
     #     colander.String(),
