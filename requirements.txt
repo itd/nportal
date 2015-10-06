@@ -1,13 +1,14 @@
 Chameleon==2.22
 colander==1.0
--e git+https://github.com/Pylons/deform.git#egg=deform-master
+-e git+https://github.com/Pylons/deform.git@#egg=deform-master
+deform-bootstrap==0.2.9
 htmllaundry==2.0
 iso8601==0.1.10
 ldap3==0.9.8.7
 lxml==3.4.4
 Mako==1.0.1
 MarkupSafe==0.23
-#-e git+git@github.nrel.gov:hpc/nportal.git#egg=nportal-origin_master
+#-e git+git@github.nrel.gov:hpc/nportal.git@#egg=nportal-itd_master
 PasteDeploy==1.5.2
 peppercorn==0.5
 psycopg2==2.6.1
