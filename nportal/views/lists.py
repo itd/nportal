@@ -2,7 +2,21 @@
 
 # ISO 3166-1 alpha-3 three-letter country codes
 # ref: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+cou_policy = [
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s Conditions of Use policies.')
+]
+
+stor_policy = [
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s storage policies.')
+]
+
+cyber_policy = [
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s Cyber Policies.')
+]
+
+
 country_codes = [
+    (None, ' -- select one --' ),
     ('AFG', 'Afghanistan'),
     ('ALB', 'Albania'),
     ('DZA', 'Algeria'),
@@ -596,3 +610,13 @@ XXX_country_codes = [
     ("ZMB", "Zambia"),
     ("ZWE", "Zimbabwe")
     ]
+
+employer_types = [
+    ('doe', 'DOE, DOE Contractor, or DOE-operated Laboratory'),
+    ('usgov', 'U.S. Government - not DOE'),
+    ('usuni', 'U.S. University'),
+    ('usind', 'U.S. Industry'),
+    ('foreign', 'Non-U.S. Busines, Government, or entity'),
+    ('other', 'Other'),
+]
+

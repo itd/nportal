@@ -43,26 +43,27 @@
           <form>
 
             <fieldset class="r-policy">
-              <h3>Policy Acceptance</h3>
-
-              <div class="checkbox" tal:define="field form['cou'];">
-                <label for="cou">
-                   ${structure:field.serialize()} Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
-                <span class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of Computing Acceptable Use Policy.</span>
+              <legend>Policy Acceptance</legend>
+              <p>You must agree to the following terms and conditions for your account application to be considered:</p>
+              <div class="form-group" tal:define="field form['cou'];">
+                <label for="cou">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of the <a href="#">ESIF HPC Conditions of Use Policy</a>.</p>
               </div>
 
-              <div class="checkbox" tal:define="field form['stor'];">
-
-                <label for="stor">
-                 ${structure:field.serialize()} Storage Policy <span class="req" tal:condition="field.required">*</span></label>
-                <span class="help-block">By submitting this application, I agree that I have read and will abide by the Storage Policy.</span>
+              <div class="form-group" tal:define="field form['stor'];">
+                <label for="cou">Storage Policy<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Storage Policies</a>.</p>
               </div>
 
-              <div class="checkbox" tal:define="field form['cyber'];">
-                <label for="cyber">
-                  ${structure:field.serialize()} Cyber Security<span class="req" tal:condition="field.required">*</span></label>
-                <span class="help-block">By submitting this application, I agree that I have read and will abide by the Cyber Security Training Document.</span>
+              <div class="form-group" tal:define="field form['cyber'];">
+                <label for="cou">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class="help-block">By submitting this application, I agree that I have read and will abide by all current and future versions of the <a href="#">ESIF HPC Cyber Security Policy Documents</a>.</p>
               </div>
+
+
             </fieldset>
 
 
@@ -189,117 +190,64 @@
             -->
 
 
-
-
-
-
-            <fieldset class="r-employ">
+            <fieldset class="employ">
               <legend>Employment/Institution Information</legend>
 
-              <div class="form-group">
-                <label for="employerType">Employer Type</label>
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType1" value="doe"> DOE
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType2" value="usgovernment"> U.S. Government (Not DOE)
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType3" value="usuniversity"> U.S. University
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType3" value="usindustry"> U.S. Industry
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType4" value="foreign"> Foreign / Non-U.S. entity
-                <br>
-                <input type="radio" name="employerType" class="" id="employerType5" value="other"> Other
+              <div class="form-group" tal:define="field form['employerType'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                <p class="help-block">${field.description}</p>
+                ${structure:field.serialize()}
               </div>
 
-              <div class="form-group">
-                <label for="employerName">Employer Name</label>
-                <input type="text" class="form-control" id="employerName" placeholder="Employer Name">
-              </div>
-              <div class="form-group">
-                <label for="employerAddress">Employer Address</label>
-                <textarea class="form-control" rows="4" id="employerAddress" placeholder=""></textarea>
-              </div>
-
-
-            </fieldset>
-
-            <fieldset class="r-ship">
-              <legend>Shipping information</legend>
-              <div class="checkbox">
-                <label for="shipAddrSame">
-                  <input type="checkbox" class="checkbox-inline" id="shipAddrSame" /> Shipping Address</label>
-
-                <span id="helpBlock" class="help-block">If different from the address above</span>
-              </div>
-
-              <div class="form-group">
-                <label for="shipAddress">Shipping Address</label>
-                <textarea class="form-control" rows="4" id="shippingAddress" placeholder="if we need to send you a token"></textarea>
+              <div class="form-group" tal:define="field form['employerName'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
               </div>
 
             </fieldset>
 
-            <fieldset class="r-citizen">
+
+            <fieldset class="citizen-data">
               <legend>Citizenship Status</legend>
               <p>Please detail your citizenship status, domestic and foreign.</p>
 
-              <div class="radio">
-                <label for="citizenType">Select one of the following options that best describes your U.S. citizenship status</label>
-                <br>
-                <label for="us_citizen">
-                  <input type="radio" name="citizenType" id="citizenType1" value="us_citizen"> U.S. Citizen</label>
-                <!--?<br><label for="us_multiple"><input type="radio" name="citizenType" id="citizenType2" value="us_multiple"> U.S. Citizen with Multiple Citizenship</label>-->
-                <br>
-                <label for="lpr">
-                  <input type="radio" name="citizenType" id="citizenType3" value="lpr"> Lawful Permanent Resident (LPR)</label>
-                <br>
-                <label for="non_us">
-                  <input type="radio" name="citizenType" id="citizenType3" value="non_us"> No form of U.S. Citizenship status</label>
-                <!--?<br><label for="other"><input type="radio" name="citizenType" id="citizenType4" value="other"> Other</label>-->
-              </div>
-              <!--?<div class="form-group">-->
-              <!--?<label for="citizenTypeOther">Other</label>-->
-              <!--?<input type="text" class="form-control" id="email" placeholder="IF not a U.S. citizen, other, please describe">-->
-              <!--?</div>-->
 
-
-              <div class="form-group">
-                <label for="citizenOf">If you have "Lawful Permanent Resident" status or are a non-U.S. citizen, please select your citizenship(s) below:</label>
-                <select multiple class="form-control" id="citizenOf">
-                  <option>Country 1</option>
-                  <option>Country 2</option>
-                  <option>Country 3</option>
-                  <option>Country 4</option>
-                  <option>Country 5</option>
-                </select>
+              <div class="form-group" tal:define="field form['citizenStatus'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                <p class="help-block">${field.description}</p>
+                ${structure:field.serialize()}
               </div>
+
+              <div class="form-group" tal:define="field form['citizenOf'];">
+
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                <p class='help-block'>${field.description}</p>
+                ${structure:field.serialize()}
+              </div>
+
 
             </fieldset>
 
             <fieldset class="r-account">
               <legend>Account Information</legend>
 
-              <div class="checkbox">
-                <label for="nrelExistingAccount">
-                  <input type="checkbox" class="checkbox-inline" id="nrelExistingAccount" /> I have an HPC account at NREL</label>
-                <span class="help-block">If you have, or have previously used, an NREL HPC account, check this.</span>
+
+              <div class="form-group" tal:define="field form['nrelExistingAccount'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class='help-block'>${field.description}</p>
               </div>
 
-              <div class="form-group">
-                <label for="nrelUserID">NREL UserID</label>
-                <input type="text" class="form-control" id="nrelUserID" placeholder="example: juser" />
-                <span class="help-block">If you have, or have previously had, and NREL userid, please enter it here.</span>
+              <div class="form-group" tal:define="field form['nrelUserID'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class='help-block'>${field.description}</p>
               </div>
-              <div class="form-group">
-                <label for="preferredUID">Preferred UserID</label>
-                <input type="text" class="form-control" id="preferredUID" placeholder="example: jsmythe" />
-                <span class="help-block">If you've never had an NREL account or userid, please tell us what you'd like to use for a login userID.</span>
-              </div>
-              <div class="form-group">
-                <label for="comments">Comments / Notes</label>
-                <textarea class="form-control" id="comments" placeholder=""></textarea>
-                <span class="help-block">If there you think we need any additional information to set up your request, please let us know.</span>
+
+              <div class="form-group" tal:define="field form['preferredUID'];">
+                <label for=${field}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                ${structure:field.serialize()}
+                <p class='help-block'>${field.description}</p>
               </div>
 
             </fieldset>

@@ -39,7 +39,10 @@ from schemas import AddAccountSchema
 
 from .lists import (us_states,
                     country_codes,
-                    title_prefixes)
+                    title_prefixes,
+                    cou_policy,
+                    stor_policy,
+                    cyber_policy)
 
 
 class AccountRequestView(object):
