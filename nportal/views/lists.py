@@ -16,7 +16,7 @@ cyber_policy = [
 
 
 country_codes = [
-    (None, ' -- select one --' ),
+    (None, ' -- select --' ),
     ('AFG', 'Afghanistan'),
     ('ALB', 'Albania'),
     ('DZA', 'Algeria'),
