@@ -304,7 +304,7 @@ class AddAccountSchema(colander.MappingSchema):
     citizenOf = colander.SchemaNode(
         colander.Set(),
         title='Citizen of',
-        description='Please select your citizenship(s) '
+        description='Please select your country(s) of citizenship '
         'from the following list',
         validator=colander.ContainsOnly([x[0] for x in country_codes]),
         widget=widget.Select2Widget(
@@ -327,7 +327,7 @@ class AddAccountSchema(colander.MappingSchema):
     nrelUserID = colander.SchemaNode(
         colander.String(),
         title='Existing NREL UserID?',
-        description='If you have --or have previously had-- an NREL userid, '
+        description='If you have --or have previously had-- an NREL UserID, '
                     'please enter it here.',
         validator=colander.Length(min=1, max=16),
         widget=widget.TextInputWidget(placeholder='example: jsmythe'),
@@ -340,8 +340,8 @@ class AddAccountSchema(colander.MappingSchema):
     preferredUID = colander.SchemaNode(
         colander.String(),
         title='Preferred UserID',
-        description="If you've never had an NREL account or userid, please "
-                    "tell us what you'd like to use for a login userID.",
+        description="If you've never had an NREL account or UserID, please "
+                    "tell us what you'd like to use for a login UserID.",
         validator=colander.Length(min=1, max=16),
         widget=widget.TextInputWidget(placeholder="example: jsmythe"),
         missing=unicode(''),
