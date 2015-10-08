@@ -29,9 +29,83 @@ h6 {
   margin-right: 0px;
 }
 
+.policyd {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.policy div.checkbox {
+  font-size: 115%;
+  font-weight: 800;
+}
+
 .regform fieldset {
   margin: 2em 0 0 0px;
 }
+
+.regform label {
+  margin: 0px 0px 0px 0px;
+}
+
+.regform .pnames label {
+  font-size: 85%;
+}
+
+.regform legend {
+  margin-bottom: 0.25em;
+}
+
+.regform #preferredUID {
+    max-width: 16em;
+}
+
+.regform .help-block {
+  margin: 0 0 0 0;
+}
+
+.regform .checkbox {
+  margin: 0 0 0 0;
+}
+
+
+.deform-seq-add:visited {
+   color: blue;
+}
+
+.deform-replaces {
+    float: left;
+}
+
+.deform-set-item {
+    padding: 1px;
+}
+
+form .required {
+    font-weight: bold;
+}
+
+form .required:after {
+    color: #e32;
+    content: '*';
+    display:inline;
+}
+
+/* ugh, terrible selector coming up */
+
+.hasDatepicker[readonly] {
+    cursor: pointer !important;
+}
+
+form .deform-readonly-text {
+    font-style: italic;
+}
+
+
+
+
+
+
+
 
 @media (max-width: 1199px) {
 
@@ -42,3 +116,5 @@ h6 {
 @media (max-width: 767px) {
 
 }
+
+
