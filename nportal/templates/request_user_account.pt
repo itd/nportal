@@ -68,7 +68,7 @@
 
 
             <fieldset class="r-personal">
-              <legend>Personel Information</legend>
+              <legend>Personal Information</legend>
 
               <div class="form-group" tal:define="field form['titlePrefix'];">
                 <label for="titlePrefix">Title / Prefix: </label>
@@ -100,10 +100,12 @@
                 ${structure:field.serialize()}
               </div>
 
+<!--?
               <div class="form-group" tal:define="field form['suffix'];">
                 <label for=${field.name}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
               </div>
+-->
 
             </fieldset>
 
@@ -232,33 +234,32 @@
             </fieldset>
 
             <fieldset class="r-account">
-              <legend>NREL/ESIF HPC Request Account Information</legend>
+              <legend>NREL/ESIF HPC Account Information</legend>
 
-              <!--!
+
               <div class="form-group" tal:define="field form['nrelExistingAccount'];">
                 <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
                 <p class='help-block'>${field.description}</p>
               </div>
-              -->
 
-              <div class="row">
-                <div class="col-md-6">
+
+              <!--!
                   <div class="form-group" tal:define="field form['nrelUserID'];">
                     <label for=${field.name}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
                     ${structure:field.serialize()}
                     <p class='help-block'>${field.description}</p>
                   </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group" tal:define="field form['preferredUID'];">
-                    <label for=${field.name}>${field.title}<span class="req" tal:condition="field
-                         .required">*</span></label>
-                    ${structure:field.serialize()}
-                    <p class='help-block'>${field.description}</p>
-                  </div>
-                </div>
+
+                -->
+
+              <div class="form-group" tal:define="field form['preferredUID'];">
+                <label for=${field.name}>${field.title}<span class="req" tal:condition="field
+                     .required">*</span></label>
+                ${structure:field.serialize()}
+                <p class='help-block'>${field.description}</p>
               </div>
+
 
               <div class="form-group" tal:define="field form['justification'];">
                 <label for=${field.name}>${field.title}<span class="req" tal:condition="field.required">*</span></label>
