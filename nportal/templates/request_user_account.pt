@@ -49,18 +49,33 @@
               <p>You must agree to the following terms and conditions for your account application to be considered:</p>
 
               <div class="form-group" tal:define="field form['cou'];">
+                 <ul tal:condition="field.error">
+                  <li tal:repeat="error field.error.messages()">
+                  ${structure:error}
+                  </li>
+                </ul>
                 <label for="${field.name}">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Conditions of Use Policy</a>.</p>
                 ${structure:field.serialize()}
               </div>
 
               <div class="form-group" tal:define="field form['stor'];">
+                 <ul tal:condition="field.error">
+                  <li tal:repeat="error field.error.messages()">
+                  ${structure:error}
+                  </li>
+                </ul>
                 <label for="cou">Storage Policy<span class="req" tal:condition="field.required">*</span></label>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Storage Policies</a>.</p>
                 ${structure:field.serialize()}
               </div>
 
               <div class="form-group" tal:define="field form['cyber'];">
+                 <ul tal:condition="field.error">
+                  <li tal:repeat="error field.error.messages()">
+                  ${structure:error}
+                  </li>
+                </ul>
                 <label for="cou">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Cyber Security Policy</a>.</p>
                 ${structure:field.serialize()}
@@ -74,6 +89,11 @@
               <p>You must use your legally recognized name information in the fields below.</p>
 
               <div class="form-group" tal:define="field form['titlePrefix'];">
+                 <ul tal:condition="field.error">
+                  <li tal:repeat="error field.error.messages()">
+                  ${structure:error}
+                  </li>
+                </ul>
                 <label for="${field.name}">${field.title}</label>
                 ${structure:field.serialize()}
               </div>
@@ -81,6 +101,11 @@
               <div class="row pnames">
                 <div class="col-md-3">
                   <div class="form-group" tal:define="field form['givenName'];">
+                 <ul tal:condition="field.error">
+                  <li tal:repeat="error field.error.messages()">
+                  ${structure:error}
+                  </li>
+                </ul>
                     <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                      ${structure:field.serialize()}
                   </div>
@@ -234,7 +259,7 @@
 
 
 
-            <button type="submit" class="btn btn-default">Submit Registration Request</button>
+            <button type="submit" class="btn btn-default" value="submit">Submit Registration Request</button>
 
 
           </form>

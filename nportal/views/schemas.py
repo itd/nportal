@@ -2,10 +2,13 @@ import deform
 import deform.widget
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
-import htmllaundry
+# import htmllaundry
 from htmllaundry import sanitize
 
-from validators import (cyber_validator, phone_validator)
+from validators import (cyber_validator,
+                        phone_validator,
+                        stor_validator,
+                        cou_validator)
 
 from nportal.views import (strip_whitespace,
                            remove_multiple_spaces,
@@ -27,15 +30,18 @@ def deferred_country_widget(node, kw):
     country_codes_data = kw.get('country_codes_data', [])
     return widget.Select2Widget(values=country_codes_data)
 
+
 @colander.deferred
 def deferred_state_widget(node, kw):
     us_states_data = kw.get('us_states_data', [])
     return widget.Select2Widget(values=us_states_data)
 
+
 @colander.deferred
 def deferred_title_prefix_widget(node, kw):
     title_prefix_data = kw.get('title_prefix_data', [])
     return widget.Select2Widget(values=title_prefix_data)
+
 
 email_confirm_widget = deform.widget.CheckedInputWidget(
             subject='Email',
@@ -45,18 +51,15 @@ email_confirm_widget = deform.widget.CheckedInputWidget(
 sn_widget = widget.TextInputWidget(
             css_class='form-control')
 
-class AddAccountSchema(colander.MappingSchema):
-    page_title = colander.SchemaNode(colander.String())
-    body = colander.SchemaNode(
-        colander.String(),
-        widget=deform.widget.RichTextWidget()
-    )
 
+class AddAccountSchema(colander.MappingSchema):
+    # couTimestamp
     cou = colander.SchemaNode(
         colander.Boolean(),
         title='COU Acceptance',
         description='Check this if you have read and agree '
                     'to the cyber security policies.',
+        validator=cou_validator,
         widget=deform.widget.CheckboxChoiceWidget(values=cou_policy),
         oid='cou'
     )
@@ -68,6 +71,7 @@ class AddAccountSchema(colander.MappingSchema):
         description='Check this if you have read and agree '
                     'to the Center\'s storage policies.',
         widget=deform.widget.CheckboxChoiceWidget(values=stor_policy),
+        validator=stor_validator,
         oid='stor'
     )
     #   cybeTimestamp
@@ -87,8 +91,7 @@ class AddAccountSchema(colander.MappingSchema):
         description='If you prefer to use n honorary, enter it here.',
         # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
         validator=colander.Length(min=1, max=64),
-        preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+        preparer=[strip_whitespace, remove_multiple_spaces, sanitize],
         widget=widget.TextInputWidget(placeholder="Dr., Mr., Ms., etc."),
         missing=unicode(''),
         oid='titlePrefix'
@@ -101,8 +104,7 @@ class AddAccountSchema(colander.MappingSchema):
     #     validator=colander.Length(min=0, max=128),
     #     widget=widget.TextInputWidget(placeholder="ex.: Sr. Scientist"),
     #     missing=unicode(''),
-    #     preparer=[strip_whitespace, remove_multiple_spaces,
-    #               htmllaundry.sanitize],
+    #     preparer=[strip_whitespace, remove_multiple_spaces, sanitize],
     #     oid='userTitle'
     # )
 
@@ -113,7 +115,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=1, max=64),
         widget=widget.TextInputWidget(placeholder=''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='givenName'
     )
 
@@ -126,7 +128,7 @@ class AddAccountSchema(colander.MappingSchema):
             placeholder=''),
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='middleName'
     )
 
@@ -138,7 +140,7 @@ class AddAccountSchema(colander.MappingSchema):
         widget=widget.TextInputWidget(
             placeholder=''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='sn'
     )
 
@@ -150,7 +152,7 @@ class AddAccountSchema(colander.MappingSchema):
         widget=widget.TextInputWidget(placeholder='exaple: RHCE, PhD, etc.'),
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='suffix'
     )
 
@@ -163,7 +165,7 @@ class AddAccountSchema(colander.MappingSchema):
             placeholder='How you want to be addressed: Pat Marlinski'),
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='cn'
     )
 
@@ -174,7 +176,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=0, max=200),
         widget=widget.TextInputWidget(placeholder='example: 123 Noe Way'),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='street'
     )
 
@@ -185,7 +187,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=1, max=128),
         widget=widget.TextInputWidget(),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='l'
     )
 
@@ -196,7 +198,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=1, max=128),
         widget=widget.TextInputWidget(),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='l'
     )
 
@@ -207,7 +209,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=0, max=64),
         widget=widget.TextInputWidget(),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='postalCode'
     )
 
@@ -224,8 +226,7 @@ class AddAccountSchema(colander.MappingSchema):
         title='EMail',
         description='Your primary email account',
         validator=colander.Email(msg="Please provide a valid Email address"),
-        preparer=[rm_spaces, htmllaundry.sanitize,
-                  htmllaundry.sanitize],
+        preparer=[rm_spaces, sanitize],
         widget=email_confirm_widget,
         oid='mail'
     )
@@ -234,7 +235,7 @@ class AddAccountSchema(colander.MappingSchema):
         title='Phone number',
         description='Please provide your primary telephone number',
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         validator=phone_validator,
         widget=widget.TextInputWidget(
             placeholder='ex: 000-000-0000'),
@@ -248,7 +249,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=phone_validator,
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
                 widget=widget.TextInputWidget(
             placeholder='ex +1-000-000-0000'),
         oid='cell'
@@ -279,7 +280,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=0, max=128),
         widget=widget.TextInputWidget(placeholder='employer/institution name here'),
         preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
+                  sanitize],
         oid='employerName'
     )
 
@@ -332,7 +333,7 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=1, max=16),
         widget=widget.TextInputWidget(placeholder='example: jsmythe'),
         missing=unicode(''),
-        preparer=[htmllaundry.sanitize, strip_whitespace],
+        preparer=[sanitize, strip_whitespace],
         oid='nrelUserID'
     )
 
@@ -348,15 +349,15 @@ class AddAccountSchema(colander.MappingSchema):
         validator=colander.Length(min=3, max=16),
         widget=widget.TextInputWidget(placeholder="example: jsmythe"),
         missing=unicode(''),
-        preparer=[htmllaundry.sanitize, strip_whitespace],
+        preparer=[sanitize, strip_whitespace],
         oid='preferredUID'
     )
 
     justification = colander.SchemaNode(
         colander.String(),
         title='Account Request Justification',
-        widget=deform.widget.TextAreaWidget(rows=6, columns=60),
-        preparer=[htmllaundry.sanitize],
+        widget=widget.TextAreaWidget(rows=6, columns=60),
+        preparer=[sanitize],
         validator=colander.Length(max=1000),
         description='Briefly describe how you plan to use the '
                     'ESIF HPC Resources. Include relevant '
@@ -372,7 +373,7 @@ class AddAccountSchema(colander.MappingSchema):
                 'information to process or approve your request, '
                 'please let us know.'),
         missing=unicode(''),
-        preparer=[htmllaundry.sanitize],
+        preparer=[sanitize],
         validator=colander.Length(max=1000),
         description='If you think we need any additional '
                 'information to process or approve your request, '

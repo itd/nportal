@@ -57,6 +57,9 @@ class AccountRequestView(object):
                     submitted='submit',
                     success=None, readonly=False):
         captured = None
+
+        import pdb; pdb.set_trace()
+
         if submitted in self.request.POST:
             # the request represents a form submission
             controls = self.request.POST.items()
@@ -67,6 +70,7 @@ class AccountRequestView(object):
                     response = success()
                     if response is not None:
                         return response
+
                 self.title = 'Form data accepted'
 
                 _add_new_user_request(captured)
@@ -80,7 +84,7 @@ class AccountRequestView(object):
             # Data should be added by now.
             # Send the user's browser to the detailed view.
             view_url = self.request.route_url('request_received_view',
-                                              fname=captured['fname'])
+                                              fname=captured['givenName'])
             return HTTPFound(view_url)
         else:
             return self.add_new_user_account()
@@ -121,7 +125,6 @@ class AccountRequestView(object):
                     action=self.request.route_url('request_user_account')
                     )
 
-        #import pdb; pdb.set_trace()
         return dict(form=form)
 
 

@@ -14,7 +14,8 @@ def phone_validator(node, value):
 
 def cyber_validator(node, value):
     if not value:
-        raise colander.Invalid(node, 'You must agree to the Cyber Policies')
+        raise colander.Invalid(node,
+            'You must agree to the Cyber Policies')
 
 
 def cou_validator(node, value):
@@ -26,4 +27,4 @@ def cou_validator(node, value):
 def stor_validator(node, value):
     if not value:
         raise colander.Invalid(node,
-                               'You must agree to the HPC Storage Policies')
+            'You must agree to the HPC Storage Policies')
