@@ -1,4 +1,4 @@
-  # -*- coding: UTF8 -*-
+# -*- coding: UTF8 -*-
 
 # ISO 3166-1 alpha-3 three-letter country codes
 # ref: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
@@ -17,6 +17,7 @@ cyber_policy = [
 
 country_codes = [
     (None, ' -- select --' ),
+    ('USA', 'United States'),
     ('AFG', 'Afghanistan'),
     ('ALB', 'Albania'),
     ('DZA', 'Algeria'),
