@@ -39,7 +39,7 @@ def deferred_title_prefix_widget(node, kw):
 
 email_confirm_widget = deform.widget.CheckedInputWidget(
             subject='Email',
-            confirm_subject='Confirm Email',
+            confirm_subject='Confirm your Email',
             )
 
 sn_widget = widget.TextInputWidget(
@@ -83,8 +83,8 @@ class AddAccountSchema(colander.MappingSchema):
 
     titlePrefix = colander.SchemaNode(
         colander.String(),
-        title='Title/Prefix:',
-        description='If you prefer to use a title, enter it here.',
+        title='Hornorary',
+        description='If you prefer to use n honorary, enter it here.',
         # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
         validator=colander.Length(min=1, max=64),
         preparer=[strip_whitespace, remove_multiple_spaces,
@@ -94,52 +94,52 @@ class AddAccountSchema(colander.MappingSchema):
         oid='titlePrefix'
     )
 
-    userTitle = colander.SchemaNode(
-        colander.String(),
-        title='Title',
-        description='A title you may currently use',
-        validator=colander.Length(min=0, max=128),
-        widget=widget.TextInputWidget(placeholder="ex.: Sr. Scientist"),
-        missing=unicode(''),
-        preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
-        oid='userTitle'
-    )
+    # userTitle = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Title',
+    #     description='A title you may currently use',
+    #     validator=colander.Length(min=0, max=128),
+    #     widget=widget.TextInputWidget(placeholder="ex.: Sr. Scientist"),
+    #     missing=unicode(''),
+    #     preparer=[strip_whitespace, remove_multiple_spaces,
+    #               htmllaundry.sanitize],
+    #     oid='userTitle'
+    # )
 
     givenName = colander.SchemaNode(
         colander.String(),
-        title='First Name/Given Name',
-        description='Your legal First Name.',
+        title='Given or first name',
+        description='Your given or first name',
         validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(placeholder='Your legal First Name.'),
+        widget=widget.TextInputWidget(placeholder=''),
         preparer=[strip_whitespace, remove_multiple_spaces,
                   htmllaundry.sanitize],
         oid='givenName'
     )
 
-    sn = colander.SchemaNode(
-        colander.String(),
-        title='Last Name',
-        description='Your legal family name or last name.',
-        validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(
-            placeholder='Your legal family name or last name.'),
-        preparer=[strip_whitespace, remove_multiple_spaces,
-                  htmllaundry.sanitize],
-        oid='sn'
-    )
-
     middleName = colander.SchemaNode(
         colander.String(),
-        title='Middle Name',
-        description='Your legal middle name if applicable.',
+        title='Middle name/initial',
+        description='Middle name or initial',
         validator=colander.Length(min=0, max=64),
         widget=widget.TextInputWidget(
-            placeholder='Your legal middle name if applicable.'),
+            placeholder=''),
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
                   htmllaundry.sanitize],
         oid='middleName'
+    )
+
+    sn = colander.SchemaNode(
+        colander.String(),
+        title='Family / Last Name',
+        description='family Name / Last Name',
+        validator=colander.Length(min=1, max=64),
+        widget=widget.TextInputWidget(
+            placeholder=''),
+        preparer=[strip_whitespace, remove_multiple_spaces,
+                  htmllaundry.sanitize],
+        oid='sn'
     )
 
     suffix = colander.SchemaNode(
@@ -172,7 +172,7 @@ class AddAccountSchema(colander.MappingSchema):
         title='Street Address',
         description='',
         validator=colander.Length(min=0, max=200),
-        widget=widget.TextAreaWidget(placeholder='example: 123 Noe Way'),
+        widget=widget.TextInputWidget(placeholder='example: 123 Noe Way'),
         preparer=[strip_whitespace, remove_multiple_spaces,
                   htmllaundry.sanitize],
         oid='street'
@@ -215,7 +215,7 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='Country',
         description='',
-        widget=widget.Select2Widget(values=country_codes),
+        widget=widget.SelectWidget(values=country_codes),
         oid='country'
     )
 
@@ -231,26 +231,26 @@ class AddAccountSchema(colander.MappingSchema):
     )
     phone = colander.SchemaNode(
         colander.String(),
-        title='Telephone',
+        title='Phone number',
         description='Please provide your primary telephone number',
         preparer=[strip_whitespace, remove_multiple_spaces,
                   htmllaundry.sanitize],
         validator=phone_validator,
         widget=widget.TextInputWidget(
-            placeholder='Please provide your primary telephone number'),
+            placeholder='ex: 000-000-0000'),
         oid='phone'
     )
 
     cell = colander.SchemaNode(
         colander.String(),
-        title='Cell',
-        description='We will use your cell phone number for verification',
+        title='Cell phone number',
+        description='For contact and verification',
         validator=phone_validator,
         missing=unicode(''),
         preparer=[strip_whitespace, remove_multiple_spaces,
                   htmllaundry.sanitize],
                 widget=widget.TextInputWidget(
-            placeholder='for verification and contact'),
+            placeholder='ex +1-000-000-0000'),
         oid='cell'
     )
 
@@ -304,12 +304,12 @@ class AddAccountSchema(colander.MappingSchema):
     citizenOf = colander.SchemaNode(
         colander.Set(),
         title='Citizen of',
-        description='Please select your country(s) of citizenship '
-        'from the following list',
+        description='Please enter your country(s) of citizenship',
         validator=colander.ContainsOnly([x[0] for x in country_codes]),
         widget=widget.Select2Widget(
             values=country_codes,
-            multiple=True),
+            multiple=True,
+            ),
         oid='citizenOf',
     )
 
@@ -339,10 +339,13 @@ class AddAccountSchema(colander.MappingSchema):
     #   preferredUID
     preferredUID = colander.SchemaNode(
         colander.String(),
-        title='Preferred UserID',
-        description="If you've never had an NREL account or UserID, please "
-                    "tell us what you'd like to use for a login UserID.",
-        validator=colander.Length(min=1, max=16),
+        title='UserID',
+        description="If you have -or have previously been given- "
+                    "an NREL account or UserID, enter that ID. "
+                    "If you've never had an NREL account, "
+                    "tell us what you'd like to use for a login UserID"
+                    "(3 to 16 characters, all lower case.)",
+        validator=colander.Length(min=3, max=16),
         widget=widget.TextInputWidget(placeholder="example: jsmythe"),
         missing=unicode(''),
         preparer=[htmllaundry.sanitize, strip_whitespace],
@@ -351,14 +354,13 @@ class AddAccountSchema(colander.MappingSchema):
 
     justification = colander.SchemaNode(
         colander.String(),
-        title='Business Justification',
+        title='Account Request Justification',
         widget=deform.widget.TextAreaWidget(rows=6, columns=60),
         preparer=[htmllaundry.sanitize],
         validator=colander.Length(max=1000),
-        description='Please describe how you plan to use the '
-                    'ESIF HPC Resources. Include details such as '
-                    'project names, project collabators, and how long '
-                    'you expect to need access.',
+        description='Briefly describe how you plan to use the '
+                    'ESIF HPC Resources. Include relevant '
+                    'project names and contacts if available.',
         oid='comments'
     )
 
