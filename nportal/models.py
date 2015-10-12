@@ -70,7 +70,7 @@ class UserAccountModel(Base):
 
     comments = Column(Text)   ##
 
-    subtimestamp = Column(DateTime, nullable=False)
+    subTimestamp = Column(DateTime, nullable=False)
     couTimestamp = Column(DateTime, nullable=True)
     storTimestamp = Column(DateTime, nullable=True)
     cyberTimestamp = Column(DateTime, nullable=True)

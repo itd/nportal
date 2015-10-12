@@ -20,7 +20,7 @@
         <!--?${structure:field.description}-->
       <!--?</div>-->
       <!--?<ul tal:condition="field.error">-->
-        <!--?<li tal:repeat="error field.error.messages()"> ${structure:error}-->
+        <!--?<li tal:repeat="error field.error.messages()"> ${error}-->
         <!--?</li>-->
       <!--?</ul>-->
 
@@ -40,7 +40,7 @@
           </p>
 
 
-          <form action="${form.action}" method="POST" id="${form.id}" accept-charset="utf-8" class="deform">
+          <form action="${form.action}" method="POST" id="${form.form_id}" accept-charset="utf-8" class="deform">
 
             <fieldset class="reg policy">
               <div class="policyd">
@@ -49,37 +49,27 @@
               <p>You must agree to the following terms and conditions for your account application to be considered:</p>
 
               <div class="form-group" tal:define="field form['cou'];">
-                 <ul tal:condition="field.error">
-                  <li tal:repeat="error field.error.messages()">
-                  ${structure:error}
-                  </li>
-                </ul>
+                 <p tal:condition="field.error" tal:repeat="error field.error.messages()">
+                  ${error}
+                </p>
                 <label for="${field.name}">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Conditions of Use Policy</a>.</p>
                 ${structure:field.serialize()}
               </div>
 
               <div class="form-group" tal:define="field form['stor'];">
-                 <ul tal:condition="field.error">
-                  <li tal:repeat="error field.error.messages()">
-                  ${structure:error}
-                  </li>
-                </ul>
                 <label for="cou">Storage Policy<span class="req" tal:condition="field.required">*</span></label>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Storage Policies</a>.</p>
                 ${structure:field.serialize()}
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
               </div>
 
               <div class="form-group" tal:define="field form['cyber'];">
-                 <ul tal:condition="field.error">
-                  <li tal:repeat="error field.error.messages()">
-                  ${structure:error}
-                  </li>
-                </ul>
                 <label for="cou">Acceptable Use Policy<span class="req" tal:condition="field.required">*</span></label>
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
                 <p class="help-block">By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC Cyber Security Policy</a>.</p>
                 ${structure:field.serialize()}
-              </div>
               </div>
             </fieldset>
 
@@ -89,37 +79,40 @@
               <p>You must use your legally recognized name information in the fields below.</p>
 
               <div class="form-group" tal:define="field form['titlePrefix'];">
-                 <ul tal:condition="field.error">
-                  <li tal:repeat="error field.error.messages()">
-                  ${structure:error}
-                  </li>
-                </ul>
-                <label for="${field.name}">${field.title}</label>
+                <div tal:switch="field.error">
+                <label tal:case="True" class="alert alert-danger" for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                <label tal:case="'default'" class="" for="${field.name}">${field.title}</label>
+                </div>
                 ${structure:field.serialize()}
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
               </div>
 
               <div class="row pnames">
+
                 <div class="col-md-3">
-                  <div class="form-group" tal:define="field form['givenName'];">
-                 <ul tal:condition="field.error">
-                  <li tal:repeat="error field.error.messages()">
-                  ${structure:error}
-                  </li>
-                </ul>
-                    <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
-                     ${structure:field.serialize()}
-                  </div>
+
+
+                  <tal:def tal:define="field form['givenName'];">
+                    <div class="form-group">
+                      <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
+                      ${structure:field.serialize()}
+                      <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                    </div>
+                  </tal:def>
                 </div>
+
                 <div class="col-md-3">
                   <div class="form-group" tal:define="field form['middleName'];">
                     <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                     ${structure:field.serialize()}
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group" tal:define="field form['sn'];">
                     <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                     ${structure:field.serialize()}
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
                   </div>
                 </div>
               </div>
@@ -127,17 +120,19 @@
               <div class="form-group" tal:define="field form['suffix'];">
                 <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
               </div>
 
               <div class="form-group" tal:define="field form['cn'];">
                 <label for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></label>
                 ${structure:field.serialize()}
+                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
               </div>
 
 
             </fieldset>
 
-
+<!--!
             <fieldset class="contact-info">
               <legend>Contact and Mailing Address Information</legend>
 
@@ -258,9 +253,9 @@
             </fieldset>
 
 
-
-
-            <button class="btn btn-default"
+-->
+            <!-- btn-default -->
+            <button class="radius btn button"
               id="request_account_submit" name="submit" type="submit"
               value="submit">Submit Registration Request</button>
 

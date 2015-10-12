@@ -2,6 +2,7 @@ from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 
 from sqlalchemy import engine_from_config
+from pyramid.session import SignedCookieSessionFactory
 
 from .models import (
     DBSession,
@@ -15,7 +16,12 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-    config = Configurator(settings=settings)
+
+    req_session_factory = SignedCookieSessionFactory('somerandomstringforthereq')
+
+    config = Configurator(settings=settings,
+                          session_factory=req_session_factory)
+
     config.include('pyramid_chameleon')
 
 
@@ -34,7 +40,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
     config.add_route('request_user_account', '/request_user_account')
-    config.add_route('request_received_view', '/request_received')
+    config.add_route('request_received_view', '/request_received_view')
 
     config.scan()
     return config.make_wsgi_app()

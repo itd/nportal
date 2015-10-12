@@ -4,7 +4,7 @@
     <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
 
     <div id="request_received_content">
-      <p>${fname}, your request was received and will be processed soon.</p>
+      <p>${givenName}, your request was received and will be processed soon.</p>
 
       <h2>What will happen next...</h2>
 

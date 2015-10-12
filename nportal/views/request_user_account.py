@@ -2,9 +2,15 @@ import os
 import datetime
 import string
 
+from zope.sqlalchemy import ZopeTransactionExtension
+from sqlalchemy.orm import (scoped_session, sessionmaker)
+
 # from pyramid.response import Response
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
+
+from pyramid.session import SignedCookieSessionFactory
+from pyramid.config import Configurator
 
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
@@ -17,16 +23,6 @@ from deform import (ZPTRendererFactory,
     # decorator, default_renderer, field, form,
 import colander
 from pkg_resources import resource_filename
-
-resource_registry = widget.ResourceRegistry()
-deform_templates = resource_filename('deform', 'templates')
-tpath = os.getcwd()
-search_path = (tpath + '/nportal/templates', deform_templates)
-
-drenderer = ZPTRendererFactory(search_path)
-# Form.set_zpt_renderer(search_path)
-# import htmllaundry
-# from htmllaundry import sanitize
 
 from nportal.models import (
     DBSession,
@@ -41,6 +37,26 @@ from .lists import (us_states,
                     cou_policy,
                     stor_policy,
                     cyber_policy)
+
+# sqlalchemy setup
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
+                                        expire_on_commit=False))
+sess = DBSession()
+
+# view flash session info
+req_session_factory = SignedCookieSessionFactory('itsaseekreet')
+config = Configurator()
+config.set_session_factory(req_session_factory)
+
+# deform retail form additions
+resource_registry = widget.ResourceRegistry()
+deform_templates = resource_filename('deform', 'templates')
+tpath = os.getcwd()
+search_path = (tpath + '/nportal/templates', deform_templates)
+drenderer = ZPTRendererFactory(search_path)
+# Form.set_zpt_renderer(search_path)
+# import htmllaundry
+# from htmllaundry import sanitize
 
 
 def site_layout():
@@ -71,39 +87,77 @@ class AccountRequestView(object):
     def reqts(self, request):
         return self.account_req_form.get_widget_resources()
 
-    @view_config(route_name='request_received_view',
-                 renderer='../templates/request_received.pt')
-    def request_received_view(self):
-        return {'title': 'request received',
-                'page_title': 'Account request submission received'}
-
     @view_config(route_name='request_user_account',
                  renderer='../templates/request_user_account.pt')
     def add_new_user_account(self):
+        ###
+
+        ###
+        # instantiate our colander schema
         schema = AddAccountSchema().bind(
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
         )
+        request = self.request
+        session = request.session
         Form.set_zpt_renderer(search_path)
+
+        # see if a user submitted the form
+        submitted = 'submit' in request.POST
+
+        # get the user email from the POST request, if present
+        user_email = request.POST.get('email', '')
+
+        # get the form control field names and values as a list of tuples
+        controls = request.POST.items()
+
+
+        # create a deform form object from the schema
+        # form = deform.Form(schema)
+
         form = Form(schema,
-                    action=self.request.route_url('request_user_account'),
-                    id='ESIF Account Registration'
+                    action=request.route_url('request_user_account'),
+                    form_id='deformRegform'
                     )
 
-        if 'submit' in self.request.POST:
+        if submitted:
             # it's a submission, process it
-            import pdb; pdb.set_trace()
             controls = self.request.POST.items()
+            captured = None
+            try:
+                # try to validate the submitted values
+                captured = form.validate(controls)
+                request.session.flash("It submitted! (not really)")
+                _add_new_user_request(captured, request)
+                # Send the user's browser to the detailed view.
+
+                #return HTTPFound(location=view_page)
+
+                # title="Success!!!",
+                # givenName=request.POST['givenName']
+                view_url = request.route_url('request_received_view',
+                                              givenName=controls['givenName'])
+                return HTTPFound(view_url)
+
+            except ValidationFailure as e:
+                # the submitted values could not be validated
+                return dict(form=form)
+
+        else:
+            # not submitted, render form
+            return dict(form=form)
 
 
+    @view_config(route_name='request_received_view',
+                 renderer='../templates/request_received.pt')
+    def request_received_view(self):
+        import pdb; pdb.set_trace()
+        return dict(title='Account request submission received')
+        # givenName: self.request.POST['givenName']
 
 
-        # not submitted, render form
-        return dict(form=form)
-
-
-def _add_new_user_request(appstruct):
+def _add_new_user_request(appstruct, request):
     ai = appstruct.items()
     ai = dict(ai)
 
@@ -112,54 +166,50 @@ def _add_new_user_request(appstruct):
     stor = None
     cyber = None
     if ai['cou']:
-        cou = now
+        couTimestamp = now
     if ai['stor']:
-        stor = now
+        storTimestamp = now
     if ai['cyber']:
-        cyber = now
+        cyberTimestamp = now
 
     # now = now.strftime('%y%m%d%H%M%S')
-    # pi = [sess.query(Users).filter(Users.pi == i) for i in ai['users']]
-    users = [DBSession().query(UserAccountModel
-                               ).filter(UserAccountModel.userid == i).one()
-             for i in ai['users']]
 
     submission = UserAccountModel(
-        cn=ai['allocid'],
         titlePrefix=ai['titlePrefix'],
-        givenName=ai['handleid'],
-        sn=ai['pi'],
-        middleName=ai['system'],
+        givenName=ai['givenName'],
+        middleName=ai['middleName'],
+        sn=ai['sn'],
         suffix=ai['suffix'],
+        cn=ai['cn'],
 
-        userTitle=ai['nodehours'],
-        street=ai['pspace'],
-        l=ai['mspace'],
-        st=ai['adgroup'],
-        postalCode=ai['postalCode'],
-        country=ai['country'],
-        mail=ai['mail'],
-        mailPreferred=ai['mailPreferred'],
-        phone=ai['phone'],
-        cell=ai['cell'],
-        phonePrimary=ai['phonePrimary'],
-        employerType=ai['employerType'],
-        employerName=ai['employerName'],
-        employerAddress=ai['employerAddress'],
-        shipAddrSame=ai['shipAddrSame'],
-        shipAddr=ai['shipAddr'],
-        citizenStatus=ai['citizenStatus'],
-        citizenOf=ai['citizenOf'],
-        nrelExistingAccount=ai['nrelExistingAccount'],
-        nrelUserID=ai['nrelUserID'],
-        preferredUID=ai['preferredUID'],
-        comments=ai['comments'],
+        # userTitle=ai['userTitle'],
+        # street=ai['street'],
+        # l=ai['l'],
+        # st=ai['st'],
+        # postalCode=ai['postalCode'],
+        # country=ai['country'],
+        # mail=ai['mail'],
+        # mailPreferred=ai['mailPreferred'],
+        # phone=ai['phone'],
+        # cell=ai['cell'],
+        # phonePrimary=ai['phonePrimary'],
+        # employerType=ai['employerType'],
+        # employerName=ai['employerName'],
+        # employerAddress=ai['employerAddress'],
+        # shipAddrSame=ai['shipAddrSame'],
+        # shipAddr=ai['shipAddr'],
+        # citizenStatus=ai['citizenStatus'],
+        # citizenOf=ai['citizenOf'],
+        # nrelExistingAccount=ai['nrelExistingAccount'],
+        # nrelUserID=ai['nrelUserID'],
+        # preferredUID=ai['preferredUID'],
+        # comments=ai['comments'],
+
         subTimestamp=now,
-        couTimestamp=cou,
-        storTimestamp=stor,
-        cyberTimestamp=cyber,
-    )
+        couTimestamp=couTimestamp,
+        storTimestamp=storTimestamp,
+        cyberTimestamp=cyberTimestamp
+        )
 
     # storagegrp=ai['storagegrp'],
     DBSession().add(submission)
-
