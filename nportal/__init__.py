@@ -24,7 +24,6 @@ def main(global_config, **settings):
 
     config.include('pyramid_chameleon')
 
-
     #config.add_route('login', '/login')
     #config.add_route('logout', '/logout')
 
@@ -40,7 +39,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
     config.add_route('request_user_account', '/request_user_account')
-    config.add_route('request_received_view', '/request_received_view')
+    config.add_route('request_received_view', '/request_received')
 
     config.scan()
     return config.make_wsgi_app()

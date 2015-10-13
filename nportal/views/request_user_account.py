@@ -7,13 +7,17 @@ from sqlalchemy.orm import (scoped_session, sessionmaker)
 
 # from pyramid.response import Response
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import (
+    HTTPMovedPermanently,
+    HTTPFound,
+    HTTPNotFound,
+    )
 
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.config import Configurator
 
 from pyramid.view import view_config
-from pyramid.renderers import get_renderer
+from pyramid.renderers import get_renderer, render, render_to_response
 # from sqlalchemy.exc import DBAPIError
 #import deform
 from deform import (ZPTRendererFactory,
@@ -63,6 +67,11 @@ def site_layout():
     renderer = get_renderer("../templates/_layout.pt")
     layout = renderer.implementation().macros['layout']
     return layout
+
+
+def add_base_template(event):
+    base = get_renderer('templates/_layout.pt').implementation()
+    event.update({'base': base})
 
 
 class AccountRequestView(object):
@@ -128,17 +137,21 @@ class AccountRequestView(object):
             try:
                 # try to validate the submitted values
                 captured = form.validate(controls)
-                request.session.flash("It submitted! (not really)")
+                # request.session.flash("It submitted! (not really)")
                 _add_new_user_request(captured, request)
-                # Send the user's browser to the detailed view.
 
-                #return HTTPFound(location=view_page)
+                title="Success!!!",
+                givenName=request.POST['givenName']
 
-                # title="Success!!!",
-                # givenName=request.POST['givenName']
+                #variables = dict(title=title, givenName=givenName)
                 view_url = request.route_url('request_received_view',
-                                              givenName=controls['givenName'])
-                return HTTPFound(view_url)
+                                             title=title,
+                                              givenName=givenName)
+
+                resp = HTTPMovedPermanently(location=view_url)
+                return resp
+                # self.request_received_view(dict(title=title,
+                #                                 givenName=givenName))
 
             except ValidationFailure as e:
                 # the submitted values could not be validated
@@ -149,12 +162,14 @@ class AccountRequestView(object):
             return dict(form=form)
 
 
+    # http://goo.gl/KnNbAK
     @view_config(route_name='request_received_view',
                  renderer='../templates/request_received.pt')
     def request_received_view(self):
+        givenName = self.request.POST['givenName']
+        title = 'It worked'
         import pdb; pdb.set_trace()
-        return dict(title='Account request submission received')
-        # givenName: self.request.POST['givenName']
+        return dict(title=title, givenName=givenName)
 
 
 def _add_new_user_request(appstruct, request):

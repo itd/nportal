@@ -1,23 +1,29 @@
-<div metal:use-macro="view.layout">
-  <div metal:fill-slot="content" class="main-content">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="base.macros['base']">
 
-    <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+<tal:block metal:fill-slot="content" class="main-content">
 
-    <div id="request_received_content">
-      <p>${givenName}, your request was received and will be processed soon.</p>
+  <tal:if tal:condition="title | nothing"><h1> </h1></tal:if>
 
-      <h2>What will happen next...</h2>
+  <div id="request_received_content">
 
-      <p>Expect to receive an email directing you to set up your remote access.</p>
+    <p> , your request was received and will be processed soon.</p>
 
-      <p>To gain remote access, you will need to set up a multi-factor toen. You can do this on your Android or Apple mobile device or tablet.</p>
-      <h3>While you are waiting...</h3>
-      <p>Please download one of the following applications to your IOS or Android device:</p>
-      <ul>
-        <li><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">FreeOTP Authenticator for Android Phones</a></li>
-        <li><a href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395">FreeOTP for iPhone</a></li>
-      </ul>
+    <h2>What will happen next...</h2>
 
-    </div>
+    <p>Expect to receive an email directing you to set up your remote access.</p>
+
+    <p>To gain remote access, you will need to set up a multi-factor toen. You can do this on your Android or Apple mobile device or tablet.</p>
+    <h3>While you are waiting...</h3>
+    <p>Please download one of the following applications to your IOS or Android device:</p>
+    <ul>
+      <li><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">FreeOTP Authenticator for Android Phones</a></li>
+      <li><a href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395">FreeOTP for iPhone</a></li>
+    </ul>
+
   </div>
-</div>
+
+</tal:block>
+</html>
