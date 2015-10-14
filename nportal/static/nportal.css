@@ -100,8 +100,11 @@ form .deform-readonly-text {
     font-style: italic;
 }
 
-
-
+.help {
+  font-style: italic;
+  padding: 0px 0em 0px .5em;
+  color: #888;
+}
 
 
 

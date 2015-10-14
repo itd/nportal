@@ -1,7 +1,7 @@
 import os
 import datetime
 import string
-
+from hashids import Hashids
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
 
@@ -138,15 +138,13 @@ class AccountRequestView(object):
                 # try to validate the submitted values
                 captured = form.validate(controls)
                 # request.session.flash("It submitted! (not really)")
-                _add_new_user_request(captured, request)
 
-                title="Success!!!",
-                givenName=request.POST['givenName']
+                # submit the data to be added to be recorded,
+                # return a unique identifier - unid
+                unid = _add_new_user_request(captured, request)
 
-                #variables = dict(title=title, givenName=givenName)
                 view_url = request.route_url('request_received_view',
-                                             title=title,
-                                              givenName=givenName)
+                                             unid=unid)
 
                 resp = HTTPMovedPermanently(location=view_url)
                 return resp
@@ -163,16 +161,32 @@ class AccountRequestView(object):
 
 
     # http://goo.gl/KnNbAK
+    # https://pypi.python.org/pypi/hashids/
     @view_config(route_name='request_received_view',
                  renderer='../templates/request_received.pt')
     def request_received_view(self):
-        givenName = self.request.POST['givenName']
-        title = 'It worked'
-        import pdb; pdb.set_trace()
-        return dict(title=title, givenName=givenName)
+        unid = self.request.matchdict['unid']
+        sess = self.session
+        u_data = sess.query(UserAccountModel).filter_by(unid=unid).first()
+        # TODO: do a check for came_from also
+
+        # Do a check to ensure user data is there...
+        success = False
+        if u_data is None:
+            title = "Account Request Submission Error"
+            flash_msg = "There was an error processing the request"
+            return dict(title=title, flash_msg=flash_msg, success=False)
+
+        title = "Account Request Successfully Submitted"
+        flash_msg = "A request has been submitted."
+        return dict(title=title, flash_msg=flash_msg, success=True)
 
 
 def _add_new_user_request(appstruct, request):
+    settings = request.registry.settings
+    slt = settings['unid_salt']
+    hashids = Hashids(salt=slt)
+    unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f'),
     ai = appstruct.items()
     ai = dict(ai)
 
@@ -190,41 +204,41 @@ def _add_new_user_request(appstruct, request):
     # now = now.strftime('%y%m%d%H%M%S')
 
     submission = UserAccountModel(
-        titlePrefix=ai['titlePrefix'],
-        givenName=ai['givenName'],
-        middleName=ai['middleName'],
-        sn=ai['sn'],
-        suffix=ai['suffix'],
-        cn=ai['cn'],
+        unid=hashids(int(unid)),
+        titlePrefix=ai['titlePrefix'].decode('utf-8'),
+        givenName=ai['givenName'].decode('utf-8'),
+        middleName=ai['middleName'].decode('utf-8'),
+        sn=ai['sn'].decode('utf-8'),
+        suffix=ai['suffix'].decode('utf-8'),
+        cn=ai['cn'].decode('utf-8'),
 
-        # userTitle=ai['userTitle'],
-        # street=ai['street'],
-        # l=ai['l'],
-        # st=ai['st'],
-        # postalCode=ai['postalCode'],
-        # country=ai['country'],
-        # mail=ai['mail'],
-        # mailPreferred=ai['mailPreferred'],
-        # phone=ai['phone'],
-        # cell=ai['cell'],
-        # phonePrimary=ai['phonePrimary'],
-        # employerType=ai['employerType'],
-        # employerName=ai['employerName'],
-        # employerAddress=ai['employerAddress'],
-        # shipAddrSame=ai['shipAddrSame'],
-        # shipAddr=ai['shipAddr'],
-        # citizenStatus=ai['citizenStatus'],
-        # citizenOf=ai['citizenOf'],
-        # nrelExistingAccount=ai['nrelExistingAccount'],
-        # nrelUserID=ai['nrelUserID'],
-        # preferredUID=ai['preferredUID'],
-        # comments=ai['comments'],
+        userTitle=ai['userTitle'].decode('utf-8'),
+        street=ai['street'].decode('utf-8'),
+        l=ai['l'].decode('utf-8'),
+        st=ai['st'].decode('utf-8'),
+        postalCode=ai['postalCode'].decode('utf-8'),
+        country=ai['country'].decode('utf-8'),
+        mail=ai['mail'].decode('utf-8'),
+        mailPreferred=ai['mailPreferred'].decode('utf-8'),
+        phone=ai['phone'],
+        cell=ai['cell'],
+        employerType=ai['employerType'],
+        employerName=ai['employerName'],
+        citizenStatus=ai['citizenStatus'],
+        citizenOf=ai['citizenOf'],
+        birthCountry=ai['birthCountry'],
+        nrelExistingAccount=ai['nrelExistingAccount'],
+        nrelUserID=ai['nrelUserID'],
+        preferredUID=ai['preferredUID'],
+        justification=ai['justification'],
+        comments=ai['comments'],
 
         subTimestamp=now,
         couTimestamp=couTimestamp,
         storTimestamp=storTimestamp,
         cyberTimestamp=cyberTimestamp
         )
-
-    # storagegrp=ai['storagegrp'],
+    # write the data
     DBSession().add(submission)
+    # return the unid for processing in next form
+    return hashids.encode(int(unid))

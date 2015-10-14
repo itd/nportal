@@ -1,18 +1,23 @@
 import string
 import colander
+import htmllaundry
 
 def phone_validator(node, value):
     """ checks to make sure that the value looks like a phone number """
-    allowed = set(string.ascii_lowercase + string.digits +
-                  ' ' + '.' + '+' + '(' + ')' + '-')
+    value = htmllaundry.strip_markup(value)
+    allowed = set(string.ascii_lowercase + string.digits + ' ' + '.' + '+' + '(' + ')' + '-')
     tval = set(value) <= allowed
 
+    if value is u'':
+        raise colander.Invalid(node,
+               'Please provide a valid phone number')
     if not tval:
         raise colander.Invalid(node,
-               '%r is not a valid telephone number format' % value)
+               '%s is not a valid telephone number format' % value)
 
 
 def cyber_validator(node, value):
+    import pdb; pdb.set_trace()
     if not value:
         raise colander.Invalid(node,
             'You must agree to the Cyber Policies')

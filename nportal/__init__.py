@@ -18,10 +18,8 @@ def main(global_config, **settings):
     Base.metadata.bind = engine
 
     req_session_factory = SignedCookieSessionFactory('somerandomstringforthereq')
-
     config = Configurator(settings=settings,
                           session_factory=req_session_factory)
-
     config.include('pyramid_chameleon')
 
     #config.add_route('login', '/login')
