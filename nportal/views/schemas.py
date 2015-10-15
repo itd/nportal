@@ -8,7 +8,9 @@ from htmllaundry import sanitize
 from validators import (cyber_validator,
                         phone_validator,
                         stor_validator,
-                        cou_validator)
+                        cou_validator,
+                        valid_country,
+                        valid_countries)
 
 from .lists import (title_prefixes,
                     citizen_types,
@@ -52,39 +54,38 @@ sn_widget = widget.TextInputWidget(
             css_class='form-control')
 
 
-class AddAccountSchema(colander.MappingSchema):
+class AddAccountSchema(colander.Schema):
     # couTimestamp
     cou = colander.SchemaNode(
-        colander.Set(),
-        title='COU Acceptance',
-        description='Check this if you have read and agree '
-                    'to the cyber security policies.',
-        #validator=colander.ContainsOnly('yes'),
-        validator=colander.OneOf(['yes']),
-        widget=deform.widget.RadioChoiceWidget(values=cou_policy, msg="xxxx"),
+        colander.Boolean(),
+        title='COU Policy Acceptance',
+        description='Terms and Conditions Agreement - Check this if '
+            'you have read and agree to the cyber security policies.',
+        widget=deform.widget.CheckboxWidget(),
+        validator=cou_validator,
         oid='cou'
-    )
+        )
 
     #   storTimestamp
     stor = colander.SchemaNode(
         colander.Boolean(),
-        title='Storage Acceptance',
+        title='Data Security Policy Acceptance',
         description='Check this if you have read and agree '
                     'to the Center\'s storage policies.',
-        widget=deform.widget.CheckboxChoiceWidget(values=stor_policy),
+        widget=deform.widget.CheckboxWidget(),
         validator=stor_validator,
         oid='stor'
     )
     #   cybeTimestamp
-    cyber = colander.SchemaNode(
-        colander.Boolean(),
-        title='Cyber Security Policy Acceptance',
-        description='Check this if you have read and agree to abide by '
-                    'the Center\'s Cyber Security policies.',
-        widget=deform.widget.CheckboxChoiceWidget(values=cyber_policy),
-        #validator=colander.OneOf('True'),
-        oid='stor'
-    )
+    # cyber = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='Cyber Security Policy Acceptance',
+    #     description='Check this if you have read and agree to abide by '
+    #                 'the Center\'s Cyber Security policies.',
+    #     widget=deform.widget.CheckboxWidget(),
+    #     validator=cyber_validator,
+    #     oid='cyber'
+    # )
 
     titlePrefix = colander.SchemaNode(
         colander.String(),
@@ -92,7 +93,6 @@ class AddAccountSchema(colander.MappingSchema):
         description='If you prefer to use n honorary, enter it here.',
         # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
         #validator=colander.Length(min=1, max=64),
-        #preparer=[sanitize],
         widget=widget.TextInputWidget(placeholder="Dr., Mr., Ms., etc."),
         missing=unicode(''),
         oid='titlePrefix'
@@ -100,11 +100,10 @@ class AddAccountSchema(colander.MappingSchema):
 
     givenName = colander.SchemaNode(
         colander.String(),
-        title='Given or first name',
+        title='Given/First name',
         description='Your given or first name',
         validator=colander.Length(min=1, max=64),
         widget=widget.TextInputWidget(placeholder=''),
-        preparer=[sanitize],
         oid='givenName'
     )
 
@@ -116,18 +115,16 @@ class AddAccountSchema(colander.MappingSchema):
         widget=widget.TextInputWidget(
             placeholder=''),
         missing=unicode(''),
-        preparer=[sanitize],
         oid='middleName'
     )
 
     sn = colander.SchemaNode(
         colander.String(),
-        title='Family / Last Name',
+        title='Family/Last Name',
         description='family Name / Last Name',
         validator=colander.Length(min=1, max=64),
         widget=widget.TextInputWidget(
             placeholder=''),
-        preparer=[sanitize],
         oid='sn'
     )
 
@@ -136,9 +133,8 @@ class AddAccountSchema(colander.MappingSchema):
         title='Suffix',
         description='(Sr. Jr. IV, etc.)',
         validator=colander.Length(min=0, max=32),
-        widget=widget.TextInputWidget(placeholder='exaple: RHCE, PhD, etc.'),
+        widget=widget.TextInputWidget(placeholder='example: III, PhD, etc.'),
         missing=unicode(''),
-        preparer=[sanitize],
         oid='suffix'
     )
 
@@ -148,8 +144,8 @@ class AddAccountSchema(colander.MappingSchema):
         description='Your full name. How you want to be addressed.',
         validator=colander.Length(min=3, max=64),
         widget=widget.TextInputWidget(
-            placeholder='How you want to be addressed: Pat Marlinski'),
-        preparer=[sanitize],
+        placeholder='How you want to be addressed: Pat Marlinski'),
+        missing=unicode(''),
         oid='cn'
     )
 
@@ -159,7 +155,6 @@ class AddAccountSchema(colander.MappingSchema):
         description='',
         validator=colander.Length(min=0, max=200),
         widget=widget.TextInputWidget(placeholder='example: 123 Noe Way'),
-        preparer=[sanitize],
         oid='street'
     )
 
@@ -169,27 +164,24 @@ class AddAccountSchema(colander.MappingSchema):
         description='',
         validator=colander.Length(min=1, max=128),
         widget=widget.TextInputWidget(),
-        preparer=[sanitize],
         oid='l'
     )
 
     st = colander.SchemaNode(
         colander.String(),
-        title='State / Province / Region',
+        title='State/Province',
         description='',
         validator=colander.Length(min=1, max=128),
         widget=widget.TextInputWidget(),
-        preparer=[sanitize],
         oid='l'
     )
 
     postalCode = colander.SchemaNode(
         colander.String(),
-        title='Post Code / ZIP Code',
+        title='Post/ZIP Code',
         description='',
-        validator=colander.Length(min=0, max=64),
+        validator=colander.Length(min=2, max=64),
         widget=widget.TextInputWidget(),
-        preparer=[sanitize],
         oid='postalCode'
     )
 
@@ -198,6 +190,8 @@ class AddAccountSchema(colander.MappingSchema):
         title='Country',
         description='',
         widget=widget.SelectWidget(values=country_codes),
+        #validator=colander.OneOf([x[0] for x in country_codes]),
+        validator=valid_country,
         oid='country'
     )
 
@@ -205,8 +199,7 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='EMail',
         description='Your primary email account',
-        validator=colander.Email(msg="Please provide your work Email address. This will be the primary account we use to contact you."),
-        preparer=[sanitize],
+        # validator=colander.Email(msg="Please provide your work Email address. This will be the primary account we use to contact you."),
         widget=email_confirm_widget,
         oid='mail'
     )
@@ -215,7 +208,6 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='Preferred EMail',
         description='optional preferred email account',
-        preparer=[sanitize],
         missing=unicode(''),
         widget=pref_email_confirm_widget,
         oid='mail'
@@ -225,7 +217,6 @@ class AddAccountSchema(colander.MappingSchema):
         colander.String(),
         title='Phone number',
         description='Please provide your primary telephone number',
-        preparer=[sanitize],
         validator=phone_validator,
         widget=widget.TextInputWidget(),
         oid='phone'
@@ -237,14 +228,13 @@ class AddAccountSchema(colander.MappingSchema):
         description='For contact and verification',
         validator=phone_validator,
         missing=unicode(''),
-        preparer=[sanitize],
-                widget=widget.TextInputWidget(
-            placeholder='ex +1-000-000-0000'),
+        widget=widget.TextInputWidget(
+        placeholder='ex +1-000-000-0000'),
         oid='cell'
     )
 
     employerType = colander.SchemaNode(
-        colander.Int(),
+        colander.String(),
         validator=colander.OneOf([x[0] for x in employer_types]),
         widget=deform.widget.RadioChoiceWidget(values=employer_types),
         title='Employer Type',
@@ -255,16 +245,16 @@ class AddAccountSchema(colander.MappingSchema):
 
     employerName = colander.SchemaNode(
         colander.String(),
-        title='Employer / Sponsor Name',
-        description='Please provide the name of the employer or institution you represent',
-        validator=colander.Length(min=0, max=128),
-        widget=widget.TextInputWidget(placeholder='employer/institution name here'),
-        preparer=[sanitize],
+        title='Employer, Institution, or Sponsor Name',
+        description='Please provide the name of your employer or '
+                    'the institution you represent',
+        validator=colander.Length(min=3, max=128),
+        widget=widget.TextInputWidget(placeholder='employer name here'),
         oid='employerName'
     )
 
     citizenStatus = colander.SchemaNode(
-        colander.Boolean(),
+        colander.String(),
         title='Citizenship Status',
         description='Select one of the following options '
             'that best describes your U.S. citizenship status',
@@ -277,7 +267,7 @@ class AddAccountSchema(colander.MappingSchema):
         colander.Set(),
         title='Citizen of',
         description='Please enter/select your country(s) of citizenship',
-        validator=colander.ContainsOnly([x[0] for x in country_codes]),
+        validator=valid_countries,
         widget=widget.Select2Widget(
             values=country_codes,
             multiple=True,
@@ -287,64 +277,62 @@ class AddAccountSchema(colander.MappingSchema):
 
     #   birthCountry
     birthCountry = colander.SchemaNode(
-        colander.Set(),
+        colander.String(),
         title='Country of birth',
         description='Please enter/select your country of birth',
-        validator=colander.ContainsOnly([x[0] for x in country_codes]),
+        validator=valid_country,
         widget=widget.Select2Widget(
-            values=country_codes,
-            multiple=True,
-            ),
+            values=country_codes),
         oid='birthCountry',
     )
 
     nrelExistingAccount = colander.SchemaNode(
         colander.Boolean(),
         title='Existing NREL Account?',
-        description="If you algready have an NREL account, or have used "
+        description="If you already have an NREL account, or have used "
             "an NREL network or HPC account in the past, check this.",
         widget=deform.widget.CheckboxWidget(),
+        missing=unicode(''),
         label='I have an Existing or Previous NREL Account',
         oid='nrelExistingAccount'
     )
 
-    nrelUserID = colander.SchemaNode(
-        colander.String(),
-        title='Existing NREL UserID?',
-        description='If you have --or have previously had-- an NREL UserID, '
-                    'please enter it here.',
-        validator=colander.Length(min=1, max=16),
-        widget=widget.TextInputWidget(placeholder='example: jsmythe'),
-        missing=unicode(''),
-        preparer=[sanitize],
-        oid='nrelUserID'
-    )
+    # nrelUserID = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Existing NREL UserID?',
+    #     description='If you have --or have previously had-- an NREL UserID, '
+    #                 'please enter it here.',
+    #     validator=colander.Length(min=1, max=16),
+    #     widget=widget.TextInputWidget(placeholder='example: jsmythe'),
+    #     missing=unicode(''),
+    #
+    #     oid='nrelUserID'
+    # )
 
     #   preferredUID
     preferredUID = colander.SchemaNode(
         colander.String(),
         title='UserID',
-        description="If you have -or have previously been given- "
-                    "an NREL account or UserID, enter that ID. "
-                    "If you've never had an NREL account, "
-                    "tell us what you'd like to use for a login UserID"
+        description=" If you have or have had an NREL network account,  "
+                    "please provide your UserID here "
                     "(3 to 16 characters, all lower case.)",
         validator=colander.Length(min=3, max=16),
         widget=widget.TextInputWidget(placeholder="example: jsmythe"),
-        missing=unicode(''),
-        preparer=[sanitize],
         oid='preferredUID'
     )
 
     justification = colander.SchemaNode(
         colander.String(),
-        title='Account Request Justification',
+        title='NREL HPC User Credential Information',
         widget=widget.TextAreaWidget(rows=6, columns=60),
-        preparer=[sanitize],
+        missing=unicode(''),
         validator=colander.Length(max=1000),
-        description='Briefly describe how you plan to use the '
-                    'ESIF HPC Resources. Include relevant '
-                    'project names and contacts if available.',
+        description="If you don't have an account on NREL HPC systems, "
+                    "we need some additional information. Please provide "
+                    "the project handles or titles of the project allocations "
+                    "you are associated with. "
+                    "If you don't have an allocation, please tell us "
+                    "why you are requesting NREL HPC login credentials.",
         oid='comments'
     )
 
@@ -356,7 +344,6 @@ class AddAccountSchema(colander.MappingSchema):
                 'information to process or approve your request, '
                 'please let us know.'),
         missing=unicode(''),
-        preparer=[sanitize],
         validator=colander.Length(max=1000),
         description='If you think we need any additional '
                 'information to process or approve your request, '

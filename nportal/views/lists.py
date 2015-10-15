@@ -3,21 +3,23 @@
 # ISO 3166-1 alpha-3 three-letter country codes
 # ref: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 cou_policy = [
-    ('no', 'I do not agree'),
-    ('yes', 'I agree to the terms of the ESIF High Performance Computing Center\'s Conditions of Use policies.')
-]
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s Conditions of Use policies.'),
+    (False, 'False')
+    ]
 
 stor_policy = [
-    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s storage policies.')
-]
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s storage policies.'),
+    (False, 'False')
+    ]
 
 cyber_policy = [
-    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s Cyber Policies.')
-]
+    (True, 'I agree to the terms of the ESIF High Performance Computing Center\'s Cyber Policies.'),
+    (False, 'False')
+    ]
 
 
 country_codes = [
-    (None, ' -- select --' ),
+    (None, ' -- select --'),
     ('USA', 'United States'),
     ('AFG', 'Afghanistan'),
     ('ALB', 'Albania'),

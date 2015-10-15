@@ -1,6 +1,8 @@
 import string
 import colander
 import htmllaundry
+from .lists import country_codes
+
 
 def phone_validator(node, value):
     """ checks to make sure that the value looks like a phone number """
@@ -16,13 +18,6 @@ def phone_validator(node, value):
                '%s is not a valid telephone number format' % value)
 
 
-def cyber_validator(node, value):
-    import pdb; pdb.set_trace()
-    if not value:
-        raise colander.Invalid(node,
-            'You must agree to the Cyber Policies')
-
-
 def cou_validator(node, value):
     if not value:
         raise colander.Invalid(node,
@@ -33,3 +28,24 @@ def stor_validator(node, value):
     if not value:
         raise colander.Invalid(node,
             'You must agree to the HPC Storage Policies')
+
+
+def cyber_validator(node, value):
+    if not value:
+        raise colander.Invalid(node,
+            'You must agree to the Cyber Policies')
+
+
+def valid_country(node, value):
+    cs = [x[0] for x in country_codes]
+    if value not in cs:
+        msg = u'You must select a valid country'
+        raise colander.Invalid(node, msg)
+
+
+def valid_countries(node, value):
+    cs = set([x[0] for x in country_codes])
+    if not value.intersection(cs):
+        print('not there')
+        msg = u'You must select one or more countries'
+        raise colander.Invalid(node, msg)

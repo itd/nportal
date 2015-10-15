@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 import string
 from hashids import Hashids
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -121,9 +121,8 @@ class AccountRequestView(object):
         # get the form control field names and values as a list of tuples
         controls = request.POST.items()
 
-
         # create a deform form object from the schema
-        # form = deform.Form(schema)
+        sform = Form(schema)
 
         form = Form(schema,
                     action=request.route_url('request_user_account'),
@@ -134,11 +133,11 @@ class AccountRequestView(object):
             # it's a submission, process it
             controls = self.request.POST.items()
             captured = None
+
             try:
                 # try to validate the submitted values
-                captured = form.validate(controls)
+                captured = sform.validate(controls)
                 # request.session.flash("It submitted! (not really)")
-
                 # submit the data to be added to be recorded,
                 # return a unique identifier - unid
                 unid = _add_new_user_request(captured, request)
@@ -166,8 +165,8 @@ class AccountRequestView(object):
                  renderer='../templates/request_received.pt')
     def request_received_view(self):
         unid = self.request.matchdict['unid']
-        sess = self.session
-        u_data = sess.query(UserAccountModel).filter_by(unid=unid).first()
+        session = DBSession()
+        u_data = session.query(UserAccountModel).filter_by(unid=unid).first()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
@@ -179,66 +178,92 @@ class AccountRequestView(object):
 
         title = "Account Request Successfully Submitted"
         flash_msg = "A request has been submitted."
-        return dict(title=title, flash_msg=flash_msg, success=True)
+
+        import pdb; pdb.set_trace()
+
+        return dict(title=title, flash_msg=flash_msg,
+                    data=u_data,
+                    success=True)
 
 
 def _add_new_user_request(appstruct, request):
     settings = request.registry.settings
     slt = settings['unid_salt']
     hashids = Hashids(salt=slt)
-    unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f'),
+    unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
     ai = appstruct.items()
     ai = dict(ai)
 
-    now = datetime.datetime.now()
+    # now = now.strftime('%y%m%d%H%M%S')
+    now = datetime.now()
     cou = None
     stor = None
-    cyber = None
+    # cyber = None
     if ai['cou']:
         couTimestamp = now
     if ai['stor']:
         storTimestamp = now
-    if ai['cyber']:
-        cyberTimestamp = now
-
-    # now = now.strftime('%y%m%d%H%M%S')
+    # if ai['cyber']:
+    #     cyberTimestamp = now
+    unid = hashids.encode(int(unid))
+    titlePrefix = ai['titlePrefix'].decode('utf-8')
+    givenName = ai['givenName'].decode('utf-8')
+    middleName = ai['middleName'].decode('utf-8')
+    sn = ai['sn'].decode('utf-8')
+    suffix = ai['suffix'].decode('utf-8')
+    cn = ai['cn'].decode('utf-8')
+    street = ai['street'].decode('utf-8')
+    l = ai['l'].decode('utf-8')
+    st = ai['st'].decode('utf-8')
+    postalCode = ai['postalCode'].decode('utf-8')
+    country = ai['country'].decode('utf-8')
+    mail = ai['mail'].decode('utf-8')
+    mailPreferred = ai['mailPreferred'].decode('utf-8')
+    phone = ai['phone']
+    cell = ai['cell']
+    employerType = ai['employerType']
+    employerName = ai['employerName']
+    citizenStatus = ai['citizenStatus']
+    citizenOf = list(ai['citizenOf'])
+    birthCountry = [i for i in ai['birthCountry']]
+    nrelExistingAccount = ai['nrelExistingAccount']
+    preferredUID = ai['preferredUID']
+    justification = ai['justification']
+    comments = ai['comments']
+    subTimestamp = now
 
     submission = UserAccountModel(
-        unid=hashids(int(unid)),
-        titlePrefix=ai['titlePrefix'].decode('utf-8'),
-        givenName=ai['givenName'].decode('utf-8'),
-        middleName=ai['middleName'].decode('utf-8'),
-        sn=ai['sn'].decode('utf-8'),
-        suffix=ai['suffix'].decode('utf-8'),
-        cn=ai['cn'].decode('utf-8'),
-
-        userTitle=ai['userTitle'].decode('utf-8'),
-        street=ai['street'].decode('utf-8'),
-        l=ai['l'].decode('utf-8'),
-        st=ai['st'].decode('utf-8'),
-        postalCode=ai['postalCode'].decode('utf-8'),
-        country=ai['country'].decode('utf-8'),
-        mail=ai['mail'].decode('utf-8'),
-        mailPreferred=ai['mailPreferred'].decode('utf-8'),
-        phone=ai['phone'],
-        cell=ai['cell'],
-        employerType=ai['employerType'],
-        employerName=ai['employerName'],
-        citizenStatus=ai['citizenStatus'],
-        citizenOf=ai['citizenOf'],
-        birthCountry=ai['birthCountry'],
-        nrelExistingAccount=ai['nrelExistingAccount'],
-        nrelUserID=ai['nrelUserID'],
-        preferredUID=ai['preferredUID'],
-        justification=ai['justification'],
-        comments=ai['comments'],
-
-        subTimestamp=now,
+        unid=unid,
+        titlePrefix=titlePrefix,
+        givenName=givenName,
+        middleName=middleName,
+        sn=sn,
+        suffix=suffix,
+        cn=cn,
+        street=street,
+        l=l,
+        st=st,
+        postalCode=postalCode,
+        country=country,
+        mail=mail,
+        mailPreferred=mailPreferred,
+        phone=phone,
+        cell=cell,
+        employerType=employerType,
+        employerName=employerName,
+        citizenStatus=citizenStatus,
+        # citizenOf=citizenOf,
+        birthCountry=birthCountry,
+        nrelExistingAccount=nrelExistingAccount,
+        preferredUID=preferredUID,
+        justification=justification,
+        comments=comments,
+        subTimestamp=subTimestamp,
         couTimestamp=couTimestamp,
-        storTimestamp=storTimestamp,
-        cyberTimestamp=cyberTimestamp
+        storTimestamp=storTimestamp
         )
     # write the data
+
     DBSession().add(submission)
     # return the unid for processing in next form
-    return hashids.encode(int(unid))
+    return str(unid)

@@ -37,7 +37,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
     config.add_route('request_user_account', '/request_user_account')
-    config.add_route('request_received_view', '/request_received')
+    config.add_route('request_received_view', '/request_received/{unid}')
 
     config.scan()
     return config.make_wsgi_app()

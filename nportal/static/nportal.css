@@ -19,6 +19,27 @@ h6 {
 
 }
 
+.alert {
+  padding: 5px;
+}
+.regform h5 {
+  font-weight: 900;
+  margin-bottom: 0;
+}
+.checkbox label, .radio label {
+    cursor: pointer;
+    font-weight: 400;
+    margin-bottom: 0;
+    min-height: 15px;
+    padding-left: 20px;
+}
+
+/*
+p {
+    margin: 0 0 0 10px;
+}
+*/
+
 .req {
   color: darkred;
   margin: 0 0px 0 0.2em;
@@ -60,13 +81,17 @@ h6 {
 }
 
 .regform .help-block {
-  margin: 0 0 0 0;
+  margin: 0;
 }
 
 .regform .checkbox {
-  margin: 0 0 0 0;
+  margin: 0;
+  display: inline-block;
 }
 
+.form-group p {
+  margin: 0;
+}
 
 .deform-seq-add:visited {
    color: blue;
@@ -100,13 +125,15 @@ form .deform-readonly-text {
     font-style: italic;
 }
 
-.help {
+.regform .help {
   font-style: italic;
   padding: 0px 0em 0px .5em;
   color: #888;
 }
 
-
+.regform p.help {
+  padding: 0 1.5em;
+}
 
 
 
