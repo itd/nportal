@@ -4,9 +4,12 @@
     <div class="container regform">
       <div class="row">
 
-        <div class="col-xs-1 col-md-2">DEMO <br />  2015-10-14</div>
+        <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+          DEMO <br />  2015-10-14
+        </div>
 
-        <div class="col-xs-10 col-md-8">
+
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 
           <h2>ESIF account registration request <i>- Mock-up</i></h2>
           <p>
@@ -50,6 +53,7 @@
               <legend>Personal Information</legend>
               <p>You must use your legally recognized name information in the fields below.</p>
 
+              <!--!
               <div class="row">
                 <div class="col-md-3">
 
@@ -61,7 +65,7 @@
 
                 </div>
               </div>
-
+              -->
 
               <div class="row pnames">
 
@@ -169,148 +173,202 @@
 
               </div>
 
+              <div class="row"><!--! email -->
+                <div class="col-md-6">
+                  <div class="form-group" tal:define="field form['mail'];">
+                    <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+                    <p class="help">for contact and/or for identification</p>
+                    ${structure:field.serialize()}
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                  </div>
+                </div>
 
-              <div class="form-group" tal:define="field form['mail'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p class="help">for contact and/or for identification</p>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                <div class="col-md-6">
+                  <div class="form-group" tal:define="field form['mailPreferred'];">
+                    <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+                    <p class="help">for contact and/or for identification</p>
+                    ${structure:field.serialize()}
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                  </div>
+                </div>
               </div>
 
-              <div class="form-group" tal:define="field form['mailPreferred'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+              <div class="row"><!--! phones -->
+                <div class="col-md-6">
+                  <div class="form-group" tal:define="field form['phone'];">
+                    <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+                    ${structure:field.serialize()}
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group" tal:define="field form['cell'];">
+                    <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+                    ${structure:field.serialize()}
+                    <span class="help" tal:condition="field.description">${field.description}</span>
+                    <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+                  </div>
               </div>
-
-              <div class="form-group" tal:define="field form['phone'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
+            </div>
+          </fieldset>
 
 
-              <div class="form-group" tal:define="field form['cell'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p class="help">for contact and/or for identification</p>
-                ${structure:field.serialize()}
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
+          <fieldset class="employ">
 
-            </fieldset>
+            <legend>Employment/Institution Information</legend>
 
+            <div class="form-group" tal:define="field form['employerType'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+              ${structure:field.serialize()}
+              <span class="help" tal:condition="field.description">${field.description}</span>
 
-            <fieldset class="employ">
+            </div>
 
-              <legend>Employment/Institution Information</legend>
+            <div class="form-group" tal:define="field form['employerName'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <span class="help" tal:condition="field.description">${field.description}</span>
+              ${structure:field.serialize()}
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
 
-              <div class="form-group" tal:define="field form['employerType'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-                ${structure:field.serialize()}
-                <span class="help" tal:condition="field.description">${field.description}</span>
-
-              </div>
-
-              <div class="form-group" tal:define="field form['employerName'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-
-            </fieldset>
+          </fieldset>
 
 
-            <fieldset class="citizen-data">
-              <legend>Citizenship Status</legend>
-              <p>Please detail your citizenship status, domestic and foreign.</p>
+          <fieldset class="citizen-data">
+            <legend>Citizenship Status</legend>
+            <p>Please detail your citizenship status, domestic and foreign.</p>
 
-              <div class="form-group" tal:define="field form['citizenStatus'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-              <div class="form-group" tal:define="field form['citizenOf'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                ${structure:field.serialize()}
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-              <div class="form-group" tal:define="field form['birthCountry'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <span class="help" tal:condition="field.description">${field.description}</span>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-            </fieldset>
-
-
-            <fieldset class="r-account">
-              <legend>NREL/ESIF HPC Account Information</legend>
-
-              <div class="form-group" tal:define="field form['nrelExistingAccount'];">
-                <h5 for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                ${structure:field.serialize()}
-                <p class="help" tal:condition="field.description">
-                   ${field.description}
-                </p>
-
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-
-              <div class="form-group" tal:define="field form['preferredUID'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                ${structure:field.serialize()}
-                <p class="help" tal:condition="field.description">
-                ${structure:field.description}</p>
-
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-
-              <div class="form-group" tal:define="field form['justification'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p class="help" tal:condition="field.description">${field.description}</p>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-
-              <div class="form-group" tal:define="field form['comments'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p class="help" tal:condition="field.description">${field.description}</p>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-
-            </fieldset>
-
-
-            <!-- btn-default -->
-            <button class="radius btn button"
-              id="request_account_submit" name="submit" type="submit"
-              value="submit">Submit Registration Request</button>
-
-            <a href="./" class="btn btn-info" role="button">Cancel</a>
-          </form>
+            <div class="form-group" tal:define="field form['citizenStatus'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <span class="help" tal:condition="field.description">${field.description}</span>
+              ${structure:field.serialize()}
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+            <div class="form-group" tal:define="field form['citizenOf'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              ${structure:field.serialize()}
+              <span class="help" tal:condition="field.description">${field.description}</span>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+            <div class="form-group" tal:define="field form['birthCountry'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <span class="help" tal:condition="field.description">${field.description}</span>
+              ${structure:field.serialize()}
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+          </fieldset>
 
 
 
 
-        </div>
-        <div class="col-xs-1 col-md-2">
-          <!--! right column -->
-          <!--?<i class="fa fa-stethoscope">xx</i>-->
-          <!--?<i class="fa fa-camera-retro fa-5x">xx</i> .col-xs-1 .col-md-2-->
-        </div>
+
+          <fieldset class="account-q">
+            <legend>Do you Have an NREL/ESIF HPC Account?<span class="req">*</span></legend>
+            <p>Select the option that is most correct for you:<span class="req">*</span></p>
+            <p><input type="radio" name="isnreluser" id="isnreluser1" value="1" /> I already have (or have previously had) an ESIF HPC NREL account.</p>
+            <p><input type="radio" name="isnreluser"  id="isnreluser0" value="0" /> I need a new ESIF HPC NREL account.</p>
+          </fieldset>
+
+
+
+
+
+
+          <fieldset id="existing-account">
+            <legend>NREL/ESIF HPC Account Application Info</legend>
+            <p>If you are an existing NREL user, or have previously had an NREL account, fill in the field below.</p>
+
+            <!--!
+            <div class="form-group" tal:define="field form['nrelExistingAccount'];">
+              <h5 for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              ${structure:field.serialize()}
+              <p class="help" tal:condition="field.description">
+                 ${field.description}
+              </p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+            -->
+
+            <div class="form-group" tal:define="field form['nrelUserID'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              ${structure:field.serialize()}
+              <p class="help" tal:condition="field.description">
+              ${structure:field.description}</p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+
+          </fieldset>
+
+          <fieldset id="new-account">
+            <legend>New NREL/ESIF HPC Account Applicant</legend>
+            <p>If you are new to NREL and the ESIF HPC center, please fill in the information below.</p>
+            <div class="form-group" tal:define="field form['justification'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <p class="help" tal:condition="field.description">${field.description}</p>
+              ${structure:field.serialize()}
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+
+
+            <div class="form-group" tal:define="field form['preferredUID'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              ${structure:field.serialize()}
+              <p class="help" tal:condition="field.description">
+              ${structure:field.description}</p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+          </fieldset>
+
+          <fieldset id="new-account">
+            <legend>New NREL/ESIF HPC Account Applicant</legend>
+            <div class="form-group" tal:define="field form['comments'];">
+              <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              <p class="help" tal:condition="field.description">${field.description}</p>
+              ${structure:field.serialize()}
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+
+          </fieldset>
+
+
+          <div class="row reg-form-submit-section"><!--! buttons -->
+            <hr />
+            <div class="col-md-4">
+              <button class="btn btn-primary"
+                id="request_account_submit" name="submit" type="submit"
+                value="submit">Submit Registration Request</button>
+            </div>
+            <div class="col-md-3">
+              <a href="./" class="btn btn-default" role="button">Cancel</a>
+            </div>
+          </div>
+
+        </form>
+
+
+        <hr />
+        <div class="row">
+
+          <div class="col-md-10">
+            <p><sup>1</sup> If we are unable to use this UserID, we will create a unique UserID that is similar to the one provided.</p>
+          </div>
+
+      </div>
+
+      </div>
+
+      <div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+        <!--! right column -->
+        <i class="fa fa-stethoscope"></i>
+        <br />
+        <i class="fa fa-camera-retro fa-5x"></i> <br />
+        hidden-xs col-md-2
+      </div>
 
       </div>
       <!--! /row -->
     </div>
-
-
 
 
 

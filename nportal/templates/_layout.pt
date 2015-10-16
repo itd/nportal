@@ -57,8 +57,10 @@
 
   <script src="${request.static_url('deform:static/select2/select2.js')}"></script>
 
-
   <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}"></script>
+
+  <script src="${request.static_url('nportal:static/js/hidefields.js')}"></script>
+
 
 </head>
 

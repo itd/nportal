@@ -34,7 +34,7 @@ from nportal.models import (
     )
 
 from schemas import AddAccountSchema
-
+from validators import uid_validator
 from .lists import (us_states,
                     country_codes,
                     title_prefixes,
@@ -103,7 +103,7 @@ class AccountRequestView(object):
 
         ###
         # instantiate our colander schema
-        schema = AddAccountSchema().bind(
+        schema = AddAccountSchema(validator=uid_validator).bind(
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
@@ -122,8 +122,6 @@ class AccountRequestView(object):
         controls = request.POST.items()
 
         # create a deform form object from the schema
-        sform = Form(schema)
-
         form = Form(schema,
                     action=request.route_url('request_user_account'),
                     form_id='deformRegform'
@@ -133,6 +131,10 @@ class AccountRequestView(object):
             # it's a submission, process it
             controls = self.request.POST.items()
             captured = None
+
+            # schema = schema(validator=uid_validator)
+            # create a deform form object from the schema
+            sform = Form(schema)
 
             try:
                 # try to validate the submitted values
@@ -179,8 +181,6 @@ class AccountRequestView(object):
         title = "Account Request Successfully Submitted"
         flash_msg = "A request has been submitted."
 
-        import pdb; pdb.set_trace()
-
         return dict(title=title, flash_msg=flash_msg,
                     data=u_data,
                     success=True)
@@ -226,7 +226,8 @@ def _add_new_user_request(appstruct, request):
     citizenStatus = ai['citizenStatus']
     citizenOf = list(ai['citizenOf'])
     birthCountry = [i for i in ai['birthCountry']]
-    nrelExistingAccount = ai['nrelExistingAccount']
+    #nrelExistingAccount = ai['nrelExistingAccount']
+    nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
     justification = ai['justification']
     comments = ai['comments']
@@ -234,7 +235,7 @@ def _add_new_user_request(appstruct, request):
 
     submission = UserAccountModel(
         unid=unid,
-        titlePrefix=titlePrefix,
+        # titlePrefix=titlePrefix,
         givenName=givenName,
         middleName=middleName,
         sn=sn,
@@ -252,9 +253,10 @@ def _add_new_user_request(appstruct, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        # citizenOf=citizenOf,
+        citizenOf=citizenOf,
         birthCountry=birthCountry,
-        nrelExistingAccount=nrelExistingAccount,
+        #nrelExistingAccount=nrelExistingAccount,
+        nrelUserID=nrelUserID,
         preferredUID=preferredUID,
         justification=justification,
         comments=comments,

@@ -49,3 +49,11 @@ def valid_countries(node, value):
         print('not there')
         msg = u'You must select one or more countries'
         raise colander.Invalid(node, msg)
+
+
+def uid_validator(form, value):
+    if not value['nrelUserID']:
+        msg = colander.Invalid(form,
+            'You must supply a new userID or an NREL UserID.')
+        raise msg
+

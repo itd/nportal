@@ -3,7 +3,7 @@ import deform.widget
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
 # import htmllaundry
-from htmllaundry import sanitize
+# from htmllaundry import sanitize
 
 from validators import (cyber_validator,
                         phone_validator,
@@ -87,16 +87,16 @@ class AddAccountSchema(colander.Schema):
     #     oid='cyber'
     # )
 
-    titlePrefix = colander.SchemaNode(
-        colander.String(),
-        title='Honorary',
-        description='If you prefer to use n honorary, enter it here.',
-        # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
-        #validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(placeholder="Dr., Mr., Ms., etc."),
-        missing=unicode(''),
-        oid='titlePrefix'
-    )
+    # titlePrefix = colander.SchemaNode(
+    #     colander.String(),
+    #     title='Honorary',
+    #     description='If you prefer to use n honorary, enter it here.',
+    #     # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
+    #     #validator=colander.Length(min=1, max=64),
+    #     widget=widget.TextInputWidget(placeholder="Dr., Mr., Ms., etc."),
+    #     missing=unicode(''),
+    #     oid='titlePrefix'
+    # )
 
     givenName = colander.SchemaNode(
         colander.String(),
@@ -144,7 +144,8 @@ class AddAccountSchema(colander.Schema):
         description='Your full name. How you want to be addressed.',
         validator=colander.Length(min=3, max=64),
         widget=widget.TextInputWidget(
-        placeholder='How you want to be addressed: Pat Marlinski'),
+        placeholder='(Optional) How you want to be addressed '
+                    'if different from: FirstName LastName'),
         missing=unicode(''),
         oid='cn'
     )
@@ -229,7 +230,7 @@ class AddAccountSchema(colander.Schema):
         validator=phone_validator,
         missing=unicode(''),
         widget=widget.TextInputWidget(
-        placeholder='ex +1-000-000-0000'),
+        placeholder='(Optional) example: +1-000-000-0000'),
         oid='cell'
     )
 
@@ -286,39 +287,26 @@ class AddAccountSchema(colander.Schema):
         oid='birthCountry',
     )
 
-    nrelExistingAccount = colander.SchemaNode(
-        colander.Boolean(),
-        title='Existing NREL Account?',
-        description="If you already have an NREL account, or have used "
-            "an NREL network or HPC account in the past, check this.",
-        widget=deform.widget.CheckboxWidget(),
-        missing=unicode(''),
-        label='I have an Existing or Previous NREL Account',
-        oid='nrelExistingAccount'
-    )
-
-    # nrelUserID = colander.SchemaNode(
-    #     colander.String(),
-    #     title='Existing NREL UserID?',
-    #     description='If you have --or have previously had-- an NREL UserID, '
-    #                 'please enter it here.',
-    #     validator=colander.Length(min=1, max=16),
-    #     widget=widget.TextInputWidget(placeholder='example: jsmythe'),
+    # nrelExistingAccount = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='Existing NREL Account?',
+    #     description="If you already have an NREL account, or have used "
+    #         "an NREL network or HPC account in the past, check this.",
+    #     widget=deform.widget.CheckboxWidget(),
     #     missing=unicode(''),
-    #
-    #     oid='nrelUserID'
+    #     label='I have an Existing or Previous NREL Account',
+    #     oid='nrelExistingAccount'
     # )
 
-    #   preferredUID
-    preferredUID = colander.SchemaNode(
+    nrelUserID = colander.SchemaNode(
         colander.String(),
-        title='UserID',
-        description=" If you have or have had an NREL network account,  "
-                    "please provide your UserID here "
-                    "(3 to 16 characters, all lower case.)",
-        validator=colander.Length(min=3, max=16),
-        widget=widget.TextInputWidget(placeholder="example: jsmythe"),
-        oid='preferredUID'
+        title='Your Existing NREL HPC UserID',
+        description='If you have --or previously had-- an NREL UserID, '
+                    'enter it here.',
+        validator=colander.Length(min=1, max=16),
+        widget=widget.TextInputWidget(placeholder='example: jsmythe'),
+        missing=unicode(''),
+        oid='nrelUserID'
     )
 
     justification = colander.SchemaNode(
@@ -336,9 +324,20 @@ class AddAccountSchema(colander.Schema):
         oid='comments'
     )
 
+    preferredUID = colander.SchemaNode(
+        colander.String(),
+        title='*New* ESIF HPC UserID',
+        description="Please provide your desired User ID here.<sup>1</sup>"
+                    "(3 to 16 characters, all lower case.)",
+        validator=colander.Length(min=3, max=16),
+        widget=widget.TextInputWidget(placeholder="example: jsmythe"),
+        missing=unicode(''),
+        oid='preferredUID'
+    )
+
     comments = colander.SchemaNode(
         colander.String(),
-        title='Comments',
+        title='Additional Notes or Comments',
         widget=deform.widget.TextAreaWidget(rows=6, columns=60,
             placeholder='If you think we need any additional '
                 'information to process or approve your request, '

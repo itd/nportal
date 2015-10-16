@@ -1,4 +1,5 @@
 from sqlalchemy import (
+    Table,
     Column,
     Index,
     Integer,
@@ -61,10 +62,17 @@ class UserAccountModel(Base):
 
     citizenStatus = Column(String(10)) ##
     #citizenOf = Column(Text)  ##
-    citizenOf = relationship("CitizenOf")
+    citizenOf = relationship("CitizenOf",
+                         backref='account',
+                         lazy='dynamic',
+                         cascade="all, delete",
+                         passive_deletes=True,
+                         )
+                         # secondary=user_citizen,
     birthCountry = Column(Text)  ##
 
     nrelExistingAccount = Column(Boolean)  ##
+    nrelUserID = Column(String(16)) ## kbendl
     preferredUID = Column(String(16)) ## kbendl
 
     justification = Column(Text)  ##
@@ -78,6 +86,14 @@ class UserAccountModel(Base):
     def __repr__(self):
         return "<User(name='%s', fullname='%s', password='%s')>" % (
                 self.id, self.preferredUID, self.unid, self.subTimestamp)
+
+
+# user_citizen = Table('user_citizen', Base.metadata,
+#                      Column('user_id', Integer,
+#                             ForeignKey('user.id',ondelete='CASCADE'),
+#                             primary_key=True),
+#                      Column('country', String)
+#                      )
 
 
 class CitizenOf(Base):
