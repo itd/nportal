@@ -320,7 +320,7 @@
             </div>
           </fieldset>
 
-          <fieldset id="new-account">
+          <fieldset id="user-comments">
             <legend>New NREL/ESIF HPC Account Applicant</legend>
             <div class="form-group" tal:define="field form['comments'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
