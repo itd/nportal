@@ -15,12 +15,14 @@
           <p>
           </p>
 
-          <ul id="flashmessages" tal:condition="request.session.peek_flash()">
-            <li tal:repeat="msg request.session.pop_flash()">
-              <span tal:content="msg"></span>
-            </li>
-          </ul>
 
+          <!--?<div class='alert' tal:condition="request.session.peek_flash()">-->
+            <!--?<ul id="flashmessages">-->
+              <!--?<li tal:repeat="msg request.session.pop_flash()">-->
+                <!--?<span tal:content="msg"></span>-->
+              <!--?</li>-->
+            <!--?</ul>-->
+          <!--?</div>-->
 
           <form action="${form.action}" method="POST" id="${form.form_id}" accept-charset="utf-8" class="deform">
 
@@ -135,7 +137,7 @@
               <div class="row"><!--! start address block -->
 
                 <div class="col-md-6">
-                  <tal:def tal:define="field form['l'];">
+                  <tal:def tal:define="field form['lcity'];">
                     <div class="form-group">
                       <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
                       ${structure:field.serialize()}
@@ -343,7 +345,7 @@
             <div class="g-recaptcha" data-sitekey="6Le-KA8TAAAAAFs3sUAkXLT03_YHoHq_Oo6COszT"></div>
             <hr />
 
-            <div class="col-md-4">
+            <div class="col-md-5">
               <button class="btn btn-primary"
                 id="request_account_submit" name="submit" type="submit"
                 value="submit">Submit Registration Request</button>

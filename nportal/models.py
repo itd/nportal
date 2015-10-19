@@ -47,7 +47,7 @@ class UserAccountModel(Base):
     suffix = Column(String(32), nullable=True)      ## III
 
     street = Column(Text)       ## 123 No Way
-    l = Column(String(128))     ## Golden
+    lcity = Column(String(128))     ## Golden
     st = Column(String(400))    ## Colorado
     postalCode = Column(String(64))  ## 80401
     country = Column(String(64))     ## USA

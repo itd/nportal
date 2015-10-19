@@ -159,13 +159,13 @@ class AddAccountSchema(colander.Schema):
         oid='street'
     )
 
-    l = colander.SchemaNode(
+    lcity = colander.SchemaNode(
         colander.String(),
         title='City',
         description='',
         validator=colander.Length(min=1, max=128),
         widget=widget.TextInputWidget(),
-        oid='l'
+        oid='lcity'
     )
 
     st = colander.SchemaNode(

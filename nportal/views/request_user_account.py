@@ -218,14 +218,13 @@ def _add_new_user_request(appstruct, request):
     now = datetime.now()
 
     unid = hashids.encode(int(unid))
-    #titlePrefix = ai['titlePrefix'].decode('utf-8')
     givenName = ai['givenName'].decode('utf-8')
     middleName = ai['middleName'].decode('utf-8')
     sn = ai['sn'].decode('utf-8')
     suffix = ai['suffix'].decode('utf-8')
     cn = ai['cn'].decode('utf-8')
     street = ai['street'].decode('utf-8')
-    l = ai['l'].decode('utf-8')
+    lcity = ai['lcity'].decode('utf-8')
     st = ai['st'].decode('utf-8')
     postalCode = ai['postalCode'].decode('utf-8')
     country = ai['country'].decode('utf-8')
@@ -237,8 +236,7 @@ def _add_new_user_request(appstruct, request):
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
     citizenOf = list(ai['citizenOf'])
-    birthCountry = [i for i in ai['birthCountry']]
-    #nrelExistingAccount = ai['nrelExistingAccount']
+    birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
     justification = ai['justification']
@@ -251,14 +249,13 @@ def _add_new_user_request(appstruct, request):
 
     submission = UserAccountModel(
         unid=unid,
-        # titlePrefix=titlePrefix,
         givenName=givenName,
         middleName=middleName,
         sn=sn,
         suffix=suffix,
         cn=cn,
         street=street,
-        l=l,
+        lcity=lcity,
         st=st,
         postalCode=postalCode,
         country=country,
@@ -271,7 +268,6 @@ def _add_new_user_request(appstruct, request):
         citizenStatus=citizenStatus,
         citizenOf=citizenOf,
         birthCountry=birthCountry,
-        #nrelExistingAccount=nrelExistingAccount,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,
         justification=justification,
