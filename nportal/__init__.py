@@ -17,9 +17,13 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
+    # Testing only. Change this out when in production
     req_session_factory = SignedCookieSessionFactory('somerandomstringforthereq')
+
+    # CAPTCHA TESTING: Change these out when in production:
     config = Configurator(settings=settings,
                           session_factory=req_session_factory)
+
     config.include('pyramid_chameleon')
 
     #config.add_route('login', '/login')

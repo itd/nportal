@@ -13,8 +13,13 @@
 
           <h2>ESIF account registration request <i>- Mock-up</i></h2>
           <p>
-
           </p>
+
+          <ul id="flashmessages" tal:condition="request.session.peek_flash()">
+            <li tal:repeat="msg request.session.pop_flash()">
+              <span tal:content="msg"></span>
+            </li>
+          </ul>
 
 
           <form action="${form.action}" method="POST" id="${form.form_id}" accept-charset="utf-8" class="deform">
@@ -333,7 +338,11 @@
 
 
           <div class="row reg-form-submit-section"><!--! buttons -->
+
+            <hr /><!-! recaptcha widget -->
+            <div class="g-recaptcha" data-sitekey="6Le-KA8TAAAAAFs3sUAkXLT03_YHoHq_Oo6COszT"></div>
             <hr />
+
             <div class="col-md-4">
               <button class="btn btn-primary"
                 id="request_account_submit" name="submit" type="submit"
@@ -343,6 +352,7 @@
               <a href="./" class="btn btn-default" role="button">Cancel</a>
             </div>
           </div>
+
 
         </form>
 

@@ -2,6 +2,8 @@ import os
 from datetime import datetime
 import string
 from hashids import Hashids
+import requests
+
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
 
@@ -14,7 +16,8 @@ from pyramid.httpexceptions import (
     )
 
 from pyramid.session import SignedCookieSessionFactory
-from pyramid.config import Configurator
+
+from pyramid.config import (Configurator, settings)
 
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer, render, render_to_response
@@ -103,11 +106,12 @@ class AccountRequestView(object):
 
         ###
         # instantiate our colander schema
-        schema = AddAccountSchema(validator=uid_validator).bind(
+        schema = AddAccountSchema().bind(   ## validator=uid_validator
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
         )
+        # self.request.session.flash('')
         request = self.request
         session = request.session
         Form.set_zpt_renderer(search_path)
@@ -134,27 +138,42 @@ class AccountRequestView(object):
 
             # schema = schema(validator=uid_validator)
             # create a deform form object from the schema
-            sform = Form(schema)
+            sform = Form(schema,
+                         action=request.route_url('request_user_account'),
+                         form_id='deformRegform')
 
             try:
                 # try to validate the submitted values
                 captured = sform.validate(controls)
-                # request.session.flash("It submitted! (not really)")
-                # submit the data to be added to be recorded,
-                # return a unique identifier - unid
-                unid = _add_new_user_request(captured, request)
-
-                view_url = request.route_url('request_received_view',
-                                             unid=unid)
-
-                resp = HTTPMovedPermanently(location=view_url)
-                return resp
-                # self.request_received_view(dict(title=title,
-                #                                 givenName=givenName))
 
             except ValidationFailure as e:
                 # the submitted values could not be validated
-                return dict(form=form)
+                flash_msg = u"Please address the errors indicated below!"
+                self.request.session.flash(flash_msg)
+                return dict(form=sform)
+
+            # data validates, now does it recaptcha?
+            # recaptcha
+            # look for g-recaptcha-response
+            # and send to https://www.google.com/recaptcha/api/siteverify
+            cap = grecaptcha_verify(request)
+            if cap['status'] is False:
+                #  request.session.flash('please try again')
+                flash_msg = "The CAPTCHA failed. Please try again."
+                self.request.session.flash(flash_msg)
+                return dict(form=sform)
+
+            # The checks passed.
+            # request.session.flash("It submitted! (not really)")
+            # submit the data to be added to be recorded,
+            # return a unique identifier - unid
+            unid = _add_new_user_request(captured, request)
+
+            view_url = request.route_url('request_received_view',
+                                         unid=unid)
+            resp = HTTPMovedPermanently(location=view_url)
+            #self.request_received_view(dict(title=title,
+            #                                givenName=givenName))
 
         else:
             # not submitted, render form
@@ -176,12 +195,13 @@ class AccountRequestView(object):
         if u_data is None:
             title = "Account Request Submission Error"
             flash_msg = "There was an error processing the request"
-            return dict(title=title, flash_msg=flash_msg, success=False)
+            self.request.session.flash(flash_msg)
+            return dict(title=title, success=False)
 
         title = "Account Request Successfully Submitted"
         flash_msg = "A request has been submitted."
-
-        return dict(title=title, flash_msg=flash_msg,
+        self.request.session.flash(flash_msg)
+        return dict(title=title,
                     data=u_data,
                     success=True)
 
@@ -196,17 +216,9 @@ def _add_new_user_request(appstruct, request):
 
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
-    cou = None
-    stor = None
-    # cyber = None
-    if ai['cou']:
-        couTimestamp = now
-    if ai['stor']:
-        storTimestamp = now
-    # if ai['cyber']:
-    #     cyberTimestamp = now
+
     unid = hashids.encode(int(unid))
-    titlePrefix = ai['titlePrefix'].decode('utf-8')
+    #titlePrefix = ai['titlePrefix'].decode('utf-8')
     givenName = ai['givenName'].decode('utf-8')
     middleName = ai['middleName'].decode('utf-8')
     sn = ai['sn'].decode('utf-8')
@@ -231,7 +243,11 @@ def _add_new_user_request(appstruct, request):
     preferredUID = ai['preferredUID']
     justification = ai['justification']
     comments = ai['comments']
+    couTimestamp = now
+    storTimestamp = now
     subTimestamp = now
+
+    import pdb; pdb.set_trace()
 
     submission = UserAccountModel(
         unid=unid,
@@ -266,6 +282,27 @@ def _add_new_user_request(appstruct, request):
         )
     # write the data
 
+
     DBSession().add(submission)
     # return the unid for processing in next form
     return str(unid)
+
+
+def grecaptcha_verify(request):
+    if request.method == 'POST':
+        settings = request.registry.settings
+        response = {}
+        data = request.POST
+        captcha_rs = data.get('g-recaptcha-response')
+        url = "https://www.google.com/recaptcha/api/siteverify"
+        params = {
+            'secret': settings['captcha_sec'],
+            'response': captcha_rs,
+            'remoteip': request.client_addr
+        }
+        verify_rs = requests.get(url, params=params, verify=True)
+        verify_rs = verify_rs.json()
+        response["status"] = verify_rs.get("success", False)
+        response['message'] = verify_rs.get('error-codes', None) or "Unspecified error."
+
+        return response
