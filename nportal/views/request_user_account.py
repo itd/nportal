@@ -33,7 +33,7 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    UserAccountModel
+    UserAccount
     )
 
 from schemas import AddAccountSchema
@@ -41,9 +41,8 @@ from validators import uid_validator
 from .lists import (us_states,
                     country_codes,
                     title_prefixes,
-                    cou_policy,
-                    stor_policy,
-                    cyber_policy)
+                    has_account,
+                    )
 
 # sqlalchemy setup
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
@@ -110,6 +109,7 @@ class AccountRequestView(object):
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
+            has_account=has_account
         )
         # self.request.session.flash('')
         request = self.request
@@ -188,7 +188,7 @@ class AccountRequestView(object):
     def request_received_view(self):
         unid = self.request.matchdict['unid']
         session = DBSession()
-        u_data = session.query(UserAccountModel).filter_by(unid=unid).first()
+        u_data = session.query(UserAccount).filter_by(unid=unid).first()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
@@ -236,7 +236,7 @@ def _add_new_user_request(appstruct, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenOf = list(ai['citizenOf'])
+    citizenList = list(ai['citizenList'])
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -248,7 +248,7 @@ def _add_new_user_request(appstruct, request):
 
     import pdb; pdb.set_trace()
 
-    submission = UserAccountModel(
+    submission = UserAccount(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
@@ -267,7 +267,7 @@ def _add_new_user_request(appstruct, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        citizenOf=citizenOf,
+        citizenList=citizenList,
         birthCountry=birthCountry,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,

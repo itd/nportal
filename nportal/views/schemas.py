@@ -16,9 +16,7 @@ from .lists import (title_prefixes,
                     citizen_types,
                     employer_types,
                     country_codes,
-                    cou_policy,
-                    stor_policy,
-                    cyber_policy
+                    has_account,
                     )
 
 
@@ -264,9 +262,9 @@ class AddAccountSchema(colander.Schema):
         oid='citizenStatus'
     )
 
-    citizenOf = colander.SchemaNode(
+    citizenList = colander.SchemaNode(
         colander.Set(),
-        title='Citizen of',
+        title='I am a citizen of...',
         description='Please enter/select your country(s) of citizenship',
         validator=valid_countries,
         widget=widget.Select2Widget(
@@ -287,16 +285,15 @@ class AddAccountSchema(colander.Schema):
         oid='birthCountry',
     )
 
-    # nrelExistingAccount = colander.SchemaNode(
-    #     colander.Boolean(),
-    #     title='Existing NREL Account?',
-    #     description="If you already have an NREL account, or have used "
-    #         "an NREL network or HPC account in the past, check this.",
-    #     widget=deform.widget.CheckboxWidget(),
-    #     missing=unicode(''),
-    #     label='I have an Existing or Previous NREL Account',
-    #     oid='nrelExistingAccount'
-    # )
+    isnreluser = colander.SchemaNode(
+        colander.String(),
+        title='Existing NREL Account?',
+        description="Select the option that is most true for you.",
+        widget=deform.widget.RadioChoiceWidget(values=has_account),
+        missing=unicode(''),
+        label='Existing or Previous ESIF HPC UserID',
+        oid='isnreluser'
+    )
 
     nrelUserID = colander.SchemaNode(
         colander.String(),

@@ -34,7 +34,7 @@ class SiteModel(Base):
 Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 
 
-class UserAccountModel(Base):
+class UserAccount(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
@@ -62,17 +62,16 @@ class UserAccountModel(Base):
 
     citizenStatus = Column(String(10)) ##
     #citizenOf = Column(Text)  ##
-    citizenOf = relationship("CitizenOf",
-                         backref='user'
-                         )
-    #
-    #                      lazy='dynamic',
-    #                      cascade="all, delete",
-    #                      passive_deletes=True,
+    citizenList = relationship("CitizenList",
+                                backref='user_id',
+                                lazy='dynamic',
+                                cascade="all, delete",
+                                passive_deletes=True,
+                                )
                          # secondary=user_citizen,
     birthCountry = Column(Text)  ##
 
-    nrelExistingAccount = Column(Boolean)  ##
+    # nrelExistingAccount = Column(Boolean)  ##
     nrelUserID = Column(String(16)) ## kbendl
     preferredUID = Column(String(16)) ## kbendl
 
@@ -97,18 +96,16 @@ class UserAccountModel(Base):
 #                      )
 
 
-class CitizenOf(Base):
+class CitizenList(Base):
     """
-    List of citizenships for a user
+    List of citizenships for users
     """
-    __tablename__ = 'citizenof'
+    __tablename__ = 'citizenlist'
     id = Column(Integer, primary_key=True)
     countrycode = Column(String)
-    user = relationship("UserAccountModel", backref='bt_ids', order_by=id))
-
-    # user_id = Column(Integer, ForeignKey('user.id'),
-    #                  nullable=False,
-    #                  index=True)
+    user_ref = Column(Integer, ForeignKey('user.id'),
+                     nullable=False,
+                     index=True)
 
 
     def __repr__(self):

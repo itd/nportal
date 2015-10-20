@@ -252,7 +252,7 @@
               ${structure:field.serialize()}
               <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
             </div>
-            <div class="form-group" tal:define="field form['citizenOf'];">
+            <div class="form-group" tal:define="field form['citizenList'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
               ${structure:field.serialize()}
               <span class="help" tal:condition="field.description">${field.description}</span>
@@ -273,8 +273,20 @@
           <fieldset class="account-q">
             <legend>Do you Have an NREL/ESIF HPC Account?<span class="req">*</span></legend>
             <p>Select the option that is most correct for you:<span class="req">*</span></p>
-            <p><input type="radio" name="isnreluser" id="isnreluser1" value="1" /> I already have (or have previously had) an ESIF HPC NREL account.</p>
-            <p><input type="radio" name="isnreluser"  id="isnreluser0" value="0" /> I need a new ESIF HPC NREL account.</p>
+            <!--!<p><input type="radio" name="isnreluser" id="isnreluser1" value="1" /> I already have (or have previously had) an ESIF HPC NREL account.</p>-->
+            <!--!<p><input type="radio" name="isnreluser"  id="isnreluser0" value="0" /> I need a new ESIF HPC NREL account.</p>-->
+
+
+
+            <div class="form-group" tal:define="field form['isnreluser'];">
+              <h5 for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></h5>
+              ${structure:field.serialize()}
+              <p class="help" tal:condition="field.description">
+                 ${field.description}
+              </p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+            </div>
+
           </fieldset>
 
 
@@ -286,16 +298,6 @@
             <legend>NREL/ESIF HPC Account Application Info</legend>
             <p>If you are an existing NREL user, or have previously had an NREL account, fill in the field below.</p>
 
-            <!--!
-            <div class="form-group" tal:define="field form['nrelExistingAccount'];">
-              <h5 for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-              ${structure:field.serialize()}
-              <p class="help" tal:condition="field.description">
-                 ${field.description}
-              </p>
-              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-            </div>
-            -->
 
             <div class="form-group" tal:define="field form['nrelUserID'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
