@@ -256,7 +256,6 @@ country_codes = [
     ('UKR', 'Ukraine'),
     ('ARE', 'United Arab Emirates'),
     ('GBR', 'United Kingdom'),
-    ('USA', 'United States'),
     ('UMI', 'United States Minor Outlying Islands'),
     ('URY', 'Uruguay'),
     ('UZB', 'Uzbekistan'),
