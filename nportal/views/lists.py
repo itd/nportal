@@ -357,6 +357,12 @@ title_prefixes = [
 
 true_false = ((True, 'Yes'), (False, 'No'))
 
+has_account = (('new', 'I have -or have previous used- '
+                       'an NREL or ESIF HPC UserID'),
+               ('existing', 'I have never had an NREL or ESIF HPC UserID, '
+                            'and need one.')
+               )
+
 citizen_types = (('us', 'U.S. Citizen'),
                  ('multi', 'U.S. Citizen with Multiple Citizenships'),
                  ('lpr', 'U.S. Lawful Permanent Resident'),

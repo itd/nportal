@@ -8,11 +8,11 @@
 
 $(document).ready(function(){
     $("input[name$='isnreluser']").click(function() {
-      if($(this).val()=='0') {
+      if($(this).val()==='existing') {
         $("fieldset#existing-account").hide();
         $("fieldset#new-account").show();
       }
-      if($(this).val()=='1') {
+      if($(this).val()==='new') {
         $("fieldset#existing-account").show();
         $("fieldset#new-account").hide();
       }
