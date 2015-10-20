@@ -3,6 +3,7 @@ from datetime import datetime
 import string
 from hashids import Hashids
 import requests
+import transaction
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
@@ -33,7 +34,9 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    UserAccount
+    UserRequest,
+    CountryCodes,
+    #Citizenship
     )
 
 from schemas import AddAccountSchema
@@ -169,12 +172,12 @@ class AccountRequestView(object):
             # submit the data to be added to be recorded,
             # return a unique identifier - unid
             unid = _add_new_user_request(captured, request)
-
             view_url = request.route_url('request_received_view',
                                          unid=unid)
-            resp = HTTPMovedPermanently(location=view_url)
-            #self.request_received_view(dict(title=title,
-            #                                givenName=givenName))
+            return HTTPFound(view_url)
+            # return HTTPMovedPermanently(location=view_url)
+            # return self.request_received_view()
+            # return view_url
 
         else:
             # not submitted, render form
@@ -188,7 +191,7 @@ class AccountRequestView(object):
     def request_received_view(self):
         unid = self.request.matchdict['unid']
         session = DBSession()
-        u_data = session.query(UserAccount).filter_by(unid=unid).first()
+        u_data = session.query(UserRequest).filter_by(unid=unid).first()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
@@ -214,6 +217,7 @@ def _add_new_user_request(appstruct, request):
     unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
     ai = appstruct.items()
     ai = dict(ai)
+    sess = DBSession()
 
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
@@ -236,7 +240,9 @@ def _add_new_user_request(appstruct, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenList = list(ai['citizenList'])
+    citizenships = [sess.query(CountryCodes
+                    ).filter(CountryCodes.code == i).one()
+                    for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -246,9 +252,7 @@ def _add_new_user_request(appstruct, request):
     storTimestamp = now
     subTimestamp = now
 
-    import pdb; pdb.set_trace()
-
-    submission = UserAccount(
+    submission = UserRequest(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
@@ -267,7 +271,7 @@ def _add_new_user_request(appstruct, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        citizenList=citizenList,
+        citizenships=citizenships,
         birthCountry=birthCountry,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,
@@ -277,10 +281,10 @@ def _add_new_user_request(appstruct, request):
         couTimestamp=couTimestamp,
         storTimestamp=storTimestamp
         )
+
     # write the data
-
-
     DBSession().add(submission)
+    transaction.commit()
     # return the unid for processing in next form
     return str(unid)
 

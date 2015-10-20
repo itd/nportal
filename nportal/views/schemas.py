@@ -262,16 +262,16 @@ class AddAccountSchema(colander.Schema):
         oid='citizenStatus'
     )
 
-    citizenList = colander.SchemaNode(
+    citizenships = colander.SchemaNode(
         colander.Set(),
-        title='I am a citizen of...',
-        description='Please enter/select your country(s) of citizenship',
+        title='Citizenships',
+        description='Please select your country or countries of citizenship',
         validator=valid_countries,
         widget=widget.Select2Widget(
             values=country_codes,
             multiple=True,
             ),
-        oid='citizenOf',
+        oid='citizenships',
     )
 
     #   birthCountry

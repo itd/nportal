@@ -34,11 +34,27 @@ class SiteModel(Base):
 Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 
 
-class UserAccount(Base):
-    __tablename__ = 'user'
+user_citizen = Table('user_citizen', Base.metadata,
+                     Column('id', Integer, nullable=False,
+                            unique=True, primary_key=True),
+                     Column('user_id', String,
+                            ForeignKey('user_request.unid',
+                                       ondelete='CASCADE'),
+                            index=True),
+                     Column('code', String,
+                            ForeignKey('countrycodes.code',
+                                       ondelete='CASCADE'),
+                            index=True)
+                     )
+
+
+class UserRequest(Base):
+    __tablename__ = 'user_request'
 
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
-    unid = Column(Text, nullable=False, unique=True, primary_key=True)  ## OjMvAN2RERnRP
+    ## unid - uniq id -  looks like: OjMvAN2RERnRP
+    unid = Column(String, nullable=False, unique=True, primary_key=True)
+    UserID = Column(String(16), nullable=True)  ## to be assigned by approver
     cn = Column(Text)           ## Kurt Bendl
     titlePrefix = Column(Text)    ## Dr.
     givenName = Column(String(64))  ## Kurt
@@ -62,18 +78,20 @@ class UserAccount(Base):
 
     citizenStatus = Column(String(10)) ##
     #citizenOf = Column(Text)  ##
-    citizenList = relationship("CitizenList",
-                                backref='user_id',
+    citizenships = relationship("CountryCodes",
+                                backref='user',
                                 lazy='dynamic',
+                                secondary=user_citizen,
                                 cascade="all, delete",
-                                passive_deletes=True,
+                                passive_deletes=True
                                 )
-                         # secondary=user_citizen,
+                                #order_by="Citizenship.id",
+                                #secondary=user_citizen,
     birthCountry = Column(Text)  ##
 
     # nrelExistingAccount = Column(Boolean)  ##
-    nrelUserID = Column(String(16)) ## kbendl
-    preferredUID = Column(String(16)) ## kbendl
+    nrelUserID = Column(String(16), nullable=True) ## kbendl
+    preferredUID = Column(String(16), nullable=True) ## kbendl
 
     justification = Column(Text)  ##
     comments = Column(Text, nullable=True)  ##
@@ -84,30 +102,37 @@ class UserAccount(Base):
     cyberTimestamp = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return "<User(name='%s', fullname='%s', password='%s')>" % (
+        return "<UserRequest(name='%s', fullname='%s', password='%s')>" % (
                 self.id, self.preferredUID, self.unid, self.subTimestamp)
 
 
-# user_citizen = Table('user_citizen', Base.metadata,
-#                      Column('user_id', Integer,
-#                             ForeignKey('user.id',ondelete='CASCADE'),
-#                             primary_key=True),
-#                      Column('country', String)
-#                      )
+# class Citizenship(Base):
+#     """
+#     List of citizenships for users
+#     """
+#     __tablename__ = 'citizenships'
+#     id = Column(Integer, primary_key=True)
+#     code = Column(String)
+#
+#     user_id = Column(Integer, ForeignKey('user.id'))
+#     # user = relationship("UserRequest", backref=backref('citizenships', order_by=id))
+#     # user_ref = Column(Integer, ForeignKey('user.id'),
+#     #                  nullable=False,
+#     #                  index=True)
+#
+#     def __repr__(self):
+#         return "<CitizenList(code='%s', userid='%s)>" % (
+#                 self.code, self.user_ref)
 
 
-class CitizenList(Base):
+class CountryCodes(Base):
     """
-    List of citizenships for users
+    A list of country codes, including None
     """
-    __tablename__ = 'citizenlist'
-    id = Column(Integer, primary_key=True)
-    countrycode = Column(String)
-    user_ref = Column(Integer, ForeignKey('user.id'),
-                     nullable=False,
-                     index=True)
-
+    __tablename__ = 'countrycodes'
+    code = Column(String, unique=True, primary_key=True)
+    name = Column(String, unique=True)
 
     def __repr__(self):
-        return "<CitizenOf(name='%s', fullname='%s', password='%s')>" % (
-                self.id, self.countrycode, self.user_id)
+        return "<CountryCodes(code='%s', name='%s')>" % (self.code, self.name)
+
