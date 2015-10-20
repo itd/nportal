@@ -164,7 +164,8 @@
     </div>
   </div>
 
-  <div id="message" tal:condition="request.session.peek_flash()">
+  <div id="message" class="message-block"
+      tal:condition="request.session.peek_flash()">
       <p tal:repeat="message request.session.pop_flash()">
           ${message}
       </p>
