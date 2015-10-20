@@ -54,7 +54,8 @@ class UserRequest(Base):
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
     ## unid - uniq id -  looks like: OjMvAN2RERnRP
     unid = Column(String, nullable=False, unique=True, primary_key=True)
-    UserID = Column(String(16), nullable=True)  ## to be assigned by approver
+    ## to be assigned by approver
+    UserID = Column(String, nullable=True, default=None)
     cn = Column(Text)           ## Kurt Bendl
     titlePrefix = Column(Text)    ## Dr.
     givenName = Column(String(64))  ## Kurt
