@@ -6,32 +6,36 @@
   <tal:if tal:condition="success">
     <div id="request_received_content">
 
-      ${data.citizenOf}
+      <div class="row">
+        <div class="col-md-10 col-xs-12">
+          <p>${data.givenName}, Your request was received and will be processed soon.</p>
 
-      <p>${data.givenName}, Your request was received and will be processed soon.</p>
+          <h2>What will happen next...</h2>
 
-      <h2>What will happen next...</h2>
+          <p>Expect to receive an email directing you to set up your remote access.</p>
 
-      <p>Expect to receive an email directing you to set up your remote access.</p>
-
-      <p>To gain remote access, you will need to set up a multi-factor toen. You can do this on your Android or Apple mobile device or tablet.</p>
-      <h3>While you are waiting...</h3>
-      <p>Please download one of the following applications to your IOS or Android device:</p>
-      <ul>
-        <li><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">FreeOTP Authenticator for Android Phones</a></li>
-        <li><a href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395">FreeOTP for iPhone</a></li>
-      </ul>
-
+          <p>To gain remote access, you will need to set up a multi-factor toen. You can do this on your Android or Apple mobile device or tablet.</p>
+          <h3>While you are waiting...</h3>
+          <p>Please download one of the following applications to your IOS or Android device:</p>
+          <ul>
+            <li><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp">FreeOTP Authenticator for Android Phones</a></li>
+            <li><a href="https://itunes.apple.com/us/app/freeotp-authenticator/id872559395">FreeOTP for iPhone</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </tal:if>
 
   <tal:if tal:condition="not:success">
     <div id="request_received_content">
+      <div class="row">
+        <div class="col-sm-10 col-xs-12">
+          <h2>There is an error in the request</h2>
 
-      <h2>There is an error in the request</h2>
+          <p>Please <a href="">re-submit your account request</a>.</p>
 
-      <p>Please <a href="">re-submit your account request</a>.</p>
-
+        </div>
+      </div>
     </div>
   </tal:if>
 
