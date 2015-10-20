@@ -156,12 +156,13 @@ class AccountRequestView(object):
             # recaptcha
             # look for g-recaptcha-response
             # and send to https://www.google.com/recaptcha/api/siteverify
-            cap = grecaptcha_verify(request)
-            if cap['status'] is False:
-                #  request.session.flash('please try again')
-                flash_msg = "The CAPTCHA failed. Please try again."
-                self.request.session.flash(flash_msg)
-                return dict(form=sform)
+
+            # cap = grecaptcha_verify(request)
+            # if cap['status'] is False:
+            #     #  request.session.flash('please try again')
+            #     flash_msg = "The CAPTCHA failed. Please try again."
+            #     self.request.session.flash(flash_msg)
+            #     return dict(form=sform)
 
             # The checks passed.
             # request.session.flash("It submitted! (not really)")
@@ -218,18 +219,18 @@ def _add_new_user_request(appstruct, request):
     now = datetime.now()
 
     unid = hashids.encode(int(unid))
-    givenName = ai['givenName'].decode('utf-8')
-    middleName = ai['middleName'].decode('utf-8')
-    sn = ai['sn'].decode('utf-8')
-    suffix = ai['suffix'].decode('utf-8')
-    cn = ai['cn'].decode('utf-8')
-    street = ai['street'].decode('utf-8')
-    lcity = ai['lcity'].decode('utf-8')
-    st = ai['st'].decode('utf-8')
-    postalCode = ai['postalCode'].decode('utf-8')
-    country = ai['country'].decode('utf-8')
-    mail = ai['mail'].decode('utf-8')
-    mailPreferred = ai['mailPreferred'].decode('utf-8')
+    givenName = ai['givenName']
+    middleName = ai['middleName']
+    sn = ai['sn']
+    suffix = ai['suffix']
+    cn = ai['cn']
+    street = ai['street']
+    lcity = ai['lcity']
+    st = ai['st']
+    postalCode = ai['postalCode']
+    country = ai['country']
+    mail = ai['mail']
+    mailPreferred = ai['mailPreferred']
     phone = ai['phone']
     cell = ai['cell']
     employerType = ai['employerType']
