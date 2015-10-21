@@ -153,7 +153,7 @@ class AccountRequestView(object):
                 # the submitted values could not be validated
                 flash_msg = u"Please address the errors indicated below!"
                 self.request.session.flash(flash_msg)
-                return dict(form=sform)
+                return dict(form=sform, page_title=self.title)
 
             # data validates, now does it recaptcha?
             # recaptcha
@@ -172,8 +172,9 @@ class AccountRequestView(object):
             # submit the data to be added to be recorded,
             # return a unique identifier - unid
             unid = _add_new_user_request(captured, request)
+            title = 'Request Successfully submitted '
             view_url = request.route_url('request_received_view',
-                                         unid=unid)
+                                         unid=unid, page_title=title)
             return HTTPFound(view_url)
             # return HTTPMovedPermanently(location=view_url)
             # return self.request_received_view()
@@ -181,7 +182,7 @@ class AccountRequestView(object):
 
         else:
             # not submitted, render form
-            return dict(form=form)
+            return dict(form=form, page_title=self.title)
 
 
     # http://goo.gl/KnNbAK
