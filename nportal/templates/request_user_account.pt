@@ -301,9 +301,9 @@
           <hr />
 
           <div class="col-md-5">
-            <button class="btn btn-primary"
+            <input class="btn btn-primary"
               id="request_account_submit" name="submit" type="submit"
-              value="submit">Submit Registration Request</button>
+              value="Submit Registration Request" />
           </div>
           <div class="col-md-3">
             <a href="./" class="btn btn-default" role="button">Cancel</a>

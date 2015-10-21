@@ -171,7 +171,7 @@
       </div>
 
       <div class="col-xs-12 col-sm-12 col-md-8">
-        <div id="message" class="message-block alert-danger"
+        <div id="message" class="message-block alert-info"
           tal:condition="request.session.peek_flash()">
           <p tal:repeat="message request.session.pop_flash()">
             ${message}
