@@ -59,8 +59,6 @@
 
   <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}"></script>
 
-  <script src="${request.static_url('nportal:static/js/hidefields.js')}"></script>
-
   <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
@@ -207,6 +205,6 @@
 
 </footer>
 
-
 </body>
+  <script src="${request.static_url('nportal:static/js/hidefields.js')}"></script>
 </html>

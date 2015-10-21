@@ -231,8 +231,8 @@
 
 
         <fieldset class="account-q">
-          <legend>Do you Have an NREL/ESIF HPC Account?<span class="req">*</span></legend>
-          <p>Select the option that is most correct for you:<span class="req">*</span></p>
+          <legend>Do you Have an NREL/ESIF HPC Account?</legend>
+          <p>Select the option that is most true for you<span class="req">*</span></p>
 
           <div class="form-group" tal:define="field form['isnreluser'];">
             <h5 for="${field.name}">${field.title}<span class="req" tal:condition="field.required">*</span></h5>
@@ -247,13 +247,9 @@
 
 
 
-
-
-
         <fieldset id="existing-account">
           <legend>NREL/ESIF HPC Account Application Info</legend>
           <p>If you are an existing NREL user, or have previously had an NREL account, fill in the field below.</p>
-
 
           <div class="form-group" tal:define="field form['nrelUserID'];">
             <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
@@ -262,7 +258,6 @@
               ${structure:field.description}</p>
             <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
           </div>
-
         </fieldset>
 
         <fieldset id="new-account">
@@ -275,7 +270,6 @@
             <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
           </div>
 
-
           <div class="form-group" tal:define="field form['preferredUID'];">
             <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
             ${structure:field.serialize()}
@@ -284,6 +278,9 @@
             <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
           </div>
         </fieldset>
+
+
+
 
         <fieldset id="user-comments">
           <legend>New NREL/ESIF HPC Account Applicant</legend>

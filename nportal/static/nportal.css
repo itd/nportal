@@ -153,10 +153,11 @@ form .deform-readonly-text {
   padding: 0 1em;
 }
 
-fieldset#existing-account,
-fieldset#new-account{
-  display: none;
-}
+/*fieldset#existing-account,*/
+/*fieldset#new-account {*/
+  /*display: none;*/
+/*}*/
+
 .regform .reg-form-submit-section {
   margin-top: 4em;
 }

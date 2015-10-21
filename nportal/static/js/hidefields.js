@@ -6,15 +6,35 @@
     based on a radio button click.
  */
 
+
 $(document).ready(function(){
-    $("input[name$='isnreluser']").click(function() {
-      if($(this).val()==='existing') {
-        $("fieldset#existing-account").hide();
-        $("fieldset#new-account").show();
-      }
-      if($(this).val()==='new') {
-        $("fieldset#existing-account").show();
-        $("fieldset#new-account").hide();
-      }
-    });
+
+
+  $("input[name$='isnreluser']").click(function() {
+    if($(this).val() === 'existing') {
+      $("fieldset#existing-account").hide();
+      $("fieldset#new-account").show();
+    }
+    if($(this).val() === 'new') {
+      $("fieldset#existing-account").show();
+      $("fieldset#new-account").hide();
+    }
+  });
+
+/*
+  $("fieldset#existing-account").hide();
+  $("fieldset#new-account").hide();
+  var sel = $('input[name$="isnreluser"]').val();
+  if (sel === 'existing') {
+    $("fieldset#existing-account").show();
+    $("fieldset#new-account").hide();
+  } else if  (sel === 'new') {
+    $("fieldset#existing-account").hide();
+    $("fieldset#new-account").show();
+  } else {
+    $("fieldset#new-account").hide();
+    $("fieldset#existing-account").hide();
+  }*/
+
+// end document ready
 });
