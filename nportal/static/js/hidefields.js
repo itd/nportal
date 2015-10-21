@@ -9,7 +9,6 @@
 
 $(document).ready(function(){
 
-
   $("input[name$='isnreluser']").click(function() {
     if($(this).val() === 'existing') {
       $("fieldset#existing-account").hide();
@@ -21,20 +20,21 @@ $(document).ready(function(){
     }
   });
 
-/*
-  $("fieldset#existing-account").hide();
-  $("fieldset#new-account").hide();
-  var sel = $('input[name$="isnreluser"]').val();
-  if (sel === 'existing') {
-    $("fieldset#existing-account").show();
-    $("fieldset#new-account").hide();
-  } else if  (sel === 'new') {
-    $("fieldset#existing-account").hide();
-    $("fieldset#new-account").show();
-  } else {
-    $("fieldset#new-account").hide();
-    $("fieldset#existing-account").hide();
-  }*/
-
-// end document ready
 });
+
+//$(document).ready(function (){
+//  validate();
+//  $('#preferredUID', '#nrelUserID').change(validate);
+//});
+//
+//function validate(){
+//  if ($('#preferredUID').val().length   >   0   ||
+//      $('#nrelUserID').val().length  >   0 ) {
+//      $("input[type=submit]").prop("disabled", false);
+//  }
+//  else {
+//      $("input[type=submit]").prop("disabled", true);
+//  }
+//}
+
+
