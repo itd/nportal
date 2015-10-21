@@ -17,6 +17,39 @@ cyber_policy = [
     (False, 'False')
     ]
 
+employment_positions = [
+    ('lab_scientist', 'Laboratory Scientist'),
+    ('lab_staff', 'Lab Support Staff'),
+    ('industry_user', 'Industry User'),
+    ('vendor_support', 'Vendor Support Staff'),
+    ('prof', 'Professor'),
+    ('postdoc', 'Post-doctorate'),
+    ('student', 'Student'),
+    ('other', 'Other')
+    ]
+
+title_prefixes = [
+    ("", "-none-"),
+    ("dr", "Dr."),
+    ("mr", "Mr."),
+    ("ms", "Ms."),
+    ("mrs", "Mrs."),
+    ("miss", "Miss")
+    ]
+
+true_false = ((True, 'Yes'), (False, 'No'))
+
+has_account = (('new', 'I have -or have previous used- '
+                       'an NREL or ESIF HPC UserID'),
+               ('existing', 'I have never had an NREL or ESIF HPC UserID, '
+                            'and need one.')
+               )
+
+citizen_types = (('us', 'U.S. Citizen'),
+                 ('multi', 'U.S. Citizen with Multiple Citizenships'),
+                 ('lpr', 'U.S. Lawful Permanent Resident'),
+                 ('fn', 'Not a U.S. Citizen'))
+
 
 country_codes = [
     (None, ' -- select --'),
@@ -333,39 +366,6 @@ us_states = [
     ("MH", "Marshall Islands"),
     ("PW", "Palau")
     ]
-
-employment_positions = [
-    ('lab_scientist', 'Laboratory Scientist'),
-    ('lab_staff', 'Lab Support Staff'),
-    ('industry_user', 'Industry User'),
-    ('vendor_support', 'Vendor Support Staff'),
-    ('prof', 'Professor'),
-    ('postdoc', 'Post-doctorate'),
-    ('student', 'Student'),
-    ('other', 'Other')
-    ]
-
-title_prefixes = [
-    ("", "-none-"),
-    ("dr", "Dr."),
-    ("mr", "Mr."),
-    ("ms", "Ms."),
-    ("mrs", "Mrs."),
-    ("miss", "Miss")
-    ]
-
-true_false = ((True, 'Yes'), (False, 'No'))
-
-has_account = (('new', 'I have -or have previous used- '
-                       'an NREL or ESIF HPC UserID'),
-               ('existing', 'I have never had an NREL or ESIF HPC UserID, '
-                            'and need one.')
-               )
-
-citizen_types = (('us', 'U.S. Citizen'),
-                 ('multi', 'U.S. Citizen with Multiple Citizenships'),
-                 ('lpr', 'U.S. Lawful Permanent Resident'),
-                 ('fn', 'Not a U.S. Citizen'))
 
 
 XXX_country_codes = [
