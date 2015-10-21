@@ -159,13 +159,12 @@ class AccountRequestView(object):
             # recaptcha
             # look for g-recaptcha-response
             # and send to https://www.google.com/recaptcha/api/siteverify
-
-            # cap = grecaptcha_verify(request)
-            # if cap['status'] is False:
-            #     #  request.session.flash('please try again')
-            #     flash_msg = "The CAPTCHA failed. Please try again."
-            #     self.request.session.flash(flash_msg)
-            #     return dict(form=sform)
+            cap = grecaptcha_verify(request)
+            if cap['status'] is False:
+                #  request.session.flash('please try again')
+                flash_msg = "The CAPTCHA failed. Please try again."
+                self.request.session.flash(flash_msg)
+                return dict(form=sform)
 
             # The checks passed.
             # request.session.flash("It submitted! (not really)")
@@ -204,7 +203,7 @@ class AccountRequestView(object):
             return dict(title=title, success=False)
 
         title = "Account Request Successfully Submitted"
-        flash_msg = "A request has been submitted."
+        flash_msg = "Success! Your request has been submitted."
         self.request.session.flash(flash_msg)
         return dict(title=title,
                     data=u_data,
