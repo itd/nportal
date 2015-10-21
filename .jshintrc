@@ -8,7 +8,7 @@
   "maxdepth": 4,
   "maxstatements": 200,
   "maxcomplexity": 12,
-  "maxlen": 80,
+  "maxlen": 120,
   "maxparams": 5,
 
   "curly": true,
@@ -21,6 +21,8 @@
   "undef": true,
   "unused": "vars",
   "trailing": true,
+  "laxcomma": true,
+  "laxbreak": true,
 
   //"quotmark": true,
   "expr": true,
