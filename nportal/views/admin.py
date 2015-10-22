@@ -79,7 +79,7 @@ def add_base_template(event):
     event.update({'base': base})
 
 
-class AccountRequestView(object):
+class AdminViews(object):
     """
     """
     def __init__(self, request):
@@ -87,7 +87,7 @@ class AccountRequestView(object):
         renderer = get_renderer("../templates/_layout.pt")
         #self.layout = renderer.implementation().macros['layout']
         self.layout = site_layout()
-        self.title = "Account Request Form"
+        self.title = "Admin Views"
 
     @reify
     def account_req_form(self):
@@ -101,9 +101,9 @@ class AccountRequestView(object):
     def reqts(self, request):
         return self.account_req_form.get_widget_resources()
 
-    @view_config(route_name='request_user_account',
+    @view_config(route_name='admin_home',
                  renderer='../templates/request_user_account.pt')
-    def add_new_user_account(self):
+    def admin_home(self):
         ###
 
         ###
@@ -155,22 +155,11 @@ class AccountRequestView(object):
                 self.request.session.flash(flash_msg)
                 return dict(form=sform, page_title=self.title)
 
-            # data validates, now does it recaptcha?
-            # recaptcha
-            # look for g-recaptcha-response
-            # and send to https://www.google.com/recaptcha/api/siteverify
-            cap = grecaptcha_verify(request)
-            if cap['status'] is False:
-                #  request.session.flash('please try again')
-                flash_msg = "The CAPTCHA failed. Please try again."
-                self.request.session.flash(flash_msg)
-                return dict(form=sform)
-
             # The checks passed.
             # request.session.flash("It submitted! (not really)")
             # submit the data to be added to be recorded,
             # return a unique identifier - unid
-            unid = _add_new_user_request(captured, request)
+            unid = _update_user(captured, request)
             title = 'Request Successfully submitted '
             view_url = request.route_url('request_received_view',
                                          unid=unid, page_title=title)
@@ -183,12 +172,19 @@ class AccountRequestView(object):
             # not submitted, render form
             return dict(form=form, page_title=self.title)
 
+    @view_config(route_name='user_list',
+                 renderer='../templates/user_list.pt')
+    def user_list(self):
+        session = DBSession()
+        data = session.query(UserRequest).all()
+        title = "User List"
 
-    # http://goo.gl/KnNbAK
-    # https://pypi.python.org/pypi/hashids/
-    @view_config(route_name='request_received_view',
-                 renderer='../templates/request_received.pt')
-    def request_received_view(self):
+        return dict(title=title,
+                    data=data)
+
+    @view_config(route_name='user_edit',
+                 renderer='../templates/user_edit.pt')
+    def user_edit(self):
         unid = self.request.matchdict['unid']
         session = DBSession()
         u_data = session.query(UserRequest).filter_by(unid=unid).first()
@@ -197,20 +193,19 @@ class AccountRequestView(object):
         # Do a check to ensure user data is there...
         success = False
         if u_data is None:
-            title = "Account Request Submission Error"
+            title = "Edit User Record"
             flash_msg = "There was an error processing the request"
             self.request.session.flash(flash_msg)
             return dict(title=title, success=False)
 
-        title = "Account Request Successfully Submitted"
+        title = "User Record Successfully Edited"
         flash_msg = "Success! Your request has been submitted."
         self.request.session.flash(flash_msg)
         return dict(title=title,
                     data=u_data,
                     success=True)
 
-
-def _add_new_user_request(appstruct, request):
+def _update_user(appstruct, request):
     settings = request.registry.settings
     slt = settings['unid_salt']
     hashids = Hashids(salt=slt)
@@ -290,22 +285,3 @@ def _add_new_user_request(appstruct, request):
     # return the unid for processing in next form
     return str(unid)
 
-
-def grecaptcha_verify(request):
-    if request.method == 'POST':
-        settings = request.registry.settings
-        response = {}
-        data = request.POST
-        captcha_rs = data.get('g-recaptcha-response')
-        url = "https://www.google.com/recaptcha/api/siteverify"
-        params = {
-            'secret': settings['captcha_sec'],
-            'response': captcha_rs,
-            'remoteip': request.client_addr
-        }
-        verify_rs = requests.get(url, params=params, verify=True)
-        verify_rs = verify_rs.json()
-        response["status"] = verify_rs.get("success", False)
-        response['message'] = verify_rs.get('error-codes', None) or "Unspecified error."
-
-        return response

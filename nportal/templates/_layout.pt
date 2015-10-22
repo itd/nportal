@@ -61,6 +61,11 @@
   <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}"></script>
 
   <script src='https://www.google.com/recaptcha/api.js'></script>
+
+  <script type="text/javascript"
+    src="${request.static_url('nportal:static/tablesorter/jquery.tablesorter.js')}"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.css">
+
 </head>
 
 <body class="template-">
