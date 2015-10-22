@@ -63,21 +63,21 @@ class UserRequest(Base):
     sn = Column(String(64))         ## Bendl
     suffix = Column(String(32), nullable=True)      ## III
 
-    street = Column(Text)       ## 123 No Way
+    street = Column(Text, nullable=True, default=None)       ## 123 No Way
     lcity = Column(String(128))     ## Golden
     st = Column(String(400))    ## Colorado
     postalCode = Column(String(64))  ## 80401
     country = Column(String(64))     ## USA
 
-    mail = Column(String(128))  ## xx@nrel.gov
-    mailPreferred = Column(String(128), nullable=True)  ## kurt@tool.net
+    mail = Column(String(128))  ## kurt@tool.net
+    mailPreferred = Column(String(128), nullable=True, default=None)
     phone = Column(String(32))  ## 777-777-7777
-    cell = Column(String(32), nullable=True)  ## 666-666-6666
+    cell = Column(String(32), nullable=True, default=None)  ## 666-666-6666
 
-    employerType = Column(String(32))  ##
-    employerName = Column(String(128))  ##
+    employerType = Column(String(32), nullable=True, default=None)
+    employerName = Column(String(128), nullable=True, default=None)
 
-    citizenStatus = Column(String(10)) ##
+    citizenStatus = Column(String(10), nullable=True, default=None)
     #citizenOf = Column(Text)  ##
     citizenships = relationship("CountryCodes",
                                 backref='user',
@@ -90,17 +90,20 @@ class UserRequest(Base):
                                 #secondary=user_citizen,
     birthCountry = Column(Text)  ##
 
-    # nrelExistingAccount = Column(Boolean)  ##
-    nrelUserID = Column(String(16), nullable=True) ## kbendl
-    preferredUID = Column(String(16), nullable=True) ## kbendl
+    # nrelExistingAccount = Column(Boolean)
+    nrelUserID = Column(String(16), nullable=True, default=None) ## kbendl
+    preferredUID = Column(String(16), nullable=True, default=None) ## kbendl
 
-    justification = Column(Text)  ##
-    comments = Column(Text, nullable=True)  ##
+    justification = Column(Text, nullable=True, default=None)  ##
+    comments = Column(Text, nullable=True, default=None)
 
-    subTimestamp = Column(DateTime, nullable=True)
-    couTimestamp = Column(DateTime, nullable=True)
-    storTimestamp = Column(DateTime, nullable=True)
-    cyberTimestamp = Column(DateTime, nullable=True)
+    subTimestamp = Column(DateTime, nullable=True, default=None)
+
+    couTimestamp = Column(DateTime, nullable=True, default=None)
+    storTimestamp = Column(DateTime, nullable=True, default=None)
+
+    approvalTimestamp = Column(DateTime, nullable=True, default=None)
+    approvedBy = Column(Text, nullable=True, default=None)
 
     def __repr__(self):
         return "<UserRequest(name='%s', fullname='%s', password='%s')>" % (

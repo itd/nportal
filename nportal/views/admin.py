@@ -87,7 +87,7 @@ class AdminViews(object):
         renderer = get_renderer("../templates/_layout.pt")
         #self.layout = renderer.implementation().macros['layout']
         self.layout = site_layout()
-        self.title = "Admin Views"
+        self.title = "User Admin Views"
 
     @reify
     def account_req_form(self):
@@ -102,85 +102,28 @@ class AdminViews(object):
         return self.account_req_form.get_widget_resources()
 
     @view_config(route_name='admin_home',
-                 renderer='../templates/request_user_account.pt')
+                 renderer='../templates/admin_home.pt')
     def admin_home(self):
         ###
 
         ###
-        # instantiate our colander schema
-        schema = AddAccountSchema().bind(   ## validator=uid_validator
-            country_codes_data=country_codes,
-            us_states_data=us_states,
-            title_prefix_data=title_prefixes,
-            has_account=has_account
-        )
-        # self.request.session.flash('')
-        request = self.request
-        session = request.session
-        Form.set_zpt_renderer(search_path)
-
-        # see if a user submitted the form
-        submitted = 'submit' in request.POST
-
-        # get the user email from the POST request, if present
-        user_email = request.POST.get('email', '')
-
-        # get the form control field names and values as a list of tuples
-        controls = request.POST.items()
-
-        # create a deform form object from the schema
-        form = Form(schema,
-                    action=request.route_url('request_user_account'),
-                    form_id='deformRegform'
-                    )
-
-        if submitted:
-            # it's a submission, process it
-            controls = self.request.POST.items()
-            captured = None
-
-            # schema = schema(validator=uid_validator)
-            # create a deform form object from the schema
-            sform = Form(schema,
-                         action=request.route_url('request_user_account'),
-                         form_id='deformRegform')
-
-            try:
-                # try to validate the submitted values
-                captured = sform.validate(controls)
-
-            except ValidationFailure as e:
-                # the submitted values could not be validated
-                flash_msg = u"Please address the errors indicated below!"
-                self.request.session.flash(flash_msg)
-                return dict(form=sform, page_title=self.title)
-
-            # The checks passed.
-            # request.session.flash("It submitted! (not really)")
-            # submit the data to be added to be recorded,
-            # return a unique identifier - unid
-            unid = _update_user(captured, request)
-            title = 'Request Successfully submitted '
-            view_url = request.route_url('request_received_view',
-                                         unid=unid, page_title=title)
-            return HTTPFound(view_url)
-            # return HTTPMovedPermanently(location=view_url)
-            # return self.request_received_view()
-            # return view_url
-
-        else:
-            # not submitted, render form
-            return dict(form=form, page_title=self.title)
+        title="Admin Home"
+        return dict(page_title=self.title, title=title)
 
     @view_config(route_name='user_list',
                  renderer='../templates/user_list.pt')
     def user_list(self):
-        session = DBSession()
-        data = session.query(UserRequest).all()
+        """
+        """
         title = "User List"
+        sess = DBSession()
+        users = sess.query(UserRequest).order_by(UserRequest.sn).all()
+        users = [u.__dict__ for u in users]
+        citz = sess.query(UserRequest).order_by(UserRequest.sn).all()
 
         return dict(title=title,
-                    data=data)
+                    page_title=title,
+                    users=users)
 
     @view_config(route_name='user_edit',
                  renderer='../templates/user_edit.pt')
@@ -188,7 +131,6 @@ class AdminViews(object):
         unid = self.request.matchdict['unid']
         session = DBSession()
         u_data = session.query(UserRequest).filter_by(unid=unid).first()
-        # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
         success = False

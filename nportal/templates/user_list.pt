@@ -1,0 +1,22 @@
+<!--! user_list -->
+<html>
+<body>
+<div metal:use-macro="view.layout">
+<div metal:fill-slot="content" class="main-content">
+
+
+  <div class="row">
+    <h2 tal:content="page_title | nothing"></h2>
+    <p tal:content="page_description | nothing"></p>
+  </div>
+
+  <tal:rep tal:repeat="u users">
+    <p tal:content="u.sn"></p>
+  </tal:rep>
+
+</div>
+</div>
+</body>
+</html>
+
+

@@ -43,9 +43,9 @@ def main(global_config, **settings):
     config.add_route('request_user_account', '/request_user_account')
     config.add_route('request_received_view', '/request_received/{unid}')
 
-    config.add_route('admin_home', '/uapp/')
-    config.add_route('user_list', '/uapp/user')
-    config.add_route('user_edit', '/uapp/user/{unid}')
+    config.add_route('admin_home', '/u')
+    config.add_route('user_list', '/u/user')
+    config.add_route('user_edit', '/u/user/{unid}')
 
     config.scan()
     return config.make_wsgi_app()
