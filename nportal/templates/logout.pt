@@ -1,4 +1,4 @@
-<!--! admin_home -->
+<!--! logout -->
 <html>
 <body>
 <div metal:use-macro="view.layout">
@@ -6,8 +6,11 @@
 
 
   <div class="row">
+    <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+
     <h2 tal:content="page_title | nothing"></h2>
     <p tal:content="page_description | nothing"></p>
+
   </div>
 
 

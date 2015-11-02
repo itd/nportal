@@ -7,8 +7,13 @@ import transaction
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
+from pyramid_ldap3 import get_ldap_connector
 
-# from pyramid.response import Response
+from pyramid.response import Response
+
+from pyramid.view import forbidden_view_config
+from pyramid.security import remember, forget
+
 from pyramid.decorator import reify
 from pyramid.httpexceptions import (
     HTTPMovedPermanently,
@@ -84,8 +89,8 @@ class AdminViews(object):
     """
     def __init__(self, request):
         self.request = request
-        renderer = get_renderer("../templates/_layout.pt")
-        #self.layout = renderer.implementation().macros['layout']
+        # renderer = get_renderer("../templates/_layout.pt")
+        # self.layout = renderer.implementation().macros['layout']
         self.layout = site_layout()
         self.title = "User Admin Views"
 
@@ -98,22 +103,57 @@ class AdminViews(object):
         return Form(schema, buttons=('submit',))
 
     @reify
-    def reqts(self, request):
+    def reqts(self):
         return self.account_req_form.get_widget_resources()
 
     @view_config(route_name='admin_home',
-                 renderer='../templates/admin_home.pt')
+                 renderer='../templates/admin_home.pt',
+                 permission='view')
     def admin_home(self):
-        ###
-
-        ###
-        title="Admin Home"
+        """
+        The URL is /uadmin
+        """
+        title = "Admin Home"
         return dict(page_title=self.title, title=title)
+
+    @view_config(route_name='nportal.logout',
+                 renderer='../templates/logout.pt')
+    def logout(self):
+        headers = forget(self.request)
+        return Response('Logged out', headers=headers)
+
+    @view_config(route_name='nportal.login',
+                 renderer='../templates/login.pt')
+    @forbidden_view_config(renderer='../templates/login.pt')
+    def login(self):
+        request = self.request
+        url = self.request.current_route_url()
+        login = ''
+        password = ''
+        error = ''
+
+        if 'form.submitted' in request.POST:
+            login = request.POST['login']
+            password = request.POST['password']
+            connector = get_ldap_connector(request)
+            data = connector.authenticate(login, password)
+            if data is not None:
+                dn = data[0]
+                headers = remember(request, dn)
+                return HTTPFound('/', headers=headers)
+            error = 'Invalid credentials'
+
+        return dict(
+            login_url=url,
+            login=login,
+            password=password,
+            error=error)
 
     @view_config(route_name='user_list',
                  renderer='../templates/user_list.pt')
     def user_list(self):
         """
+        Path is /uadmin/user
         """
         title = "User List"
         sess = DBSession()
@@ -128,6 +168,9 @@ class AdminViews(object):
     @view_config(route_name='user_edit',
                  renderer='../templates/user_edit.pt')
     def user_edit(self):
+        """
+        /uadmin/user/{unid}
+        """
         unid = self.request.matchdict['unid']
         session = DBSession()
         u_data = session.query(UserRequest).filter_by(unid=unid).first()
@@ -146,6 +189,7 @@ class AdminViews(object):
         return dict(title=title,
                     data=u_data,
                     success=True)
+
 
 def _update_user(appstruct, request):
     settings = request.registry.settings
