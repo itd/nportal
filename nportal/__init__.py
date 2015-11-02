@@ -1,3 +1,4 @@
+import os
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 
@@ -10,12 +11,21 @@ from .models import (
     )
 
 
+def expandvars_dict(settings):
+    """Expands all environment variables in a settings dictionary."""
+    return dict((key, os.path.expandvars(value)) for
+                key, value in settings.iteritems())
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
+
+    # get setting info from OS
+    settings = expandvars_dict(settings)
 
     # Testing only. Change this out when in production
     req_session_factory = SignedCookieSessionFactory('somerandomstringforthereq')
@@ -43,9 +53,9 @@ def main(global_config, **settings):
     config.add_route('request_user_account', '/request_user_account')
     config.add_route('request_received_view', '/request_received/{unid}')
 
-    config.add_route('admin_home', '/u')
-    config.add_route('user_list', '/u/user')
-    config.add_route('user_edit', '/u/user/{unid}')
+    config.add_route('admin_home', '/uadmin')
+    config.add_route('user_list', '/uadmin/user')
+    config.add_route('user_edit', '/uadmin/user/{unid}')
 
     config.scan()
     return config.make_wsgi_app()
