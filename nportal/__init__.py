@@ -12,8 +12,6 @@ from .models import (
     Base,
     )
 
-from pyramid_ldap3 import groupfinder
-
 from pyramid.config import Configurator
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -31,6 +29,8 @@ class RootFactory(object):
 
     def __init__(self, request):
         pass
+
+from security import groupfinder
 
 
 def main(global_config, **settings):
@@ -51,22 +51,27 @@ def main(global_config, **settings):
                           session_factory=req_session_factory)
 
     config.include('pyramid_chameleon')
-    config.include('pyramid_ldap3')
+    # config.include('pyramid_ldap3')
+    config.include('.security')
     config.set_authentication_policy(
-        AuthTktAuthenticationPolicy(
-            'CHANGE_THIS_seekr1t', callback=groupfinder))
-    config.set_authorization_policy(
-        ACLAuthorizationPolicy())
+        AuthTktAuthenticationPolicy('CHANGE_THIS_seekr1t',
+                                    callback=groupfinder))
+    config.set_authorization_policy(ACLAuthorizationPolicy())
+
+    LDAP_READ = settings['ldap_read'],
+    LDAP_PASS = settings['ldap_pass']
 
     config.ldap_setup(
         'ldap://ds1.hpc.nrel.gov',
         bind=settings['ldap_read'],
-        passwd=settings['ldap_pass'])
+        passwd=settings['ldap_pass']
+    )
 
     config.ldap_set_login_query(
-        base_dn='cn=accounts, dc=hpctest, dc=nrel, dc=gov',
+        base_dn='cn=users,cn=accounts,dc=hpctest,dc=nrel,dc=gov',
         filter_tmpl='(uid=%(login)s)',
-        scope=ldap3.SEARCH_SCOPE_SINGLE_LEVEL)
+        scope=ldap3.SEARCH_SCOPE_SINGLE_LEVEL
+    )
 
     config.ldap_set_groups_query(
         base_dn='dc=hpctest, dc=nrel, dc=gov',
