@@ -4,10 +4,12 @@ import string
 from hashids import Hashids
 import requests
 import transaction
+import ldap3
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
-from pyramid_ldap3 import get_ldap_connector
+from nportal.security import get_ldap_connector
+# from pyramid_ldap3 import get_ldap_connector
 
 from pyramid.response import Response
 
@@ -127,7 +129,9 @@ class AdminViews(object):
     @forbidden_view_config(renderer='../templates/login.pt')
     def login(self):
         request = self.request
+        referrer = request.url
         url = self.request.current_route_url()
+        came_from = request.params.get('came_from', referrer)
         login = ''
         password = ''
         error = ''
@@ -136,21 +140,25 @@ class AdminViews(object):
             login = request.POST['login']
             password = request.POST['password']
             connector = get_ldap_connector(request)
+
             data = connector.authenticate(login, password)
+
             if data is not None:
                 dn = data[0]
                 headers = remember(request, dn)
-                return HTTPFound('/', headers=headers)
+                return HTTPFound(location=came_from, headers=headers)
             error = 'Invalid credentials'
 
         return dict(
             login_url=url,
+            came_from=came_from,
             login=login,
             password=password,
             error=error)
 
     @view_config(route_name='user_list',
-                 renderer='../templates/user_list.pt')
+                 renderer='../templates/user_list.pt',
+                 permission='view')
     def user_list(self):
         """
         Path is /uadmin/user
