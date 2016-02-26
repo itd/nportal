@@ -52,32 +52,32 @@ def main(global_config, **settings):
 
     config.include('pyramid_chameleon')
     # config.include('pyramid_ldap3')
-    config.include('.security')
-    config.set_authentication_policy(
-        AuthTktAuthenticationPolicy('CHANGE_THIS_seekr1t',
-                                    callback=groupfinder))
-    config.set_authorization_policy(ACLAuthorizationPolicy())
+    # config.include('.security')
+    # config.set_authentication_policy(
+    #     AuthTktAuthenticationPolicy('CHANGE_THIS_seekr1t',
+    #                                 callback=groupfinder))
+    # config.set_authorization_policy(ACLAuthorizationPolicy())
 
     LDAP_READ = settings['ldap_read'],
     LDAP_PASS = settings['ldap_pass']
 
-    config.ldap_setup(
-        'ldap://ds1.hpc.nrel.gov',
-        bind=settings['ldap_read'],
-        passwd=settings['ldap_pass']
-    )
-
-    config.ldap_set_login_query(
-        base_dn='cn=users,cn=accounts,dc=hpctest,dc=nrel,dc=gov',
-        filter_tmpl='(uid=%(login)s)',
-        scope=ldap3.SEARCH_SCOPE_SINGLE_LEVEL
-    )
-
-    config.ldap_set_groups_query(
-        base_dn='dc=hpctest, dc=nrel, dc=gov',
-        filter_tmpl='(&(objectCategory=group)(member=%(userdn)s))',
-        scope=ldap3.SEARCH_SCOPE_WHOLE_SUBTREE,
-        cache_period=600)
+    # config.ldap_setup(
+    #     'ldap://ds1.hpc.nrel.gov',
+    #     bind=settings['ldap_read'],
+    #     passwd=settings['ldap_pass']
+    # )
+    #
+    # config.ldap_set_login_query(
+    #     base_dn='cn=users,cn=accounts,dc=hpctest,dc=nrel,dc=gov',
+    #     filter_tmpl='(uid=%(login)s)',
+    #     scope=ldap3.SEARCH_SCOPE_SINGLE_LEVEL
+    # )
+    #
+    # config.ldap_set_groups_query(
+    #     base_dn='dc=hpctest, dc=nrel, dc=gov',
+    #     filter_tmpl='(&(objectCategory=group)(member=%(userdn)s))',
+    #     scope=ldap3.SEARCH_SCOPE_WHOLE_SUBTREE,
+    #     cache_period=600)
 
     config.add_route('nportal.login', '/login')
     config.add_route('nportal.logout', '/logout')

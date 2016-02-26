@@ -52,18 +52,18 @@ class RootFactory(object):
     def __init__(self, request):
         pass
 
-config.ldap_setup(
-'ldap://ldap.example.com',
-bind='CN=ldap user,CN=Users,DC=example,DC=com',
-passwd='ld@pu5er')
+# config.ldap_setup(
+# 'ldap://ldap.example.com',
+# bind='CN=ldap user,CN=Users,DC=example,DC=com',
+# passwd='ld@pu5er')
 
 
-def includeme(config):
-    """Set up Configurator methods for pyramid_ldap3."""
-    config.add_directive('ldap_setup', ldap_setup)
-    config.add_directive('ldap_set_login_query', ldap_set_login_query)
-    config.add_directive('ldap_set_groups_query', ldap_set_groups_query)
-    return config
+# def includeme(config):
+#     """Set up Configurator methods for pyramid_ldap3."""
+#     config.add_directive('ldap_setup', ldap_setup)
+#     config.add_directive('ldap_set_login_query', ldap_set_login_query)
+#     config.add_directive('ldap_set_groups_query', ldap_set_groups_query)
+#     return config
 
 
 def groupfinder(userdn, request):
