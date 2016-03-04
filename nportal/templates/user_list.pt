@@ -4,16 +4,99 @@
 <div metal:use-macro="view.layout">
 <div metal:fill-slot="content" class="main-content">
 
-
+<div class="container-fluid portal-container">
   <div class="row">
     <h2 tal:content="page_title | nothing"></h2>
     <p tal:content="page_description | nothing"></p>
   </div>
 
-  <tal:rep tal:repeat="u users">
-    <p tal:content="u.sn"></p>
-  </tal:rep>
+  <div class="row">
 
+    <div class="table-wrapper">
+      <table class="xtable xtable-striped user-list">
+        <thead>
+        <tr>
+          <th>id</th>
+          <!--?<th>unid</th>-->
+          <th>UserID</th>
+          <th>cn</th>
+          <th>titlePrefix</th>
+          <th>givenName</th>
+          <th>middleName</th>
+          <th>sn</th>
+          <th>suffix</th>
+          <!--?<th>street</th>-->
+          <!--?<th>lcity</th>-->
+          <!--?<th>st</th>-->
+          <!--?<th>postalCode</th>-->
+          <!--?<th>country</th>-->
+          <th>mail</th>
+          <th>mailPreferred</th>
+          <th>phone</th>
+          <th>cell</th>
+          <th>employerType</th>
+          <th>employerName</th>
+          <!--?<th>user_request_pkey</th>-->
+          <th>citizenStatus</th>
+          <th>birthCountry</th>
+          <th>nrelUserID</th>
+          <th>preferredUID</th>
+          <!--?<th>justification</th>-->
+          <!--?<th>comments</th>-->
+          <th>subTimestamp</th>
+          <!--?<th>couTimestamp</th>-->
+          <!--?<th>storTimestamp</th>-->
+          <!--?<th>cyberTimestamp</th>-->
+        </tr>
+        </thead>
+
+        <tbody class="table-striped">
+          <tal:rep tal:repeat="u users">
+          <tr>
+            <td tal:define="unid u.unid"><a href="user/${unid}">[edit #<b tal:content="u.id"></b>]</a> </td>
+            <!--?<td tal:content="u.unid"> </td>-->
+            <td tal:content="u.UserID"> </td>
+            <td tal:content="u.cn"> </td>
+            <td tal:content="u.titlePrefix"> </td>
+            <td tal:content="u.givenName"> </td>
+            <td tal:content="u.middleName"> </td>
+            <td tal:content="u.sn"> </td>
+            <td tal:content="u.suffix"> </td>
+            <!--?<td tal:content="u.street"> </td>-->
+            <!--?<td tal:content="u.lcity"> </td>-->
+            <!--?<td tal:content="u.st"> </td>-->
+            <!--?<td tal:content="u.postalCode"> </td>-->
+            <!--?<td tal:content="u.country"> </td>-->
+            <td tal:content="u.mail"> </td>
+            <td tal:content="u.mailPreferred"> </td>
+            <td tal:content="u.phone"> </td>
+            <td tal:content="u.cell"> </td>
+            <td tal:content="u.employerType"> </td>
+            <td tal:content="u.employerName"> </td>
+            <!--?<td tal:content="u.user_request_pkey | None"> </td>-->
+            <td tal:content="u.citizenStatus"> </td>
+            <td tal:content="u.birthCountry"> </td>
+            <td tal:content="u.nrelUserID"> </td>
+            <td tal:content="u.preferredUID"> </td>
+            <!--?<td tal:content="u.justification"> </td>-->
+            <!--?<td tal:content="u.comments"> </td>-->
+            <td tal:content="u.subTimestamp"> </td>
+            <!--?<td tal:content="u.couTimestamp | None"> </td>-->
+            <!--?<td tal:content="u.storTimestamp"> </td>-->
+            <!--?<td tal:content="u.cyberTimestamp | None"> </td>-->
+
+          </tr>
+        </tal:rep>
+        </tbody>
+      </table>
+    </div>
+
+
+
+
+  </div>
+
+</div>
 </div>
 </div>
 </body>

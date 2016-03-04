@@ -172,3 +172,20 @@ fieldset#new-account {
 
 }
 
+.table-wrapper {
+  Width: 98%;
+  margin: 0 auto;
+}
+
+table.user-list {
+  font-size: 80%;
+}
+
+table.user-list thead {
+  background-color: black; color: #ddd;
+}
+
+.portal-container {
+  width: 98%;
+  margin: 0 auto;
+}

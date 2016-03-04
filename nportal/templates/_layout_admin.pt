@@ -38,7 +38,6 @@
 
   <link rel="stylesheet"
         href="${request.static_url('nportal:static/fa/css/font-awesome.min.css')}?v4.0.0"/>
-
   <!--
   <link rel="stylesheet" type="text/css" media="screen" charset="utf-8"
         href="${request.static_url('deform_bootstrap:static/deform_bootstrap.css')}" />
@@ -61,12 +60,12 @@
   <script src="${request.static_url('deform_bootstrap:static/deform_bootstrap.js')}"></script>
 
   <script src='https://www.google.com/recaptcha/api.js'></script>
-
   <script src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 
   <script type="text/javascript"
     src="${request.static_url('nportal:static/js/site_utils.js')}"></script>
   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+
 </head>
 
 <body class="template-">
@@ -160,49 +159,16 @@
 
 <div id="content">
 
-  <!--! Jumbotron! -->
-  <div class="jumbotron"
-    tal:condition="title_jumbotron | nothing">
-    <h1>${title}</h1>
-    <div tal:condition="description-jumbotron  | nothing">
-      <p>${description_jumbotron}</p>
-    </div>
+
+
+
+  <div metal:define-slot="content">
+    <!--! main content section -->
+    [ALL THE CONTENT GOES HERE!!!]
   </div>
 
-
-  <div class="container">
-    <div class="row">
-      <div class="hidden-xs hidden-sm col-md-2">
-        <!--! left column -->
-      </div>
-
-      <div class="col-xs-12 col-sm-12 col-md-8">
-        <div id="message" class="message-block alert-info"
-          tal:condition="request.session.peek_flash()">
-          <p tal:repeat="message request.session.pop_flash()">
-            ${message}
-          </p>
-        </div>
-
-        <div metal:define-slot="content">
-          <!--! main content section -->
-          [ALL THE CONTENT GOES HERE!!!]
-        </div>
-      </div>
-
-
-      <div class="hidden-xs hidden-sm col-sm-2 col-md-2">
-        <!--! right column -->
-      </div>
-
-    </div><!--! /row -->
-
-  </div><!--! /container regform -->
-
-
-
-
   <div style="clear: both; height: 1px;"></div>
+
 
 </div>
 

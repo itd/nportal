@@ -160,11 +160,12 @@ class AccountRequestView(object):
             # look for g-recaptcha-response
             # and send to https://www.google.com/recaptcha/api/siteverify
             cap = grecaptcha_verify(request)
-            if cap['status'] is False:
-                #  request.session.flash('please try again')
-                flash_msg = "The CAPTCHA failed. Please try again."
-                self.request.session.flash(flash_msg)
-                return dict(form=sform)
+
+            # if cap['status'] is False:
+            #     #  request.session.flash('please try again')
+            #     flash_msg = "The CAPTCHA failed. Please try again."
+            #     self.request.session.flash(flash_msg)
+            #     return dict(form=sform)
 
             # The checks passed.
             # request.session.flash("It submitted! (not really)")
@@ -211,13 +212,13 @@ class AccountRequestView(object):
 
 
 def _add_new_user_request(appstruct, request):
-    settings = request.registry.settings
-    slt = settings['unid_salt']
+    regset = request.registry.settings
+    slt = regset['unid_salt']
     hashids = Hashids(salt=slt)
     unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
     ai = appstruct.items()
     ai = dict(ai)
-    sess = DBSession()
+    dbsess = DBSession()
 
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
@@ -239,7 +240,7 @@ def _add_new_user_request(appstruct, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenships = [sess.query(CountryCodes
+    citizenships = [dbsess.query(CountryCodes
                     ).filter(CountryCodes.code == i).one()
                     for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
@@ -285,7 +286,7 @@ def _add_new_user_request(appstruct, request):
         )
 
     # write the data
-    DBSession().add(submission)
+    dbsess.add(submission)
     transaction.commit()
     # return the unid for processing in next form
     return str(unid)
@@ -293,16 +294,14 @@ def _add_new_user_request(appstruct, request):
 
 def grecaptcha_verify(request):
     if request.method == 'POST':
-        settings = request.registry.settings
+        req_set = request.registry.settings
         response = {}
         data = request.POST
         captcha_rs = data.get('g-recaptcha-response')
         url = "https://www.google.com/recaptcha/api/siteverify"
-        params = {
-            'secret': settings['captcha_sec'],
-            'response': captcha_rs,
-            'remoteip': request.client_addr
-        }
+        params = dict(secret=req_set['captcha_sec'],
+                      response=captcha_rs,
+                      remoteip=request.client_addr)
         verify_rs = requests.get(url, params=params, verify=True)
         verify_rs = verify_rs.json()
         response["status"] = verify_rs.get("success", False)

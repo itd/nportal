@@ -16,6 +16,7 @@ from pyramid.config import Configurator
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import Allow, Authenticated
+from security import groupfinder
 
 
 def expandvars_dict(settings):
@@ -29,8 +30,6 @@ class RootFactory(object):
 
     def __init__(self, request):
         pass
-
-from security import groupfinder
 
 
 def main(global_config, **settings):
@@ -89,7 +88,8 @@ def main(global_config, **settings):
     # views
     config.add_static_view('static', 'static', cache_max_age=1)
     config.add_static_view('deform', 'deform:static')
-    #config.add_static_view('static', 'static', cache_max_age=1)  ## 3600
+    #config.add_static_view('static', 'static', cache_max_age=1)
+    #  3600
 
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')

@@ -524,3 +524,34 @@ def includeme(config):
 
 
 
+#################################
+        unid = self.request.matchdict['unid']
+        session = DBSession()
+        u_data = session.query(UserRequest).filter_by(unid=unid).first()
+
+        # Do a check to ensure user data is there...
+        success = False
+        if u_data is None:
+            title = "Edit User Record"
+            flash_msg = "There was an error processing the request"
+            self.request.session.flash(flash_msg)
+            return dict(title=title, success=False)
+        else:
+            title = "Edit User Record"
+            flash_msg = "There was an error processing the request"
+            self.request.session.flash(flash_msg)
+            return dict(title=title,
+                        page_title=title,
+                        data=u_data,
+                        success=True)
+
+        title = "User Record Successfully Edited"
+        flash_msg = "Success! Your request has been submitted."
+        self.request.session.flash(flash_msg)
+        return dict(title=title,
+                    data=u_data,
+                    success=True)
+
+
+
+
