@@ -126,8 +126,9 @@ class EditRequestsView(object):
         self.request.session.flash(flash_msg)
 
         form = Form(schema, buttons=('submit',))
-        appstruct = u_data.__dict__
 
+        appstruct = u_data.__dict__
+        del appstruct['_sa_instance_state']
         import pdb; pdb.set_trace()
 
         return dict(title=title,
