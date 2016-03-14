@@ -57,7 +57,7 @@ def main(global_config, **settings):
     #                                 callback=groupfinder))
     # config.set_authorization_policy(ACLAuthorizationPolicy())
 
-    LDAP_READ = settings['ldap_read'],
+    LDAP_READ = settings['ldap_read']
     LDAP_PASS = settings['ldap_pass']
 
     # config.ldap_setup(
@@ -93,12 +93,13 @@ def main(global_config, **settings):
 
     config.add_route('home', '/')
     config.add_route('changepass', '/changepass')
-    config.add_route('request_user_account', '/request_user_account')
+    config.add_route('request_account', '/request_account')
     config.add_route('request_received_view', '/request_received/{unid}')
 
-    config.add_route('admin_home', '/uadmin')
-    config.add_route('user_list', '/uadmin/user')
-    config.add_route('user_edit', '/uadmin/user/{unid}')
+    config.add_route('admin_home', '/radmin')
+    config.add_route('admin_request_edit', '/radmin/request_edit')
+    config.add_route('req_list', '/radmin/requests')
+    config.add_route('req_edit', '/radmin/request/{unid}')
 
     config.scan()
     return config.make_wsgi_app()

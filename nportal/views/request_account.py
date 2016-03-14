@@ -39,7 +39,7 @@ from nportal.models import (
     #Citizenship
     )
 
-from schema_edit_acount import EditAccountSchema
+from schemas import AddAccountSchema
 from validators import uid_validator
 from .lists import (us_states,
                     country_codes,
@@ -68,29 +68,30 @@ drenderer = ZPTRendererFactory(search_path)
 # from htmllaundry import sanitize
 
 
-def edit_layout():
-    renderer = get_renderer("../templates/_layout_admin.pt")
+def site_layout():
+    renderer = get_renderer("../templates/_layout.pt")
     layout = renderer.implementation().macros['layout']
     return layout
 
 
-# def add_base_template(event):
-#     base = get_renderer('templates/_layout.pt').implementation()
-#     event.update({'base': base})
+def add_base_template(event):
+    base = get_renderer('templates/_layout.pt').implementation()
+    event.update({'base': base})
 
 
-class EditRequestsView(object):
+class AccountRequestView(object):
     """
     """
     def __init__(self, request):
         self.request = request
-        renderer = get_renderer("../templates/_layout_admin.pt")
-        self.layout = edit_layout()
+        renderer = get_renderer("../templates/_layout.pt")
+        #self.layout = renderer.implementation().macros['layout']
+        self.layout = site_layout()
         self.title = "Account Request Form"
 
     @reify
     def account_req_form(self):
-        schema = EditAccountSchema().bind(
+        schema = AddAccountSchema().bind(
             country_codes_data=country_codes,
             us_states_data=us_states
         )
@@ -100,18 +101,14 @@ class EditRequestsView(object):
     def reqts(self, request):
         return self.account_req_form.get_widget_resources()
 
-    @view_config(route_name='user_edit',
-                 renderer='../templates/user_edit.pt')
-    def edit_user(self):
+    @view_config(route_name='request_account',
+                 renderer='../templates/request_account.pt')
+    def add_new_user_account(self):
         ###
 
         ###
-        """
-        /uadmin/user/{unid}
-        """
-
         # instantiate our colander schema
-        schema = EditAccountSchema().bind(   ## validator=uid_validator
+        schema = AddAccountSchema().bind(   ## validator=uid_validator
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
@@ -133,7 +130,7 @@ class EditRequestsView(object):
 
         # create a deform form object from the schema
         form = Form(schema,
-                    action=request.route_url('request_user_account'),
+                    action=request.route_url('request_account'),
                     form_id='deformRegform'
                     )
 
@@ -145,7 +142,7 @@ class EditRequestsView(object):
             # schema = schema(validator=uid_validator)
             # create a deform form object from the schema
             sform = Form(schema,
-                         action=request.route_url('request_user_account'),
+                         action=request.route_url('request_account'),
                          form_id='deformRegform')
 
             try:
@@ -174,7 +171,7 @@ class EditRequestsView(object):
             # request.session.flash("It submitted! (not really)")
             # submit the data to be added to be recorded,
             # return a unique identifier - unid
-            unid = _add_new_user_request(captured, request)
+            unid = _add_new_request(captured, request)
             title = 'Request Successfully submitted '
             view_url = request.route_url('request_received_view',
                                          unid=unid, page_title=title)
@@ -214,7 +211,7 @@ class EditRequestsView(object):
                     success=True)
 
 
-def _add_new_user_request(appstruct, request):
+def _add_new_request(appstruct, request):
     regset = request.registry.settings
     slt = regset['unid_salt']
     hashids = Hashids(salt=slt)

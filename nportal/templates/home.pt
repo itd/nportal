@@ -8,7 +8,7 @@
 
       <h1>Account Requests and Information</h1>
       <ul>
-        <li>Make an <a href="${request.application_url}/request_user_account">Account Request</a></li>
+        <li>Make an <a href="${request.application_url}/request_account">Account Request</a></li>
       </ul>
     </div>
 

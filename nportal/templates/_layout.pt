@@ -128,7 +128,7 @@
                   data-original-title="Admins Only">Utils</span></a>
               <ul class="dropdown-menu">
                 <li class="dropdown-header">Requests</li>
-                <li><a href="${request.application_url}/request_user_account" title="Request an account">Account Request</a></li>
+                <li><a href="${request.application_url}/request_account" title="Request an account">Account Request</a></li>
 
               </ul>
             </li>

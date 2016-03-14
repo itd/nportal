@@ -2,7 +2,15 @@
 <div metal:use-macro="view.layout">
   <div metal:fill-slot="content" class="main-content">
 
-  <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+    <div class="row-fluid">
+      <div class="well">
+
+        <tal:if tal:condition="title | nothing"><h1>${title}</h1></tal:if>
+
+      </div>
+    </div>
+
+
 
 
 

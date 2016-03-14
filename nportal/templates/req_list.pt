@@ -20,9 +20,9 @@
           <!--?<th>unid</th>-->
           <th>UserID</th>
           <th>cn</th>
-          <th>titlePrefix</th>
-          <th>givenName</th>
-          <th>middleName</th>
+          <th>Title</th>
+          <th>First</th>
+          <th>M.</th>
           <th>sn</th>
           <th>suffix</th>
           <!--?<th>street</th>-->
@@ -31,16 +31,16 @@
           <!--?<th>postalCode</th>-->
           <!--?<th>country</th>-->
           <th>mail</th>
-          <th>mailPreferred</th>
+          <th>mail Pref</th>
           <th>phone</th>
           <th>cell</th>
-          <th>employerType</th>
-          <th>employerName</th>
+          <th>Empl Type</th>
+          <th>Employer</th>
           <!--?<th>user_request_pkey</th>-->
-          <th>citizenStatus</th>
-          <th>birthCountry</th>
-          <th>nrelUserID</th>
-          <th>preferredUID</th>
+          <th>Status</th>
+          <th>Birth Country</th>
+          <th>NREL ID</th>
+          <th>pref ID</th>
           <!--?<th>justification</th>-->
           <!--?<th>comments</th>-->
           <th>subTimestamp</th>
@@ -53,7 +53,7 @@
         <tbody class="table-striped">
           <tal:rep tal:repeat="u users">
           <tr>
-            <td tal:define="unid u.unid"><a href="user/${unid}">[edit #<b tal:content="u.id"></b>]</a> </td>
+            <td tal:define="unid u.unid"><a href="request/${unid}">[edit #<b tal:content="u.id"></b>]</a> </td>
             <!--?<td tal:content="u.unid"> </td>-->
             <td tal:content="u.UserID"> </td>
             <td tal:content="u.cn"> </td>
