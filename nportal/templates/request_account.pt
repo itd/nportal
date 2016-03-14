@@ -3,7 +3,7 @@
 
     <div class="regform">
 
-      <h2>ESIF account registration request <i>- Mock-up</i></h2>
+      <h2>ESIF account registration request</h2>
 
 
       <form action="${form.action}" method="POST" id="${form.form_id}" accept-charset="utf-8" class="deform">
