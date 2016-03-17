@@ -5,8 +5,11 @@ from sqlalchemy import (
     Integer,
     Text,
     DateTime,
+    ForeignKey,
+    String,
+    ForeignKeyConstraint,
     Boolean,
-    Float,  ForeignKey, ForeignKeyConstraint, String,
+    Float,
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -48,8 +51,8 @@ user_citizen = Table('user_citizen', Base.metadata,
                      )
 
 
-class UserRequest(Base):
-    __tablename__ = 'user_request'
+class Request(Base):
+    __tablename__ = 'request'
 
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
 
@@ -110,7 +113,7 @@ class UserRequest(Base):
     approvedBy = Column(Text, nullable=True, default=None)
 
     def __repr__(self):
-        return "<UserRequest(name='%s', fullname='%s', password='%s')>" % (
+        return "<Request(name='%s', fullname='%s', password='%s')>" % (
                 self.id, self.preferredUID, self.unid, self.subTimestamp)
 
 
@@ -123,7 +126,7 @@ class UserRequest(Base):
 #     code = Column(String)
 #
 #     user_id = Column(Integer, ForeignKey('user.id'))
-#     # user = relationship("UserRequest", backref=backref('citizenships', order_by=id))
+#     # user = relationship("Request", backref=backref('citizenships', order_by=id))
 #     # user_ref = Column(Integer, ForeignKey('user.id'),
 #     #                  nullable=False,
 #     #                  index=True)

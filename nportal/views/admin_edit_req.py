@@ -35,7 +35,7 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    UserRequest,
+    Request,
     CountryCodes,
     #Citizenship
     )
@@ -100,7 +100,7 @@ class EditRequestsView(object):
         """
         unid = self.request.matchdict['unid']
         session = DBSession()
-        u_data = session.query(UserRequest).filter_by(unid=unid).one()
+        u_data = session.query(Request).filter_by(unid=unid).one()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
@@ -204,7 +204,7 @@ class EditRequestsView(object):
     # def request_received_view(self):
     #     unid = self.request.matchdict['unid']
     #     session = DBSession()
-    #     u_data = session.query(UserRequest).filter_by(unid=unid).first()
+    #     u_data = session.query(Request).filter_by(unid=unid).first()
     #     # TODO: do a check for came_from also
     #
     #     # Do a check to ensure user data is there...
@@ -267,7 +267,7 @@ def _update_request(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = UserRequest(
+    submission = Request(
         unid=unid,
         givenName=givenName,
         middleName=middleName,

@@ -18,8 +18,8 @@ from pyramid.security import remember, forget
 
 from pyramid.decorator import reify
 from pyramid.httpexceptions import (
-    HTTPMovedPermanently,
     HTTPFound,
+    HTTPMovedPermanently,
     HTTPNotFound,
     )
 
@@ -41,7 +41,7 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    UserRequest,
+    Request,
     CountryCodes,
     # Citizenship
     )
@@ -94,7 +94,7 @@ class AdminViews(object):
         # renderer = get_renderer("../templates/_layout.pt")
         # self.layout = renderer.implementation().macros['layout']
         self.layout = site_layout()
-        self.title = "User Admin Views"
+        self.title = "Request Admin Views"
 
     @reify
     def account_req_form(self):
@@ -165,9 +165,9 @@ class AdminViews(object):
         """
         title = "Request List"
         sess = DBSession()
-        users = sess.query(UserRequest).order_by(UserRequest.sn).all()
+        users = sess.query(Request).order_by(Request.sn).all()
         users = [u.__dict__ for u in users]
-        citz = sess.query(UserRequest).order_by(UserRequest.sn).all()
+        citz = sess.query(Request).order_by(Request.sn).all()
 
         return dict(title=title,
                     page_title=title,
@@ -181,7 +181,7 @@ class AdminViews(object):
     #     """
     #     unid = self.request.matchdict['unid']
     #     session = DBSession()
-    #     u_data = session.query(UserRequest).filter_by(unid=unid).first()
+    #     u_data = session.query(Request).filter_by(unid=unid).first()
     #
     #     # Do a check to ensure req data is there...
     #     success = False
@@ -251,7 +251,7 @@ def _update_req(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = UserRequest(
+    submission = Request(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
