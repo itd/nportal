@@ -15,7 +15,7 @@ from ..models import (
     DBSession,
     Base,
     SiteModel,
-    UserRequest,
+    Request,
     CountryCodes
     )
 
