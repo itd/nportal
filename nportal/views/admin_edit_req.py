@@ -37,7 +37,7 @@ from nportal.models import (
     DBSession,
     Request,
     CountryCodes,
-    #Citizenship
+    user_citizen
     )
 
 from schema_edit_request import EditRequestSchema
@@ -99,12 +99,12 @@ class EditRequestsView(object):
         """
         unid = self.request.matchdict['unid']
         session = DBSession()
-        u_data = session.query(Request).filter_by(unid=unid).one()
+        data = session.query(Request).filter_by(unid=unid).one()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
         success = False
-        if u_data is None:
+        if data is None:
             title = "Request Update"
             flash_msg = "There was an error processing the submission"
             self.request.session.flash(flash_msg)
@@ -112,8 +112,14 @@ class EditRequestsView(object):
             action_url = rurl('req_list')
             return dict(title=title, success=False)
 
+        # cz = session.query(Request).filter(Request.citizenships.any(unid=u_data.unid))
+
+        import pdb; pdb.set_trace()
+
+        # cz = session.query(Request).filter(unid=u_data.unid)
+
         schema = EditRequestSchema().bind(   ## validator=uid_validator
-            cou=u_data.couTimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            cou = data.couTimestamp.strftime('%Y-%m-%d %H:%M:%S'),
         )
         title = "Edit Request"
         flash_msg = "Success! The request has been updated."
@@ -122,7 +128,7 @@ class EditRequestsView(object):
         rurl = self.request.route_url
         action_url = rurl('req_list')
 
-        appstruct = u_data.__dict__
+        appstruct = data.__dict__
         del appstruct['_sa_instance_state']
         # appstruct['cou'] = cou
         form = Form(schema,
@@ -130,12 +136,12 @@ class EditRequestsView(object):
                     action=action_url,
                     appstruct=appstruct)
 
-        # import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
 
         return dict(title=title,
                     action=action_url,
                     form=form,
-                    data=u_data,
+                    data=appstruct,
                     flash_msg=flash_msg,
                     success=True)
 

@@ -338,7 +338,7 @@ class AddAccountSchema(colander.Schema):
         widget=deform.widget.TextAreaWidget(rows=6, columns=60,
             placeholder='If you think we need any additional '
                 'information to process or approve your request, '
-                'please let us know.'),
+                'please let us know (project name, PI, NREL contact, etc.).'),
         missing=unicode(''),
         validator=colander.Length(max=1000),
         description='If you think we need any additional '
