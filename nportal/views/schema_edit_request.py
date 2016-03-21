@@ -52,15 +52,14 @@ sn_widget = widget.TextInputWidget(
             css_class='form-control')
 
 
-class EditAccountSchema(colander.Schema):
+class EditRequestSchema(colander.Schema):
     # couTimestamp
     cou = colander.SchemaNode(
         colander.Boolean(),
         title='COU Policy Acceptance',
         description='Terms and Conditions Agreement - Check this if '
             'you have read and agree to the cyber security policies.',
-        widget=deform.widget.CheckboxWidget(),
-        validator=cou_validator,
+        widget=widget.TextInputWidget(),
         oid='cou'
         )
 
@@ -101,7 +100,7 @@ class EditAccountSchema(colander.Schema):
         title='Given/First name',
         description='Your given or first name',
         validator=colander.Length(min=1, max=64),
-        widget=widget.TextInputWidget(placeholder=''),
+        widget=widget.TextInputWidget(),
         oid='givenName'
     )
 
@@ -110,8 +109,7 @@ class EditAccountSchema(colander.Schema):
         title='Middle name/initial',
         description='Middle name or initial',
         validator=colander.Length(min=0, max=64),
-        widget=widget.TextInputWidget(
-            placeholder=''),
+        widget=widget.TextInputWidget(),
         missing=unicode(''),
         oid='middleName'
     )
@@ -199,7 +197,7 @@ class EditAccountSchema(colander.Schema):
         title='EMail',
         description='Your primary email account',
         # validator=colander.Email(msg="Please provide your work Email address. This will be the primary account we use to contact you."),
-        widget=email_confirm_widget,
+        widget=widget.TextInputWidget(),
         oid='mail'
     )
 
@@ -208,7 +206,7 @@ class EditAccountSchema(colander.Schema):
         title='Preferred EMail',
         description='optional preferred email account',
         missing=unicode(''),
-        widget=pref_email_confirm_widget,
+        widget=widget.TextInputWidget(),
         oid='mail'
     )
 

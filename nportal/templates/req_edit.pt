@@ -1,38 +1,45 @@
 <div metal:use-macro="view.layout">
   <div metal:fill-slot="content" class="main-content">
 
-    <div class="regform">
+    <div class="regform portal-container">
 
-      <h2>ESIF registration request</h2>
+      <h2>Request Submission Detail</h2>
 
 
-      <form action="${form.action}" method="POST" id="${form.form_id}" accept-charset="utf-8" class="deform">
+      <form action="${form.action}" method="POST" id="${form.formid}"
+            accept-charset="utf-8" class="deform">
 
 
         <fieldset class="reg policy">
-          <div class="policyd">
+          <div class="">
             <legend>Policy Acceptance</legend>
 
-            <div class="form-group" tal:define="field form['cou'];">
+            <div class="form-group"
+                tal:define="fd data.storTimestamp;
+                            field form['stor'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              <p>${structure:field.serialize()} By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC COU Policies</a>.</p>
+              <p> <span tal:content="fd"> </span></p>
             </div>
 
-            <div class="form-group" tal:define="field form['stor'];">
+            <div class="form-group"
+                tal:define="fd data.couTimestamp;
+                            field form['cou'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              <p>${structure:field.serialize()} By submitting this application, I agree that I have read and will abide by the <a href="http://hpc.nrel.gov/users/policies/data-security-policy" target="_black">ESIF HPC Data Security Policies</a>.</p>
+              <p> <span tal:content="fd"> </span></p>
             </div>
-          </div>
+
+            <!--?<div class="form-group" tal:define="field form['stor'];">-->
+              <!--?<h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>-->
+              <!--?<p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>-->
+              <!--?<p>${structure:field.serialize()} By submitting this application, I agree that I have read and will abide by the <a href="http://hpc.nrel.gov/users/policies/data-security-policy" target="_black">ESIF HPC Data Security Policies</a>.</p>-->
+            <!--?</div>-->
+          <!--?</div>-->
         </fieldset>
 
 
 
         <fieldset class="r-personal">
           <legend>Personal Information</legend>
-          <p>You must use your legally recognized name information in the fields below.</p>
-
           <div class="row pnames">
             <div class="col-md-3">
               <tal:def tal:define="field form['givenName'];">
@@ -293,14 +300,12 @@
 
         <div class="row reg-form-submit-section"><!--! buttons -->
 
-          <hr /><!-! recaptcha widget -->
-          <div class="g-recaptcha" data-sitekey="6Le-KA8TAAAAAFs3sUAkXLT03_YHoHq_Oo6COszT"></div>
           <hr />
 
           <div class="col-md-5">
             <input class="btn btn-primary"
               id="request_account_submit" name="submit" type="submit"
-              value="Submit Registration Request" />
+              value="Uodate" />
           </div>
           <div class="col-md-3">
             <a href="./" class="btn btn-default" role="button">Cancel</a>
