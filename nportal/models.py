@@ -40,9 +40,10 @@ Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 user_citizen = Table('user_citizen', Base.metadata,
                      Column('id', Integer, nullable=False,
                             unique=True, primary_key=True),
-                     Column('user_id', String,
+                     Column('unid', String,
                             ForeignKey('request.unid',
-                                       ondelete='CASCADE'),
+                                       ondelete='CASCADE',
+                                       primary_key=True),
                             index=True),
                      Column('code', String,
                             ForeignKey('countrycodes.code',
@@ -86,13 +87,13 @@ class Request(Base):
     citizenStatus = Column(String(10), nullable=True, default=None)
 
     #citizenOf = Column(Text)  ##
-    citizenships = relationship("CountryCodes",
-                                backref='user',
-                                lazy='dynamic',
-                                secondary=user_citizen,
-                                cascade="all, delete",
-                                passive_deletes=True
-                                )
+    citizenships = relationship("Citizenships"),
+                                # secondary=user_citizen,
+                                #backref='unid',
+                                #lazy='dynamic',
+                                #cascade="all, delete",
+                                #passive_deletes=True
+                                #)
                                 #order_by="Citizenship.id",
                                 #secondary=user_citizen,
     birthCountry = Column(Text)  ##
@@ -117,23 +118,27 @@ class Request(Base):
                 self.id, self.preferredUID, self.unid, self.subTimestamp)
 
 
-# class Citizenship(Base):
-#     """
-#     List of citizenships for users
-#     """
-#     __tablename__ = 'citizenships'
-#     id = Column(Integer, primary_key=True)
-#     code = Column(String)
-#
-#     user_id = Column(Integer, ForeignKey('user.id'))
-#     # user = relationship("Request", backref=backref('citizenships', order_by=id))
-#     # user_ref = Column(Integer, ForeignKey('user.id'),
-#     #                  nullable=False,
-#     #                  index=True)
-#
-#     def __repr__(self):
-#         return "<CitizenList(code='%s', userid='%s)>" % (
-#                 self.code, self.user_ref)
+
+class Citizenships(Base):
+    """
+    List of citizenships for users
+    # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
+    """
+    __tablename__ = 'citizenships'
+    id = Column(Integer, primary_key=True)
+    req_id = Column(Integer, ForeignKey('request.id'))
+    # req_id = relationship("Request", back_populates='citizenships')
+
+
+    # unid = Column(Integer, ForeignKey('user.id'))
+    # user = relationship("Request", backref=backref('citizenships', order_by=id))
+    # user_ref = Column(Integer, ForeignKey('user.id'),
+    #                  nullable=False,
+    #                  index=True)
+
+    def __repr__(self):
+        return "<CitizenList(code='%s', userid='%s)>" % (
+                self.code, self.user_ref)
 
 
 class CountryCodes(Base):

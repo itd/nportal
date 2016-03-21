@@ -38,15 +38,15 @@ def deferred_title_prefix_widget(node, kw):
     return widget.Select2Widget(values=title_prefix_data)
 
 
-email_confirm_widget = deform.widget.CheckedInputWidget(
-            subject='Email address',
-            confirm_subject='Confirm your Email address',
-            )
-
-pref_email_confirm_widget = deform.widget.CheckedInputWidget(
-            subject='Optional Preferred Email',
-            confirm_subject='Confirm your optional Email address',
-            )
+# email_confirm_widget = deform.widget.CheckedInputWidget(
+#             subject='Email address',
+#             confirm_subject='Confirm your Email address',
+#             )
+#
+# pref_email_confirm_widget = deform.widget.CheckedInputWidget(
+#             subject='Optional Preferred Email',
+#             confirm_subject='Confirm your optional Email address',
+#             )
 
 sn_widget = widget.TextInputWidget(
             css_class='form-control')
@@ -232,8 +232,10 @@ class EditRequestSchema(colander.Schema):
 
     employerType = colander.SchemaNode(
         colander.String(),
-        validator=colander.OneOf([x[0] for x in employer_types]),
-        widget=deform.widget.RadioChoiceWidget(values=employer_types),
+        # validator=colander.OneOf([x[0] for x in employer_types]),
+        widget=deform.widget.RadioChoiceWidget(values=employer_types,
+                                               readonly=True),
+        #widget=widget.TextInputWidget(template='readonly/textinput'),
         title='Employer Type',
         description='Select the employer type from the list below that '
         'is most appropriate to your request',
@@ -256,7 +258,8 @@ class EditRequestSchema(colander.Schema):
         description='Select one of the following options '
             'that best describes your U.S. citizenship status',
         validator=colander.OneOf([x[0] for x in citizen_types]),
-        widget=deform.widget.RadioChoiceWidget(values=citizen_types),
+        widget=deform.widget.RadioChoiceWidget(values=citizen_types,
+                                               readonly=True),
         oid='citizenStatus'
     )
 
