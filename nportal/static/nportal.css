@@ -190,4 +190,11 @@ table.user-list thead {
   margin: 0 auto;
 }
 
+
+.resp-reported-value {
+  margin-left: 2em;
+  color: darkblue;
+}
+
+
 /* end */
