@@ -40,10 +40,9 @@ Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 user_citizen = Table('user_citizen', Base.metadata,
                      Column('id', Integer, nullable=False,
                             unique=True, primary_key=True),
-                     Column('unid', String,
+                     Column('req_unid', String,
                             ForeignKey('request.unid',
-                                       ondelete='CASCADE',
-                                       primary_key=True),
+                                       ondelete='CASCADE'),
                             index=True),
                      Column('code', String,
                             ForeignKey('countrycodes.code',
@@ -63,82 +62,67 @@ class Request(Base):
     # to be assigned by approver
     UserID = Column(String, nullable=True, default=None)
 
-    cn = Column(Text)           ## Kurt Bendl
-    titlePrefix = Column(Text)    ## Dr.
-    givenName = Column(String(64))  ## Kurt
-    middleName = Column(String(64), nullable=True)  # M
-    sn = Column(String(64))         ## Bendl
-    suffix = Column(String(32), nullable=True)      ## III
+    cn = Column(Text)
+    titlePrefix = Column(Text)
+    givenName = Column(String(64))
+    middleName = Column(String(64), nullable=True)
+    sn = Column(String(64))
+    suffix = Column(String(32), nullable=True)
 
-    street = Column(Text, nullable=True, default=None)       ## 123 No Way
-    lcity = Column(String(128))     ## Golden
-    st = Column(String(400))    ## Colorado
-    postalCode = Column(String(64))  ## 80401
-    country = Column(String(64))     ## USA
+    street = Column(Text, nullable=True, default=None)
+    lcity = Column(String(128))
+    st = Column(String(400))
+    postalCode = Column(String(64))
+    country = Column(String(64))
 
-    mail = Column(String(128))  ## kurt@tool.net
-    mailPreferred = Column(String(128), nullable=True, default=None)
-    phone = Column(String(32))  ## 777-777-7777
-    cell = Column(String(32), nullable=True, default=None)  ## 666-666-6666
+    mail = Column(String(128))
+    # mailPreferred = Column(String(128), nullable=True, default=None)
+    phone = Column(String(32))
+    cell = Column(String(32), nullable=True, default=None)
 
     employerType = Column(String(32), nullable=True, default=None)
-    employerName = Column(String(128), nullable=True, default=None)
+    employerName = Column(String(192), nullable=True, default=None)
 
     citizenStatus = Column(String(10), nullable=True, default=None)
+    citizenships = relationship("CountryCodes",
+                                backref='user',
+                                lazy='select',
+                                secondary=user_citizen,
+                                cascade="all, delete",
+                                passive_deletes=True
+                                )
+    birthCountry = Column(Text)
 
-    #citizenOf = Column(Text)  ##
-    citizenships = relationship("Citizenships"),
-                                # secondary=user_citizen,
-                                #backref='unid',
-                                #lazy='dynamic',
-                                #cascade="all, delete",
-                                #passive_deletes=True
-                                #)
-                                #order_by="Citizenship.id",
-                                #secondary=user_citizen,
-    birthCountry = Column(Text)  ##
+    nrelUserID = Column(String(16), nullable=True, default=None)
+    preferredUID = Column(String(16), nullable=True, default=None)
 
-    # nrelExistingAccount = Column(Boolean)
-    nrelUserID = Column(String(16), nullable=True, default=None) ## kbendl
-    preferredUID = Column(String(16), nullable=True, default=None) ## kbendl
-
-    justification = Column(Text, nullable=True, default=None)  ##
+    justification = Column(Text, nullable=True, default=None)
     comments = Column(Text, nullable=True, default=None)
 
     subTimestamp = Column(DateTime, nullable=True, default=None)
-
     couTimestamp = Column(DateTime, nullable=True, default=None)
     storTimestamp = Column(DateTime, nullable=True, default=None)
-
     approvalTimestamp = Column(DateTime, nullable=True, default=None)
     approvedBy = Column(Text, nullable=True, default=None)
 
     def __repr__(self):
-        return "<Request(name='%s', fullname='%s', password='%s')>" % (
-                self.id, self.preferredUID, self.unid, self.subTimestamp)
+        return "<Request(id='%s', unid='%s', subTimeStamp='%s')>" % (
+                self.id, self.unid, self.subTimestamp)
 
 
-
-class Citizenships(Base):
-    """
-    List of citizenships for users
-    # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
-    """
-    __tablename__ = 'citizenships'
-    id = Column(Integer, primary_key=True)
-    req_id = Column(Integer, ForeignKey('request.id'))
-    # req_id = relationship("Request", back_populates='citizenships')
-
-
-    # unid = Column(Integer, ForeignKey('user.id'))
-    # user = relationship("Request", backref=backref('citizenships', order_by=id))
-    # user_ref = Column(Integer, ForeignKey('user.id'),
-    #                  nullable=False,
-    #                  index=True)
-
-    def __repr__(self):
-        return "<CitizenList(code='%s', userid='%s)>" % (
-                self.code, self.user_ref)
+# class Citizenships(Base):
+#     """
+#     List of citizenships for users
+#     # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
+#     """
+#     __tablename__ = 'citizenships'
+#     id = Column(Integer, primary_key=True)
+#     code = Column(String(128))
+#     request_id = Column(Integer, ForeignKey('request.id'))
+#
+#     def __repr__(self):
+#         return "<CitizenList(code='%s', userid='%s)>" % (
+#                 self.code, self.user_ref)
 
 
 class CountryCodes(Base):
@@ -146,8 +130,9 @@ class CountryCodes(Base):
     A list of country codes, including None
     """
     __tablename__ = 'countrycodes'
-    code = Column(String, unique=True, primary_key=True)
-    name = Column(String, unique=True)
+    id = Column(Integer, primary_key=True)
+    code = Column(String(16), unique=True, primary_key=True)
+    name = Column(String(128), unique=True)
 
     def __repr__(self):
         return "<CountryCodes(code='%s', name='%s')>" % (self.code, self.name)

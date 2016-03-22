@@ -33,8 +33,10 @@
 
 
         <fieldset class="r-personal">
-          <legend>Personal Information</legend>
+          <legend>Contact Information</legend>
           <p>You must use your legally recognized name information in the fields below.</p>
+          <p><i><b>NOTE:</b> business/institution contact information is preferred.</i></p>
+
 
           <div class="row pnames">
             <div class="col-md-3">
@@ -75,15 +77,6 @@
             <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
           </div>
 
-        </fieldset>
-
-
-
-        <fieldset class="contact-info">
-          <legend>Contact and Mailing Address Information</legend>
-
-          <p>We will use this for contact purposes or if we need to mail anything to you.</p>
-          <p><i><b>NOTE:</b> business/institution contact information is preferred.</i></p>
 
           <tal:def tal:define="field form['street'];">
             <div class="form-group">
@@ -150,13 +143,13 @@
             </div>
 
             <div class="col-md-6">
-              <div class="form-group" tal:define="field form['mailPreferred'];">
-                <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-                <p class="help">for contact and/or for identification</p>
-                ${structure:field.serialize()}
-                <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
-              </div>
-            </div>
+              <!--?<div class="form-group" tal:define="field form['mailPreferred'];">-->
+                <!--?<h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>-->
+                <!--?<p class="help">for contact and/or for identification</p>-->
+                <!--?${structure:field.serialize()}-->
+                <!--?<p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>-->
+              <!--?</div>-->
+            <!--?</div>-->
           </div>
 
           <div class="row"><!--! phones -->

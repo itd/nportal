@@ -89,17 +89,17 @@ class AccountRequestView(object):
         self.layout = site_layout()
         self.title = "Account Request Form"
 
-    @reify
-    def account_req_form(self):
-        schema = AddAccountSchema().bind(
-            country_codes_data=country_codes,
-            us_states_data=us_states
-        )
-        return Form(schema, buttons=('submit',))
+    # @reify
+    # def account_req_form(self):
+    #     schema = AddAccountSchema().bind(
+    #         country_codes_data=country_codes,
+    #         us_states_data=us_states
+    #     )
+    #     return Form(schema, buttons=('submit',))
 
-    @reify
-    def reqts(self, request):
-        return self.account_req_form.get_widget_resources()
+    # @reify
+    # def reqts(self, request):
+    #     return self.account_req_form.get_widget_resources()
 
     @view_config(route_name='request_account',
                  renderer='../templates/request_account.pt')
@@ -234,7 +234,7 @@ def _add_new_request(appstruct, request):
     postalCode = ai['postalCode']
     country = ai['country']
     mail = ai['mail']
-    mailPreferred = ai['mailPreferred']
+    # mailPreferred = ai['mailPreferred']
     phone = ai['phone']
     cell = ai['cell']
     employerType = ai['employerType']
@@ -268,7 +268,7 @@ def _add_new_request(appstruct, request):
         postalCode=postalCode,
         country=country,
         mail=mail,
-        mailPreferred=mailPreferred,
+        # mailPreferred=mailPreferred,
         phone=phone,
         cell=cell,
         employerType=employerType,

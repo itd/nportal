@@ -14,9 +14,9 @@ from pyramid.scripts.common import parse_vars
 from ..models import (
     DBSession,
     Base,
-    SiteModel,
     Request,
-    CountryCodes
+    CountryCodes,
+    SiteModel,
     )
 
 from .data import country_codes
