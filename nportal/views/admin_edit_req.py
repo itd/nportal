@@ -1,30 +1,15 @@
 import os
-# import string
 from datetime import datetime
 from hashids import Hashids
 import transaction
-# import requests
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
 
-from pyramid.security import authenticated_userid
-# from pyramid.response import Response
-# from pyramid.decorator import reify
-# from pyramid.httpexceptions import (
-#     HTTPMovedPermanently,
-#     HTTPFound,
-#     HTTPNotFound,
-#     )
-
 from pyramid.session import SignedCookieSessionFactory
-
 from pyramid.config import (Configurator, settings)
-
 from pyramid.view import view_config
-from pyramid.renderers import get_renderer, render, render_to_response
-# from sqlalchemy.exc import DBAPIError
-#import deform
+from pyramid.renderers import get_renderer
 from deform import (ZPTRendererFactory,
                     Form,
                     widget,
@@ -50,8 +35,8 @@ from .lists import (us_states,
 
 
 # sqlalchemy setup
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
-                                        expire_on_commit=False))
+# DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
+#                                         expire_on_commit=False))
 sess = DBSession()
 
 # view flash session info
@@ -65,9 +50,6 @@ deform_templates = resource_filename('deform', 'templates')
 tpath = os.getcwd()
 search_path = (tpath + '/nportal/templates', deform_templates)
 drenderer = ZPTRendererFactory(search_path)
-# Form.set_zpt_renderer(search_path)
-# import htmllaundry
-# from htmllaundry import sanitize
 
 
 def edit_layout():
@@ -112,14 +94,12 @@ class EditRequestsView(object):
             action_url = rurl('req_list')
             return dict(title=title, success=False)
 
-        # cz = session.query(Request).filter(Request.citizenships.any(unid=u_data.unid))
-
-        import pdb; pdb.set_trace()
-
+        # cz = session.query(Request).filter(
+        #          Request.citizenships.any(unid=u_data.unid))
         # cz = session.query(Request).filter(unid=u_data.unid)
 
         schema = EditRequestSchema().bind(   ## validator=uid_validator
-            cou = data.couTimestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
         )
         title = "Edit Request"
         flash_msg = "Success! The request has been updated."
@@ -135,8 +115,6 @@ class EditRequestsView(object):
                     buttons=('submit',),
                     action=action_url,
                     appstruct=appstruct)
-
-        import pdb; pdb.set_trace()
 
         return dict(title=title,
                     action=action_url,
@@ -169,7 +147,7 @@ def _update_request(appstruct, request):
     postalCode = ai['postalCode']
     country = ai['country']
     mail = ai['mail']
-    mailPreferred = ai['mailPreferred']
+    # mailPreferred = ai['mailPreferred']
     phone = ai['phone']
     cell = ai['cell']
     employerType = ai['employerType']
@@ -189,6 +167,8 @@ def _update_request(appstruct, request):
 
     if not cn:
         cn = "%s, %s" % (givenName, sn)
+
+    # import pdb; pdb.set_trace()
 
     submission = Request(
         unid=unid,

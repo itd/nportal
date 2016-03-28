@@ -245,10 +245,9 @@ class EditRequestSchema(colander.Schema):
     employerName = colander.SchemaNode(
         colander.String(),
         title='Employer, Institution, or Sponsor Name',
-        description='Please provide the name of your employer or '
-                    'the institution you represent',
+        description='Provided employer or institution name',
         validator=colander.Length(min=3, max=128),
-        widget=widget.TextInputWidget(placeholder='employer name here'),
+        widget=widget.TextInputWidget(readonly=True),
         oid='employerName'
     )
 
@@ -275,25 +274,13 @@ class EditRequestSchema(colander.Schema):
         oid='citizenships',
     )
 
-    #   birthCountry
     birthCountry = colander.SchemaNode(
         colander.String(),
         title='Country of birth',
         description='Please enter/select your country of birth',
         validator=valid_country,
-        widget=widget.Select2Widget(
-            values=country_codes),
+        widget=widget.Select2Widget(readonly=True, values=country_codes),
         oid='birthCountry',
-    )
-
-    isnreluser = colander.SchemaNode(
-        colander.String(),
-        title='Existing NREL Account?',
-        description="Select the option that is most true for you.",
-        widget=deform.widget.RadioChoiceWidget(values=has_account),
-        missing=unicode(''),
-        label='Existing or Previous ESIF HPC UserID',
-        oid='isnreluser'
     )
 
     nrelUserID = colander.SchemaNode(
@@ -302,15 +289,15 @@ class EditRequestSchema(colander.Schema):
         description='If you have --or previously had-- an NREL UserID, '
                     'enter it here.',
         validator=colander.Length(min=1, max=16),
-        widget=widget.TextInputWidget(placeholder='example: jsmythe'),
+        widget=widget.TextInputWidget(readonly=True),
         missing=unicode(''),
         oid='nrelUserID'
     )
 
     justification = colander.SchemaNode(
         colander.String(),
-        title='NREL HPC User Credential Information',
-        widget=widget.TextAreaWidget(rows=6, columns=60),
+        title='Justification',
+        widget=widget.TextAreaWidget(rows=6, columns=60, readonly=True),
         missing=unicode(''),
         validator=colander.Length(max=1000),
         description="If you don't have an account on NREL HPC systems, "
@@ -328,7 +315,7 @@ class EditRequestSchema(colander.Schema):
         description="Please provide your desired User ID here.<sup>1</sup>"
                     "(3 to 16 characters, all lower case.)",
         validator=colander.Length(min=3, max=16),
-        widget=widget.TextInputWidget(placeholder="example: jsmythe"),
+        widget=widget.TextInputWidget(readonly=True),
         missing=unicode(''),
         oid='preferredUID'
     )
@@ -336,7 +323,7 @@ class EditRequestSchema(colander.Schema):
     comments = colander.SchemaNode(
         colander.String(),
         title='Additional Notes or Comments',
-        widget=deform.widget.TextAreaWidget(rows=6, columns=60,
+        widget=deform.widget.TextAreaWidget(rows=6, columns=60, readonly=True,
             placeholder='If you think we need any additional '
                 'information to process or approve your request, '
                 'please let us know.'),

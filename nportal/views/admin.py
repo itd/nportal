@@ -156,56 +156,6 @@ class AdminViews(object):
             password=password,
             error=error)
 
-    @view_config(route_name='req_list',
-                 renderer='../templates/req_list.pt',
-                 permission='view')
-    def req_list(self):
-        """
-        Path is /radmin/req
-        """
-        title = "Request List"
-        sess = DBSession()
-        users = sess.query(Request).order_by(Request.sn).all()
-        users = [u.__dict__ for u in users]
-        citz = sess.query(Request).order_by(Request.sn).all()
-
-        return dict(title=title,
-                    page_title=title,
-                    users=users)
-
-    # @view_config(route_name='req_edit',
-    #              renderer='../templates/req_edit.pt')
-    # def req_edit(self):
-    #     """
-    #     /radmin/request/{unid}
-    #     """
-    #     unid = self.request.matchdict['unid']
-    #     session = DBSession()
-    #     u_data = session.query(Request).filter_by(unid=unid).first()
-    #
-    #     # Do a check to ensure req data is there...
-    #     success = False
-    #     if u_data is None:
-    #         title = "Edit Request Record"
-    #         flash_msg = "There was an error processing the request"
-    #         self.request.session.flash(flash_msg)
-    #         return dict(title=title, success=False)
-    #     else:
-    #         title = "Edit Request Record"
-    #         flash_msg = "There was an error processing the request"
-    #         self.request.session.flash(flash_msg)
-    #         return dict(title=title,
-    #                     page_title=title,
-    #                     data=u_data,
-    #                     success=True)
-    #
-    #     # title = "Request Successfully Edited"
-    #     # flash_msg = "Success! Your request has been submitted."
-    #     # self.request.session.flash(flash_msg)
-    #     # return dict(title=title,
-    #     #             data=u_data,
-    #     #             success=True)
-
 
 def _update_req(appstruct, request):
     reqsettings = request.registry.settings

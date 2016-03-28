@@ -196,5 +196,20 @@ table.user-list thead {
   color: darkblue;
 }
 
+.resp-value {
+  color: darkblue;
+}
 
+.resp-value dd {
+  display: inline;
+}
+
+.resp-value dt {
+  display: inline;
+}
+
+.edit-wrapper {
+    margin: 0 auto;
+    width: 96%;
+}
 /* end */

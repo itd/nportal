@@ -16,22 +16,21 @@
       <table class="xtable xtable-striped user-list">
         <thead>
         <tr>
-          <th>id</th>
+          <th>Req id</th>
           <!--?<th>unid</th>-->
-          <th>UserID</th>
-          <th>cn</th>
-          <th>Title</th>
+          <th>Preferred<br />Name (cn)</th>
+          <!--!<th>Title</th>-->
           <th>First</th>
           <th>M.</th>
           <th>sn</th>
-          <th>suffix</th>
+          <!--?<th>suffix</th>-->
           <!--?<th>street</th>-->
           <!--?<th>lcity</th>-->
           <!--?<th>st</th>-->
           <!--?<th>postalCode</th>-->
           <!--?<th>country</th>-->
           <th>mail</th>
-          <th>mail Pref</th>
+          <!--!<th>mail Pref</th>-->
           <th>phone</th>
           <th>cell</th>
           <th>Empl Type</th>
@@ -41,6 +40,8 @@
           <th>Birth Country</th>
           <th>NREL ID</th>
           <th>pref ID</th>
+          <th>Assigned<br />UserID</th>
+
           <!--?<th>justification</th>-->
           <!--?<th>comments</th>-->
           <th>subTimestamp</th>
@@ -54,36 +55,42 @@
           <tal:rep tal:repeat="u users">
           <tr>
             <td tal:define="unid u.unid"><a href="request/${unid}">[edit #<b tal:content="u.id"></b>]</a> </td>
-            <!--?<td tal:content="u.unid"> </td>-->
-            <td tal:content="u.UserID"> </td>
+            <!--!<td tal:content="u.unid"> </td>-->
             <td tal:content="u.cn"> </td>
-            <td tal:content="u.titlePrefix"> </td>
+            <!--?<td tal:content="u.titlePrefix"> </td>-->
             <td tal:content="u.givenName"> </td>
             <td tal:content="u.middleName"> </td>
             <td tal:content="u.sn"> </td>
-            <td tal:content="u.suffix"> </td>
-            <!--?<td tal:content="u.street"> </td>-->
-            <!--?<td tal:content="u.lcity"> </td>-->
-            <!--?<td tal:content="u.st"> </td>-->
-            <!--?<td tal:content="u.postalCode"> </td>-->
-            <!--?<td tal:content="u.country"> </td>-->
+            <!--?<td tal:content="u.suffix"> </td>-->
+
+            <!--!<td tal:content="u.street"> </td>-->
+            <!--!<td tal:content="u.lcity"> </td>-->
+            <!--!<td tal:content="u.st"> </td>-->
+            <!--!<td tal:content="u.postalCode"> </td>-->
+            <!--!<td tal:content="u.country"> </td>-->
+
             <td tal:content="u.mail"> </td>
-            <td tal:content="u.mailPreferred"> </td>
+            <!--!<td tal:content="u.mailPreferred"> </td>-->
+
             <td tal:content="u.phone"> </td>
             <td tal:content="u.cell"> </td>
             <td tal:content="u.employerType"> </td>
             <td tal:content="u.employerName"> </td>
-            <!--?<td tal:content="u.user_request_pkey | None"> </td>-->
+            <!--!<td tal:content="u.user_request_pkey | None"> </td>-->
+
             <td tal:content="u.citizenStatus"> </td>
             <td tal:content="u.birthCountry"> </td>
+
             <td tal:content="u.nrelUserID"> </td>
             <td tal:content="u.preferredUID"> </td>
-            <!--?<td tal:content="u.justification"> </td>-->
-            <!--?<td tal:content="u.comments"> </td>-->
+            <td tal:content="u.UserID"> </td>
+
+            <!--!<td tal:content="u.justification"> </td>-->
+            <!--!<td tal:content="u.comments"> </td>-->
             <td tal:content="u.subTimestamp"> </td>
-            <!--?<td tal:content="u.couTimestamp | None"> </td>-->
-            <!--?<td tal:content="u.storTimestamp"> </td>-->
-            <!--?<td tal:content="u.cyberTimestamp | None"> </td>-->
+            <!--!<td tal:content="u.couTimestamp | None"> </td>-->
+            <!--!<td tal:content="u.storTimestamp"> </td>-->
+            <!--!<td tal:content="u.cyberTimestamp | None"> </td>-->
 
           </tr>
         </tal:rep>
