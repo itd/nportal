@@ -2,14 +2,20 @@ import os
 from datetime import datetime
 from hashids import Hashids
 import transaction
+import logging
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.orm import (scoped_session, sessionmaker)
-
+import colander
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.config import (Configurator, settings)
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
+from pyramid.httpexceptions import (
+    HTTPMovedPermanently,
+    HTTPFound,
+    HTTPNotFound,
+    )
 from deform import (ZPTRendererFactory,
                     Form,
                     widget,
@@ -27,12 +33,16 @@ from nportal.models import (
 
 from schema_edit_request import EditRequestSchema
 from validators import uid_validator
-from .lists import (us_states,
+from .lists import (title_prefixes,
+                    citizen_types,
+                    employer_types,
                     country_codes,
-                    title_prefixes,
                     has_account,
+                    approval_status
                     )
 
+
+log = logging.getLogger(__name__)
 
 # sqlalchemy setup
 # DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
@@ -62,6 +72,23 @@ def edit_layout():
 #     base = get_renderer('templates/_layout.pt').implementation()
 #     event.update({'base': base})
 
+@colander.deferred
+def deferred_country_widget(node, kw):
+    country_codes_data = kw.get('country_codes_data', [])
+    return widget.Select2Widget(values=country_codes_data)
+
+
+@colander.deferred
+def deferred_state_widget(node, kw):
+    us_states_data = kw.get('us_states_data', [])
+    return widget.Select2Widget(values=us_states_data)
+
+
+@colander.deferred
+def deferred_title_prefix_widget(node, kw):
+    title_prefix_data = kw.get('title_prefix_data', [])
+    return widget.Select2Widget(values=title_prefix_data)
+
 
 class EditRequestsView(object):
     """
@@ -72,6 +99,13 @@ class EditRequestsView(object):
         self.layout = edit_layout()
         self.title = "Request Review Form"
 
+        # self.request.session.flash('')
+        self.session = request.session
+
+        # see if the POST was a submission
+        self.submitted = 'submit' in request.POST
+        self.unid = self.request.matchdict['unid']
+
     @view_config(route_name='req_edit',
                  renderer='../templates/req_edit.pt')
     def edit_request(self):
@@ -79,12 +113,11 @@ class EditRequestsView(object):
         """
         /radmin/request/{unid}
         """
+        dbsession = DBSession()
         unid = self.request.matchdict['unid']
-        session = DBSession()
-        data = session.query(Request).filter_by(unid=unid).one()
-        # TODO: do a check for came_from also
+        data = dbsession.query(Request).filter_by(unid=unid).one()
 
-        # Do a check to ensure user data is there...
+        # TODO: do a check for came_from also
         success = False
         if data is None:
             title = "Review Request"
@@ -94,19 +127,61 @@ class EditRequestsView(object):
             action_url = rurl('req_list')
             return dict(title=title, success=False)
 
-        # cz = session.query(Request).filter(
-        #          Request.citizenships.any(unid=u_data.unid))
-        # cz = session.query(Request).filter(unid=u_data.unid)
+        if self.submitted:
+            log.debug('processing submission')
 
+            request = self.request
+            controls = request.POST.items()
+            captured = None
+            log.debug('processing: %s', unid)
+
+            schema = EditRequestSchema()
+            dbsession = DBSession()
+            data = dbsession.query(Request).filter_by(unid=unid).one()
+            appstruct = data.__dict__
+            del appstruct['_sa_instance_state']
+            appstruct['cou'] = data.couTimestamp
+            appstruct['stor'] = data.storTimestamp
+
+            # schema = schema(validator=uid_validator)
+            # create a deform form object from the schema
+            form = Form(schema,
+                        appstruct=appstruct,
+                        action=request.route_url('req_edit', unid=unid),
+                        form_id='deformRegform')
+
+            try:
+                # try to validate the submitted values
+                captured = form.validate(controls)
+
+            except ValidationFailure as e:
+                # the submitted values could not be validated
+                import pdb; pdb.set_trace()
+                flash_msg = u"Please address the errors indicated below!"
+                request.session.flash(flash_msg)
+                return dict(form=form, page_title=self.title)
+
+            unid = _update_request(appstruct, data, request)
+
+            view_url = request.route_url('req_edit', unid=unid)
+
+            return HTTPFound(view_url, )
+            # return HTTPMovedPermanently(location=view_url)
+            # return self.request_received_view()
+            # return view_url
+
+
+        rev_status = [i[0] for i in approval_status]
         schema = EditRequestSchema().bind(   ## validator=uid_validator
-            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
+            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M')
         )
+
         title = "Review Request"
-        flash_msg = "Success! The request has been updated."
+        flash_msg = None
         self.request.session.flash(flash_msg)
 
         rurl = self.request.route_url
-        action_url = rurl('req_list')
+        action_url = rurl('req_edit', unid=unid)
 
         appstruct = data.__dict__
         del appstruct['_sa_instance_state']
@@ -124,18 +199,14 @@ class EditRequestsView(object):
                     success=True)
 
 
-def _update_request(appstruct, request):
-    regset = request.registry.settings
-    slt = regset['unid_salt']
-    hashids = Hashids(salt=slt)
-    unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
+def _update_request(appstruct, data, request):
     ai = appstruct.items()
     ai = dict(ai)
     dbsess = DBSession()
 
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
-    unid = hashids.encode(int(unid))
+    unid = ai['unid']
     givenName = ai['givenName']
     middleName = ai['middleName']
     sn = ai['sn']
@@ -161,14 +232,14 @@ def _update_request(appstruct, request):
     preferredUID = ai['preferredUID']
     justification = ai['justification']
     comments = ai['comments']
-    couTimestamp = now
-    storTimestamp = now
-    subTimestamp = now
+    couTimestamp  = ai['couTimestamp']
+    storTimestamp = ai['storTimestamp']
+    subTimestamp  = ai['subTimestamp']
+    approvalStatus = ai['approvalStatus']
+    UserID = ai['UserID']
 
     if not cn:
         cn = "%s, %s" % (givenName, sn)
-
-    # import pdb; pdb.set_trace()
 
     submission = Request(
         unid=unid,
@@ -195,9 +266,11 @@ def _update_request(appstruct, request):
         preferredUID=preferredUID,
         justification=justification,
         comments=comments,
+        approvalStatus=approvalStatus,
+        UserID=UserID,
         subTimestamp=subTimestamp,
         couTimestamp=couTimestamp,
-        storTimestamp=storTimestamp
+        storTimestamp=storTimestamp,
         )
 
     # write the data

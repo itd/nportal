@@ -102,7 +102,9 @@ class Request(Base):
     subTimestamp = Column(DateTime, nullable=True, default=None)
     couTimestamp = Column(DateTime, nullable=True, default=None)
     storTimestamp = Column(DateTime, nullable=True, default=None)
+
     approvalTimestamp = Column(DateTime, nullable=True, default=None)
+    approvalStatus = Column(Integer, nullable=True, default=None)
     approvedBy = Column(Text, nullable=True, default=None)
 
     def __repr__(self):

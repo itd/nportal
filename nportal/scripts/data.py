@@ -252,3 +252,10 @@ country_codes = [
     ('ZMB', 'Zambia'),
     ('ZWE', 'Zimbabwe'),
 ]
+
+
+# COPY request (id, unid, "UserID", cn, "titlePrefix", "givenName", "middleName", sn, suffix, street, lcity, st, "postalCode", country, mail, phone, cell, "employerType", "employerName", "citizenStatus", "birthCountry", "nrelUserID", "preferredUID", justification, comments, "subTimestamp", "couTimestamp", "storTimestamp", "approvalTimestamp", "approvalStatus", "approvedBy") FROM stdin;
+# 1	GXpgqz4ObBOWl	\N	Bobby	\N	Bob		Barker		123 Fore Way	Greensburgh	PA	73737	USA	kshload@gmail.com	202-111-1111	303-408-9398	usuni	Penn State	fn	IND		bbarker	I'm working for ray grout	n/a	2016-03-29 09:00:02.516973	2016-03-29 09:00:02.516973	2016-03-29 09:00:02.516973	\N	0	\N
+# 2	3yK0R5XWogGbK	\N	Kurt	\N	Kurt	M	Bendl		1707 East Street	Golden	CO	80401	USA	kurt@tool.net	303-275-4617	303-408-9398	doe	NREL	us	USA	kbendl		I'm working for ray grout	I work for CSC	2016-03-29 09:03:35.586801	2016-03-29 09:03:35.586801	2016-03-29 09:03:35.586801	\N	0	\N
+# \.
+

@@ -16,6 +16,7 @@ h3,
 h4,
 h5,
 h6 {
+  margin: 2px 0;
 
 }
 
@@ -194,6 +195,10 @@ table.user-list thead {
   padding: 3px;
 }
 
+legend {
+  margin: 0 0 8px;
+}
+
 .portal-container {
   width: 98%;
   margin: 0 auto;
@@ -222,7 +227,20 @@ table.user-list thead {
     width: 96%;
 }
 
+div.resp-reported-value,
+.resp-reported-value p.form-control-static {
+    display: inline-block;
+}
 
+.edit-wrapper .form-group {
+    margin: 0;
+}
 
+fieldset {
+  margin: 0 0 1.5em;
+}
 
+.well {
+  padding: 8px 17px;
+}
 /* end */

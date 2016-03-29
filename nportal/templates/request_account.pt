@@ -18,13 +18,15 @@
 
             <div class="form-group" tal:define="field form['cou'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()"
+                  class="alert alert-danger" role="alert">${error}</p>
               <p>${structure:field.serialize()} By submitting this application, I agree that I have read and will abide by the <a href="#">ESIF HPC COU Policies</a>.</p>
             </div>
 
             <div class="form-group" tal:define="field form['stor'];">
               <h5>${field.title}<span class="req" tal:condition="field.required">*</span></h5>
-              <p tal:condition="field.error" tal:repeat="error field.error.messages()" class="alert alert-danger" role="alert">${error}</p>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()"
+                  class="alert alert-danger" role="alert">${error}</p>
               <p>${structure:field.serialize()} By submitting this application, I agree that I have read and will abide by the <a href="http://hpc.nrel.gov/users/policies/data-security-policy" target="_black">ESIF HPC Data Security Policies</a>.</p>
             </div>
           </div>

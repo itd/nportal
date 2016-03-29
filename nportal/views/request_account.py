@@ -251,6 +251,7 @@ def _add_new_request(appstruct, request):
     couTimestamp = now
     storTimestamp = now
     subTimestamp = now
+    # approvalStatus = 0
 
     if not cn:
         cn = "%s, %s" % (givenName, sn)
@@ -282,10 +283,10 @@ def _add_new_request(appstruct, request):
         comments=comments,
         subTimestamp=subTimestamp,
         couTimestamp=couTimestamp,
-        storTimestamp=storTimestamp
+        storTimestamp=storTimestamp,
+        approvalStatus=0
         )
 
-    # write the data
     dbsess.add(submission)
     transaction.commit()
     # return the unid for processing in next form

@@ -629,3 +629,9 @@ employer_types = [
     ('other', 'Other'),
 ]
 
+approval_status = [
+    (0, 'Not yet reviewed'),
+    (3, 'Under Review'),
+    (1, 'Approved'),
+    (2, 'Denied'),
+]
