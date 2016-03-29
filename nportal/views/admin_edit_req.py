@@ -70,7 +70,7 @@ class EditRequestsView(object):
         self.request = request
         renderer = get_renderer("../templates/_layout.pt")
         self.layout = edit_layout()
-        self.title = "Request Update Form"
+        self.title = "Request Review Form"
 
     @view_config(route_name='req_edit',
                  renderer='../templates/req_edit.pt')
@@ -87,7 +87,7 @@ class EditRequestsView(object):
         # Do a check to ensure user data is there...
         success = False
         if data is None:
-            title = "Request Update"
+            title = "Review Request"
             flash_msg = "There was an error processing the submission"
             self.request.session.flash(flash_msg)
             rurl = self.request.route_url
@@ -101,7 +101,7 @@ class EditRequestsView(object):
         schema = EditRequestSchema().bind(   ## validator=uid_validator
             cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
         )
-        title = "Edit Request"
+        title = "Review Request"
         flash_msg = "Success! The request has been updated."
         self.request.session.flash(flash_msg)
 
@@ -183,7 +183,7 @@ def _update_request(appstruct, request):
         postalCode=postalCode,
         country=country,
         mail=mail,
-        mailPreferred=mailPreferred,
+        # mailPreferred=mailPreferred,
         phone=phone,
         cell=cell,
         employerType=employerType,
