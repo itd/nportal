@@ -641,3 +641,61 @@ def includeme(config):
     #     return dict(title=title,
     #                 data=u_data,
     #                 success=True)
+
+
+
+            <!--!
+            <div class="form-group" tal:define="field form['citizenships'];">
+              <h5>${field.title}<span
+                  class="req" tal:condition="field.required">*</span></h5>
+                <tal:cont tal:content="data.citizenships">${i}</tal:cont>
+              <span
+                  class="help" tal:condition="field.description">${field.description}</span>
+              <p tal:condition="field.error" tal:repeat="error field.error.messages()"
+                  class="alert alert-danger" role="alert">${error}</p>
+            </div>
+            -->
+
+
+
+
+        <form action="${form.action}" method="POST" id="${form.formid}"
+              accept-charset="utf-8" class="deform">
+
+
+          <fieldset class="policy">
+            <div>
+              <legend>Policy Acceptance</legend>
+
+              <p><b>storTimestamp</b> ${data.storTimestamp}</p>
+              <p><b>couTimestamp:</b> ${data.couTimestamp}:</p>
+            </div>
+          </fieldset>
+
+
+          <fieldset class="r-personal">
+            <legend>Personal Information</legend>
+            <div class="row pnames">
+              <div class="col-md-12">
+
+                ${data.givenName}
+                <tal:x tal:condition="data.middleName">
+                    ${data.middleName}
+                </tal:x>
+                 ${data.sn}
+                <tal:x tal:condition="data.suffix">
+                    ${data.suffix}
+                </tal:x>
+
+                <tal:def tal:define="field form['cn'];">
+                  <h5>${field.title}<span
+                      class="req" tal:condition="field.required">*</span></h5>
+                    ${structure:field.serialize()}
+                </tal:def>
+              </div>
+            </div>
+          </fieldset>
+
+        </form>
+
+

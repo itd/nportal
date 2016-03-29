@@ -13,7 +13,7 @@
   <div class="row">
 
     <div class="table-wrapper">
-      <table class="xtable xtable-striped user-list">
+      <table class="table table-striped user-list">
         <thead>
         <tr>
           <th>Req id</th>
@@ -51,10 +51,10 @@
         </tr>
         </thead>
 
-        <tbody class="table-striped">
+        <tbody class="">
           <tal:rep tal:repeat="u users">
           <tr>
-            <td tal:define="unid u.unid"><a href="request/${unid}">[edit #<b tal:content="u.id"></b>]</a> </td>
+            <td tal:define="unid u.unid"><a href="request/${unid}">[View #<b tal:content="u.id"></b>]</a> </td>
             <!--!<td tal:content="u.unid"> </td>-->
             <td tal:content="u.cn"> </td>
             <!--?<td tal:content="u.titlePrefix"> </td>-->
