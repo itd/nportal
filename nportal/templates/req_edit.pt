@@ -89,11 +89,11 @@
 
               <div  tal:define="field form['employerType'];">
                 <b>${field.title}:</b>
-                <div class="resp-reported-value">${structure:field.serialize()}</div>
+                <div class="resp-reported-value">${data.employerType}</div>
               </div>
               <div tal:define="field form['employerName'];">
                 <b>${field.title}:</b>
-                <div class="resp-reported-value">${structure:field.serialize()}</div>
+                <div class="resp-reported-value">${data.employerName}</div>
               </div>
             </fieldset>
 
@@ -102,13 +102,13 @@
 
               <div tal:define="field form['citizenStatus'];">
                 <b>${field.title}:</b>
-                <div class="resp-reported-value">${structure:field.serialize()}</div>
+                <div class="resp-reported-value">${data.citizenStatus}</div>
               </div>
 
 
               <div tal:define="field form['birthCountry'];">
                 <b>${field.title}:</b>
-                <div class="resp-reported-value">${structure:field.serialize()}</div>
+                <div class="resp-reported-value">${data.birthCountry}</div>
               </div>
 
 
@@ -155,6 +155,14 @@
           <div class="col-md-6">
             <legend>Review Updates</legend>
 
+            <fieldset id="preferredUID">
+              <div class="form-group" tal:define="field form['preferredUID'];">
+                <h5>${field.title}</h5>
+                <p class="resp-reported-value">${structure:field.serialize()}</p>
+                <span class="help" tal:condition="field.description">${field.description}</span>
+              </div>
+            </fieldset>
+
             <fieldset id="UserID">
               <div class="form-group" tal:define="field form['UserID'];">
                 <h5>${field.title}</h5>
@@ -173,7 +181,6 @@
 
 
             <div class="row reg-form-submit-section">
-
               <hr/>
 
               <div class="col-md-5">
@@ -194,7 +201,7 @@
         </div>
 
 
-        ${structure:form['unid'].serialize()}
+        <!--?structure:form['unid'].serialize()-->
         ${structure:form['givenName'].serialize()}
         ${structure:form['middleName'].serialize()}
         ${structure:form['sn'].serialize()}
@@ -213,15 +220,15 @@
         ${structure:form['citizenStatus'].serialize()}
         ${structure:form['citizenships'].serialize()}
         ${structure:form['birthCountry'].serialize()}
-        ${structure:form['nrelUserID'].serialize()}
-        ${structure:form['preferredUID'].serialize()}
+        <!--?structure:form['nrelUserID'].serialize()-->
+
         ${structure:form['justification'].serialize()}
         ${structure:form['comments'].serialize()}
-        <!--!${structure:form['approvalStatus'].serialize()}-->
-        <!--!${structure:form['UserID'].serialize()}-->
-        ${structure:form['subTimestamp'].serialize()}
-        ${structure:form['couTimestamp'].serialize()}
-        ${structure:form['storTimestamp'].serialize()}
+        <!--!structure:form['approvalStatus'].serialize()}-->
+        <!--!structure:form['UserID'].serialize()}-->
+        <!--?structure:form['subTimestamp'].serialize()-->
+        <!--?structure:form['couTimestamp'].serialize()-->
+        <!--?structure:form['storTimestamp'].serialize()-->
 
 
       </form>

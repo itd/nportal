@@ -311,9 +311,8 @@ class EditRequestSchema(colander.Schema):
 
     preferredUID = colander.SchemaNode(
         colander.String(),
-        title='*New* ESIF HPC UserID',
-        description="Please provide your desired User ID here.<sup>1</sup>"
-                    "(3 to 16 characters, all lower case.)",
+        title='Requested UserID',
+        description="The userid the user would prefer",
         validator=colander.Length(min=3, max=16),
         widget=widget.TextInputWidget(),
         missing=unicode(''),
@@ -334,11 +333,12 @@ class EditRequestSchema(colander.Schema):
 
     UserID = colander.SchemaNode(
         colander.String(),
-        title='Assigned UserID',
+        title='Assigned Permanent HPC UserID',
         description='Determined by Center Operations.'
                     ' This MUST match what is in IDM.',
         validator=colander.Length(min=1, max=16),
         widget=widget.TextInputWidget(),
+        default=None,
         missing=unicode(''),
         oid='UserID'
     )

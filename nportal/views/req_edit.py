@@ -143,8 +143,6 @@ class EditRequestsView(object):
             appstruct['cou'] = data.couTimestamp
             appstruct['stor'] = data.storTimestamp
 
-            # schema = schema(validator=uid_validator)
-            # create a deform form object from the schema
             form = Form(schema,
                         appstruct=appstruct,
                         action=request.route_url('req_edit', unid=unid),
@@ -185,7 +183,9 @@ class EditRequestsView(object):
 
         appstruct = data.__dict__
         del appstruct['_sa_instance_state']
-        # appstruct['cou'] = cou
+        # appstruct['couTimestamp'] = data.couTimestamp
+        import pdb; pdb.set_trace()
+
         form = Form(schema,
                     buttons=('submit',),
                     action=action_url,
