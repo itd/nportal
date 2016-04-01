@@ -40,19 +40,19 @@ Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 user_citizen = Table('user_citizen', Base.metadata,
                      Column('id', Integer, nullable=False,
                             unique=True, primary_key=True),
-                     Column('req_unid', String,
-                            ForeignKey('request.unid',
+                     Column('req_id', Integer,
+                            ForeignKey('requests.id',
                                        ondelete='CASCADE'),
                             index=True),
-                     Column('code', String,
+                     Column('code', String(3),
                             ForeignKey('countrycodes.code',
                                        ondelete='CASCADE'),
                             index=True)
                      )
 
 
-class Request(Base):
-    __tablename__ = 'request'
+class Requests(Base):
+    __tablename__ = 'requests'
 
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
 
@@ -85,11 +85,10 @@ class Request(Base):
 
     citizenStatus = Column(String(10), nullable=True, default=None)
     citizenships = relationship("CountryCodes",
-                                backref='user',
-                                lazy='select',
                                 secondary=user_citizen,
-                                cascade="all, delete",
-                                passive_deletes=True
+                                # lazy='select',
+                                # cascade="all, delete",
+                                # passive_deletes=True
                                 )
     birthCountry = Column(Text)
 
@@ -133,7 +132,7 @@ class CountryCodes(Base):
     """
     __tablename__ = 'countrycodes'
     id = Column(Integer, primary_key=True)
-    code = Column(String(16), unique=True, primary_key=True)
+    code = Column(String(3), unique=True, primary_key=True)
     name = Column(String(128), unique=True)
 
     def __repr__(self):

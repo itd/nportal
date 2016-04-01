@@ -3,9 +3,10 @@ from datetime import datetime
 from hashids import Hashids
 import transaction
 import logging
-
+from sqlalchemy.orm import lazyload
+from sqlalchemy.orm import joinedload
+# from sqlalchemy.orm import (scoped_session, sessionmaker)
 from zope.sqlalchemy import ZopeTransactionExtension
-from sqlalchemy.orm import (scoped_session, sessionmaker)
 import colander
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.config import (Configurator, settings)
@@ -26,10 +27,10 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    Request,
     CountryCodes,
     user_citizen
     )
+from nportal.models import Requests
 
 from schema_edit_request import EditRequestSchema
 from validators import uid_validator
@@ -115,7 +116,8 @@ class EditRequestsView(object):
         """
         dbsession = DBSession()
         unid = self.request.matchdict['unid']
-        data = dbsession.query(Request).filter_by(unid=unid).one()
+        data = dbsession.query(Requests).options(
+            joinedload('citizenships')).filter_by(unid=unid).one()
 
         # TODO: do a check for came_from also
         success = False
@@ -129,7 +131,6 @@ class EditRequestsView(object):
 
         if self.submitted:
             log.debug('processing submission')
-
             request = self.request
             controls = request.POST.items()
             captured = None
@@ -137,33 +138,43 @@ class EditRequestsView(object):
 
             schema = EditRequestSchema()
             dbsession = DBSession()
-            data = dbsession.query(Request).filter_by(unid=unid).one()
+            data = dbsession.query(Requests).options(
+                joinedload('citizenships')).filter_by(unid=unid).one()
             appstruct = data.__dict__
+
             del appstruct['_sa_instance_state']
-            appstruct['cou'] = data.couTimestamp
-            appstruct['stor'] = data.storTimestamp
+
+            appstruct['citizenships'] = ','.join([cc.code for cc
+                                                  in data.citizenships])
+
+            # appstruct['couTimestamp'] = appstruct.couTimestamp
+            # appstruct['storTimestamp'] = appstruct.storTimestamp
 
             form = Form(schema,
-                        appstruct=appstruct,
+                        data=appstruct,
                         action=request.route_url('req_edit', unid=unid),
-                        form_id='deformRegform')
+                        form_id='req_edit')
 
             try:
                 # try to validate the submitted values
                 captured = form.validate(controls)
 
             except ValidationFailure as e:
-                # the submitted values could not be validated
                 import pdb; pdb.set_trace()
+
+                # the submitted values could not be validated
                 flash_msg = u"Please address the errors indicated below!"
                 request.session.flash(flash_msg)
-                return dict(form=form, page_title=self.title)
+                return dict(form=form, data=appstruct, page_title=self.title)
 
             unid = _update_request(appstruct, data, request)
+            view_url = request.route_url('req_edit',
+                                         unid=unid,
+                                         page_title="Request Updated")
 
-            view_url = request.route_url('req_edit', unid=unid)
-
-            return HTTPFound(view_url, )
+            return HTTPFound(view_url,
+                             action=request.route_url('req_edit', unid=unid),
+                             data=appstruct)
             # return HTTPMovedPermanently(location=view_url)
             # return self.request_received_view()
             # return view_url
@@ -175,8 +186,8 @@ class EditRequestsView(object):
         )
 
         title = "Review Request"
-        flash_msg = None
-        self.request.session.flash(flash_msg)
+        # flash_msg = None
+        # self.request.session.flash(flash_msg)
 
         rurl = self.request.route_url
         action_url = rurl('req_edit', unid=unid)
@@ -184,7 +195,8 @@ class EditRequestsView(object):
         appstruct = data.__dict__
         del appstruct['_sa_instance_state']
         # appstruct['couTimestamp'] = data.couTimestamp
-        import pdb; pdb.set_trace()
+        appstruct['citizenships'] = ','.join([cc.code for cc
+                                              in data.citizenships])
 
         form = Form(schema,
                     buttons=('submit',),
@@ -195,7 +207,6 @@ class EditRequestsView(object):
                     action=action_url,
                     form=form,
                     data=appstruct,
-                    flash_msg=flash_msg,
                     success=True)
 
 
@@ -241,7 +252,7 @@ def _update_request(appstruct, data, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = Request(
+    submission = Requests(
         unid=unid,
         givenName=givenName,
         middleName=middleName,

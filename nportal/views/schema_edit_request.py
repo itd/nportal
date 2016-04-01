@@ -65,25 +65,25 @@ sn_widget = widget.TextInputWidget(css_class='form-control')
 
 class EditRequestSchema(colander.Schema):
     # couTimestamp
-    cou = colander.SchemaNode(
-        colander.Boolean(),
-        title='COU Policy Acceptance',
-        description='Terms and Conditions Agreement - Check this if '
-                    'you have read and agree to the cyber security policies.',
-        widget=widget.TextInputWidget(),
-        oid='cou'
-        )
+    # cou = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='COU Policy Acceptance',
+    #     description='Terms and Conditions Agreement - Check this if '
+    #                 'you have read and agree to the cyber security policies.',
+    #     widget=widget.TextInputWidget(),
+    #     oid='cou'
+    #     )
 
     #   storTimestamp
-    stor = colander.SchemaNode(
-        colander.Boolean(),
-        title='Data Security Policy Acceptance',
-        description='Check this if you have read and agree '
-                    'to the Center\'s storage policies.',
-        widget=widget.HiddenWidget(),
-        validator=stor_validator,
-        oid='stor'
-    )
+    # stor = colander.SchemaNode(
+    #     colander.Boolean(),
+    #     title='Data Security Policy Acceptance',
+    #     description='Check this if you have read and agree '
+    #                 'to the Center\'s storage policies.',
+    #     widget=widget.HiddenWidget(),
+    #     validator=stor_validator,
+    #     oid='stor'
+    # )
     #   cybeTimestamp
     # cyber = colander.SchemaNode(
     #     colander.Boolean(),
@@ -269,8 +269,8 @@ class EditRequestSchema(colander.Schema):
         colander.Set(),
         title='Citizenships',
         description='Please select your country or countries of citizenship',
-        validator=valid_countries,
-        widget=widget.HiddenWidget(),
+        #validator=valid_countries,
+        widget=widget,
         oid='citizenships',
     )
 

@@ -7,7 +7,7 @@ from pyramid.renderers import get_renderer
 
 from nportal.models import (
     DBSession,
-    Request,
+    Requests,
     CountryCodes,
     # Citizenship
     )
@@ -48,9 +48,9 @@ class AdminViews(object):
         """
         title = "Request List"
         sess = DBSession()
-        users = sess.query(Request).order_by(Request.sn).all()
+        users = sess.query(Requests).order_by(Requests.sn).all()
         users = [u.__dict__ for u in users]
-        citz = sess.query(Request).order_by(Request.sn).all()
+        citz = sess.query(Requests).order_by(Requests.sn).all()
 
         return dict(title=title,
                     page_title=title,

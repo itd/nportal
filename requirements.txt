@@ -1,24 +1,24 @@
 -e git+https://github.com/Pylons/deform.git@#egg=deform-master
 #
-# pip install -U -e https://github.com/Pylons/deform.git@master#egg=deform
+# pip install -U -e git+https://github.com/Pylons/deform.git@master#egg=deform
 #
 appnope==0.1.0
-Chameleon==2.22
-colander==1.0
+Chameleon==2.24
+colander==1.2
 decorator==4.0.4
--e git+https://github.com/Pylons/deform.git@b9d8b7404c9d4c18bc6fb40d27f2f970495a5de4#egg=deform
+-e git+https://github.com/Pylons/deform.git@27df268bf0a921118506288ff1dc0088e380f909#egg=deform
 deform-bootstrap==0.2.9
 gnureadline==6.3.3
 hashids==1.1.0
 htmllaundry==2.0
 ipython==4.0.0
 ipython-genutils==0.1.0
-iso8601==0.1.10
-ldap3==1.0.3
-lxml==3.4.4
+iso8601==0.1.11
+ldap3==1.2.2
+lxml==3.6.0
 Mako==1.0.1
 MarkupSafe==0.23
-# -e git+git@github.nrel.gov:hpc/nportal.git@c994545964f959c6c58090a57a5e742176deffd9#egg=nportal
+# -e git+git@github.nrel.gov:hpc/nportal.git@0e916eb2ebb7266ec32a54533f2cb5daea379033#egg=nportal
 PasteDeploy==1.5.2
 path.py==8.1.2
 peppercorn==0.5
@@ -35,16 +35,16 @@ pyramid-ldap3==0.2.3
 pyramid-mako==1.0.2
 pyramid-tm==0.12
 repoze.lru==0.6
-requests==2.8.1
+requests==2.9.1
 simplegeneric==0.8.1
-six==1.9.0
-SQLAlchemy==1.0.8
+six==1.10.0
+SQLAlchemy==1.0.12
 traitlets==4.0.0
 transaction==1.4.4
 translationstring==1.3
 venusian==1.0
 waitress==0.8.9
-WebOb==1.5.1
+WebOb==1.6.0
 zope.deprecation==4.1.2
 zope.interface==4.1.3
 zope.sqlalchemy==0.7.6

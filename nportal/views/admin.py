@@ -41,7 +41,7 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    Request,
+    Requests,
     CountryCodes,
     # Citizenship
     )
@@ -201,7 +201,7 @@ def _update_req(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = Request(
+    submission = Requests(
         unid=unid,
         givenName=givenName,
         middleName=middleName,

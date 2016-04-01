@@ -11,7 +11,7 @@ import deform
 from nportal.models import (
     DBSession,
     SiteModel,
-    Request
+    Requests
 )
 
 
@@ -52,7 +52,7 @@ class BaseViews(object):
 
     @reify
     def changepass(self):
-        schema = Request()
+        schema = Requests()
         return deform.Form(schema, buttons=('submit',))
 
     # @view_config(route_name='home', renderer='../templates/home.pt')

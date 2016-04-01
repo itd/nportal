@@ -102,7 +102,7 @@
 
               <div tal:define="field form['citizenStatus'];">
                 <b>${field.title}:</b>
-                <div class="resp-reported-value">${data.citizenStatus}</div>
+                <div class="resp-reported-value">${structure:field.serialize()}</div>
               </div>
 
 
@@ -111,6 +111,10 @@
                 <div class="resp-reported-value">${data.birthCountry}</div>
               </div>
 
+              <div tal:define="field form['citizenships'];">
+                <b>${field.title}:</b>
+                <div class="resp-reported-value">${structure:field.serialize()}</div>
+              </div>
 
             </fieldset>
           </div>
@@ -126,7 +130,7 @@
               <div class="form-group"
                   tal:condition="data.nrelUserID">
                 <p><b>nrelUserID</b>
-                  <span class="resp-reported-value">${data.nrelUSerID}</span></p>
+                  <span class="resp-reported-value">${data.nrelUserID}</span></p>
               </div>
 
               <div class="form-group" tal:condition="data.preferredUID">
@@ -218,7 +222,7 @@
         ${structure:form['employerType'].serialize()}
         ${structure:form['employerName'].serialize()}
         ${structure:form['citizenStatus'].serialize()}
-        ${structure:form['citizenships'].serialize()}
+        <!-- {structure:form['citizenships'].serialize()} -->
         ${structure:form['birthCountry'].serialize()}
         <!--?structure:form['nrelUserID'].serialize()-->
 
