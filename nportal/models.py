@@ -18,7 +18,7 @@ from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
     relationship,
-    backref
+    backref,
     )
 
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -113,15 +113,15 @@ class AccountRequests(Base):
                 self.id, self.unid, self.subTimestamp)
 
 
-
 class Citizenships(Base):
     """
-    A list of country codes, including None
+    A list of country codes
     """
     __tablename__ = 'citizenships'
     id = Column(Integer, primary_key=True)
     req_id = Column(Integer, ForeignKey('account_requests.id'))
     code = Column(String, nullable=False)
+    name = Column(String)
 
     request = relationship("AccountRequests", back_populates="citizenships")
 

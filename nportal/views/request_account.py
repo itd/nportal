@@ -102,7 +102,7 @@ class AccountRequestView(object):
 
     @view_config(route_name='request_account',
                  renderer='../templates/request_account.pt')
-    def add_new_user_account(self):
+    def request_account(self):
         ###
 
         ###

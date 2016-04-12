@@ -147,8 +147,6 @@ class EditRequestsView(object):
             appstruct['citizenships'] = ','.join([cc.code for cc
                                                   in data.citizenships])
 
-            # appstruct['couTimestamp'] = appstruct.couTimestamp
-            # appstruct['storTimestamp'] = appstruct.storTimestamp
 
             form = Form(schema,
                         data=appstruct,
@@ -160,8 +158,6 @@ class EditRequestsView(object):
                 captured = form.validate(controls)
 
             except ValidationFailure as e:
-                import pdb; pdb.set_trace()
-
                 # the submitted values could not be validated
                 flash_msg = u"Please address the errors indicated below!"
                 request.session.flash(flash_msg)
