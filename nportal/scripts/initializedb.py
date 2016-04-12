@@ -14,8 +14,7 @@ from pyramid.scripts.common import parse_vars
 from ..models import (
     DBSession,
     Base,
-    Requests,
-    CountryCodes,
+    AccountRequests,
     SiteModel,
     )
 
@@ -44,7 +43,7 @@ def main(argv=sys.argv):
         model = SiteModel(name='one', value=1)
         DBSession.add(model)
 
-    with transaction.manager:
-        for i in country_codes:
-            model = CountryCodes(code=i[0], name=i[1])
-            DBSession.add(model)
+    # with transaction.manager:
+    #     for i in country_codes:
+    #         model = CountryCodes(code=i[0], name=i[1])
+    #         DBSession.add(model)

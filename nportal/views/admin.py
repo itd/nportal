@@ -41,8 +41,7 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    Requests,
-    CountryCodes,
+    AccountRequests,
     # Citizenship
     )
 
@@ -186,9 +185,9 @@ def _update_req(appstruct, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenships = [sess.query(CountryCodes
-                    ).filter(CountryCodes.code == i).one()
-                    for i in ai['citizenships']]
+    # citizenships = [sess.query(CountryCodes
+    #                 ).filter(CountryCodes.code == i).one()
+    #                 for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -201,7 +200,7 @@ def _update_req(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = Requests(
+    submission = AccountRequests(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
@@ -220,7 +219,7 @@ def _update_req(appstruct, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        citizenships=citizenships,
+        # citizenships=citizenships,
         birthCountry=birthCountry,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,

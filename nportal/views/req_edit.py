@@ -27,10 +27,8 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    CountryCodes,
-    user_citizen
+    AccountRequests
     )
-from nportal.models import Requests
 
 from schema_edit_request import EditRequestSchema
 from validators import uid_validator
@@ -116,14 +114,13 @@ class EditRequestsView(object):
         """
         dbsession = DBSession()
         unid = self.request.matchdict['unid']
-        data = dbsession.query(Requests).filter_by(unid=unid).one()
-        all_countries = sess.query(CountryCodes).order_by(
-            CountryCodes.code).all()
+        data = dbsession.query(AccountRequests).filter_by(unid=unid).one()
+        all_countries = country_codes
         # TODO: do a check for came_from also
         success = False
         if data is None:
             title = "Review Request"
-            flash_msg = "There was an error processing the submission"
+            flash_msg = "There was an error processing the request"
             self.request.session.flash(flash_msg)
             rurl = self.request.route_url
             action_url = rurl('req_list')
@@ -137,14 +134,15 @@ class EditRequestsView(object):
             log.debug('processing: %s', unid)
 
             schema = EditRequestSchema().bind(
-                countries=[(i.code, i.code) for i in all_countries],
+                countries=[(i[0], i[1]) for i in all_countries],
             )
             dbsession = DBSession()
-            data = dbsession.query(Requests).options(
+            data = dbsession.query(AccountRequests).options(
                 joinedload('citizenships')).filter_by(unid=unid).one()
             appstruct = data.__dict__
 
-            del appstruct['_sa_instance_state']
+            import pdb; pdb.set_trace()
+            # del appstruct['_sa_instance_state']
 
             appstruct['citizenships'] = ','.join([cc.code for cc
                                                   in data.citizenships])
@@ -196,11 +194,8 @@ class EditRequestsView(object):
 
         appstruct = data.__dict__
 
-        import pdb; pdb.set_trace()
-
-        # del appstruct['_sa_instance_state']
         as_citizenships = appstruct['citizenships']
-        clist = [dbsession.query(Requests).filter_by(unid=i).first()
+        clist = [dbsession.query(AccountRequests).filter_by(unid=i).first()
                      for i in as_citizenships]
         appstruct['citizenships'] = clist
         # appstruct['couTimestamp'] = data.couTimestamp
@@ -244,9 +239,9 @@ def _update_request(appstruct, data, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenships = [dbsess.query(CountryCodes
-                    ).filter(CountryCodes.code == i).one()
-                    for i in ai['citizenships']]
+    # citizenships = [dbsess.query(CountryCodes
+    #                 ).filter(CountryCodes.code == i).one()
+    #                 for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -261,7 +256,7 @@ def _update_request(appstruct, data, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = Requests(
+    submission = AccountRequests(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
@@ -280,7 +275,7 @@ def _update_request(appstruct, data, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        citizenships=citizenships,
+        # citizenships=citizenships,
         birthCountry=birthCountry,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,

@@ -34,9 +34,8 @@ from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
-    Requests,
-    CountryCodes,
-    #Citizenship
+    AccountRequests,
+    Citizenships
     )
 
 from schemas import AddAccountSchema
@@ -108,7 +107,7 @@ class AccountRequestView(object):
 
         ###
         # instantiate our colander schema
-        schema = AddAccountSchema().bind(   ## validator=uid_validator
+        schema = AddAccountSchema().bind(
             country_codes_data=country_codes,
             us_states_data=us_states,
             title_prefix_data=title_prefixes,
@@ -155,22 +154,6 @@ class AccountRequestView(object):
                 self.request.session.flash(flash_msg)
                 return dict(form=sform, page_title=self.title)
 
-            # data validates, now does it recaptcha?
-            # recaptcha
-            # look for g-recaptcha-response
-            # and send to https://www.google.com/recaptcha/api/siteverify
-            cap = grecaptcha_verify(request)
-
-            # if cap['status'] is False:
-            #     #  request.session.flash('please try again')
-            #     flash_msg = "The CAPTCHA failed. Please try again."
-            #     self.request.session.flash(flash_msg)
-            #     return dict(form=sform)
-
-            # The checks passed.
-            # request.session.flash("It submitted! (not really)")
-            # submit the data to be added to be recorded,
-            # return a unique identifier - unid
             unid = _add_new_request(captured, request)
             title = 'Request Successfully submitted '
             view_url = request.route_url('request_received_view',
@@ -192,7 +175,7 @@ class AccountRequestView(object):
     def request_received_view(self):
         unid = self.request.matchdict['unid']
         session = DBSession()
-        u_data = session.query(Requests).filter_by(unid=unid).first()
+        u_data = session.query(AccountRequests).filter_by(unid=unid).first()
         # TODO: do a check for came_from also
 
         # Do a check to ensure user data is there...
@@ -234,15 +217,12 @@ def _add_new_request(appstruct, request):
     postalCode = ai['postalCode']
     country = ai['country']
     mail = ai['mail']
-    # mailPreferred = ai['mailPreferred']
     phone = ai['phone']
     cell = ai['cell']
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenships = [dbsess.query(CountryCodes
-                    ).filter(CountryCodes.code == i).one()
-                    for i in ai['citizenships']]
+    citizenships = [i for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -256,7 +236,12 @@ def _add_new_request(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    submission = Requests(
+    import pdb; pdb.set_trace()
+
+    citz = [sess.query(Citizenships).filter(Citizenships.code == i).one()
+             for i in citizenships]
+
+    submission = AccountRequests(
         unid=unid,
         givenName=givenName,
         middleName=middleName,
@@ -269,7 +254,6 @@ def _add_new_request(appstruct, request):
         postalCode=postalCode,
         country=country,
         mail=mail,
-        # mailPreferred=mailPreferred,
         phone=phone,
         cell=cell,
         employerType=employerType,
@@ -285,7 +269,8 @@ def _add_new_request(appstruct, request):
         couTimestamp=couTimestamp,
         storTimestamp=storTimestamp,
         approvalStatus=0
-        )
+    )
+
 
     dbsess.add(submission)
     transaction.commit()

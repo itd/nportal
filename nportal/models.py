@@ -37,21 +37,19 @@ class SiteModel(Base):
 Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 
 
-user_citizen = Table('user_citizen', Base.metadata,
-     Column('req_id', Integer,
-            ForeignKey('requests.id', ondelete='CASCADE',
-                        primary_key=True),
-            index=True
-            ),
-     Column('country_code', String(3),
-            ForeignKey('countrycodes.code', ondelete='CASCADE'),
-            index=True
-            )
-     )
+# user_citizen = Table('user_citizen', Base.metadata,
+#     Column('req_id', Integer, index=True,
+#           ForeignKey('account_requests.id', ondelete='CASCADE'),
+#            ),
+#     Column('country_code', String(3),
+#             ForeignKey('countrycodes.code', ondelete='CASCADE'),
+#             index=True
+#             )
+#      )
 
 
-class Requests(Base):
-    __tablename__ = 'requests'
+class AccountRequests(Base):
+    __tablename__ = 'account_requests'
 
     id = Column(Integer, nullable=False, unique=True, primary_key=True)
 
@@ -83,13 +81,17 @@ class Requests(Base):
     employerName = Column(String(192), nullable=True, default=None)
 
     citizenStatus = Column(String(10), nullable=True, default=None)
-    citizenships = relationship("CountryCodes",
-                                secondary=user_citizen,
-                                backref='requests',
-                                cascade="all, delete",
-                                passive_deletes=True,
-                                # lazy='select',
-                                )
+
+    citizenships = relationship("Citizenships",
+                                back_populates="request")
+    # order_by=Citizenships.id
+    # citizenships = relationship("CountryCodes",
+    #                             secondary=user_citizen,
+    #                             backref='account_requests',
+    #                             cascade="all, delete",
+    #                             passive_deletes=True,
+    #                             # lazy='select',
+    #                             )
     birthCountry = Column(Text)
 
     nrelUserID = Column(String(16), nullable=True, default=None)
@@ -111,17 +113,21 @@ class Requests(Base):
                 self.id, self.unid, self.subTimestamp)
 
 
-class CountryCodes(Base):
+
+class Citizenships(Base):
     """
     A list of country codes, including None
     """
-    __tablename__ = 'countrycodes'
+    __tablename__ = 'citizenships'
     id = Column(Integer, primary_key=True)
-    code = Column(String(3), unique=True, primary_key=True)
-    name = Column(String(128), unique=True)
+    req_id = Column(Integer, ForeignKey('account_requests.id'))
+    code = Column(String, nullable=False)
+
+    request = relationship("AccountRequests", back_populates="citizenships")
 
     def __repr__(self):
-        return "<CountryCodes(code='%s', name='%s')>" % (self.code, self.name)
+        return "<CountryCodes(req_id='%s', code='%s')>" % (self.req_id,
+                                                           self.code)
 
 
 # class Citizenships(Base):
