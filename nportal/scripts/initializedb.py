@@ -15,7 +15,7 @@ from ..models import (
     DBSession,
     Base,
     AccountRequests,
-    Coun
+    Citizenships,
     SiteModel,
     )
 
@@ -46,5 +46,5 @@ def main(argv=sys.argv):
 
     with transaction.manager:
         for i in country_codes:
-            model = CountryCodes(code=i[0], name=i[1])
+            model = Citizenships(code=i[0], name=i[1])
             DBSession.add(model)

@@ -201,8 +201,6 @@ def _add_new_request(appstruct, request):
     unid = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')
     ai = appstruct.items()
     ai = dict(ai)
-    dbsess = DBSession()
-
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
     unid = hashids.encode(int(unid))
@@ -222,7 +220,7 @@ def _add_new_request(appstruct, request):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    citizenships = [i for i in ai['citizenships']]
+    citizenships = ai['citizenships']
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -236,11 +234,10 @@ def _add_new_request(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    import pdb; pdb.set_trace()
-
-    citz = [sess.query(Citizenships).filter(Citizenships.code == i).one()
-             for i in citizenships]
-
+    # ccodes = dict(country_codes[1:])
+    sess_c = DBSession()
+    citz = [sess_c.query(Citizenships).filter(Citizenships.code == i).one()
+            for i in citizenships]
     submission = AccountRequests(
         unid=unid,
         givenName=givenName,
@@ -259,7 +256,7 @@ def _add_new_request(appstruct, request):
         employerType=employerType,
         employerName=employerName,
         citizenStatus=citizenStatus,
-        citizenships=citizenships,
+        citizenships=citz,
         birthCountry=birthCountry,
         nrelUserID=nrelUserID,
         preferredUID=preferredUID,
@@ -271,8 +268,8 @@ def _add_new_request(appstruct, request):
         approvalStatus=0
     )
 
-
-    dbsess.add(submission)
+    sess_a = DBSession()
+    sess_a.add(submission)
     transaction.commit()
     # return the unid for processing in next form
     return str(unid)

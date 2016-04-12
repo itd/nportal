@@ -190,6 +190,8 @@ class EditRequestsView(object):
 
         appstruct = data.__dict__
 
+        import pdb; pdb.set_trace()
+
         as_citizenships = appstruct['citizenships']
         clist = [dbsession.query(AccountRequests).filter_by(unid=i).first()
                      for i in as_citizenships]

@@ -37,17 +37,6 @@ class SiteModel(Base):
 Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 
 
-# user_citizen = Table('user_citizen', Base.metadata,
-#     Column('req_id', Integer, index=True,
-#           ForeignKey('account_requests.id', ondelete='CASCADE'),
-#            ),
-#     Column('country_code', String(3),
-#             ForeignKey('countrycodes.code', ondelete='CASCADE'),
-#             index=True
-#             )
-#      )
-
-
 class AccountRequests(Base):
     __tablename__ = 'account_requests'
 
@@ -84,14 +73,6 @@ class AccountRequests(Base):
 
     citizenships = relationship("Citizenships",
                                 back_populates="request")
-    # order_by=Citizenships.id
-    # citizenships = relationship("CountryCodes",
-    #                             secondary=user_citizen,
-    #                             backref='account_requests',
-    #                             cascade="all, delete",
-    #                             passive_deletes=True,
-    #                             # lazy='select',
-    #                             )
     birthCountry = Column(Text)
 
     nrelUserID = Column(String(16), nullable=True, default=None)
@@ -109,7 +90,7 @@ class AccountRequests(Base):
     approvedBy = Column(Text, nullable=True, default=None)
 
     def __repr__(self):
-        return "<Request(id='%s', unid='%s', subTimeStamp='%s')>" % (
+        return "<AccountRequests(id='%s', unid='%s', subTimeStamp='%s')>" % (
                 self.id, self.unid, self.subTimestamp)
 
 
@@ -123,23 +104,20 @@ class Citizenships(Base):
     code = Column(String, nullable=False)
     name = Column(String)
 
-    request = relationship("AccountRequests", back_populates="citizenships")
+    request = relationship("AccountRequests",
+                           back_populates="citizenships")
 
     def __repr__(self):
-        return "<CountryCodes(req_id='%s', code='%s')>" % (self.req_id,
+        return "<Citizenships(req_id='%s', code='%s')>" % (self.req_id,
                                                            self.code)
 
 
-# class Citizenships(Base):
-#     """
-#     List of citizenships for users
-#     # http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html
-#     """
-#     __tablename__ = 'citizenships'
-#     id = Column(Integer, primary_key=True)
-#     code = Column(String(128))
-#     request_id = Column(Integer, ForeignKey('request.id'))
-#
-#     def __repr__(self):
-#         return "<CitizenList(code='%s', userid='%s)>" % (
-#                 self.code, self.user_ref)
+# class RequestCitizenLink(Base):
+#     __tablename__ = 'req_cit_link'
+#     req_id = Column(Integer, ForeignKey('account_requests.id'), primary_key=True)
+#     cit_id = Column(Integer, ForeignKey('citizenships.id'), primary_key=True)
+#     extra_data = Column(String(256))
+#     request = relationship(AccountRequests,
+#                            backref=backref("request_ass"))
+#     citizenships = relationship(Citizenships,
+#                                 backref=backref("citizenship_ass"))
