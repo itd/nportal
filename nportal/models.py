@@ -38,17 +38,16 @@ Index('home_index', SiteModel.name, unique=True, mysql_length=255)
 
 
 user_citizen = Table('user_citizen', Base.metadata,
-                     Column('id', Integer, nullable=False,
-                            unique=True, primary_key=True),
-                     Column('req_id', Integer,
-                            ForeignKey('requests.id',
-                                       ondelete='CASCADE'),
-                            index=True),
-                     Column('code', String(3),
-                            ForeignKey('countrycodes.code',
-                                       ondelete='CASCADE'),
-                            index=True)
-                     )
+     Column('req_id', Integer,
+            ForeignKey('requests.id', ondelete='CASCADE',
+                        primary_key=True),
+            index=True
+            ),
+     Column('country_code', String(3),
+            ForeignKey('countrycodes.code', ondelete='CASCADE'),
+            index=True
+            )
+     )
 
 
 class Requests(Base):
@@ -86,9 +85,10 @@ class Requests(Base):
     citizenStatus = Column(String(10), nullable=True, default=None)
     citizenships = relationship("CountryCodes",
                                 secondary=user_citizen,
+                                backref='requests',
+                                cascade="all, delete",
+                                passive_deletes=True,
                                 # lazy='select',
-                                # cascade="all, delete",
-                                # passive_deletes=True
                                 )
     birthCountry = Column(Text)
 
@@ -111,6 +111,19 @@ class Requests(Base):
                 self.id, self.unid, self.subTimestamp)
 
 
+class CountryCodes(Base):
+    """
+    A list of country codes, including None
+    """
+    __tablename__ = 'countrycodes'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(3), unique=True, primary_key=True)
+    name = Column(String(128), unique=True)
+
+    def __repr__(self):
+        return "<CountryCodes(code='%s', name='%s')>" % (self.code, self.name)
+
+
 # class Citizenships(Base):
 #     """
 #     List of citizenships for users
@@ -124,17 +137,3 @@ class Requests(Base):
 #     def __repr__(self):
 #         return "<CitizenList(code='%s', userid='%s)>" % (
 #                 self.code, self.user_ref)
-
-
-class CountryCodes(Base):
-    """
-    A list of country codes, including None
-    """
-    __tablename__ = 'countrycodes'
-    id = Column(Integer, primary_key=True)
-    code = Column(String(3), unique=True, primary_key=True)
-    name = Column(String(128), unique=True)
-
-    def __repr__(self):
-        return "<CountryCodes(code='%s', name='%s')>" % (self.code, self.name)
-

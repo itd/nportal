@@ -116,9 +116,9 @@ class EditRequestsView(object):
         """
         dbsession = DBSession()
         unid = self.request.matchdict['unid']
-        data = dbsession.query(Requests).options(
-            joinedload('citizenships')).filter_by(unid=unid).one()
-
+        data = dbsession.query(Requests).filter_by(unid=unid).one()
+        all_countries = sess.query(CountryCodes).order_by(
+            CountryCodes.code).all()
         # TODO: do a check for came_from also
         success = False
         if data is None:
@@ -136,7 +136,9 @@ class EditRequestsView(object):
             captured = None
             log.debug('processing: %s', unid)
 
-            schema = EditRequestSchema()
+            schema = EditRequestSchema().bind(
+                countries=[(i.code, i.code) for i in all_countries],
+            )
             dbsession = DBSession()
             data = dbsession.query(Requests).options(
                 joinedload('citizenships')).filter_by(unid=unid).one()
@@ -193,7 +195,14 @@ class EditRequestsView(object):
         action_url = rurl('req_edit', unid=unid)
 
         appstruct = data.__dict__
-        del appstruct['_sa_instance_state']
+
+        import pdb; pdb.set_trace()
+
+        # del appstruct['_sa_instance_state']
+        as_citizenships = appstruct['citizenships']
+        clist = [dbsession.query(Requests).filter_by(unid=i).first()
+                     for i in as_citizenships]
+        appstruct['citizenships'] = clist
         # appstruct['couTimestamp'] = data.couTimestamp
         appstruct['citizenships'] = ','.join([cc.code for cc
                                               in data.citizenships])

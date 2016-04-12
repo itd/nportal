@@ -50,6 +50,16 @@ def deferred_review_status_validator(node, kw):
     return colander.OneOf([x[0] for x in approval_status])
 
 
+@colander.deferred
+def deferred_citizenships_widget(node, kw):
+    countries = kw.get('countries', [])
+    return widget.SelectWidget(values=countries)
+
+
+@colander.deferred
+def deferred_citizenships_validator(node, kw):
+    countries = kw.get('countries', [])
+    return colander.OneOf([x[0] for x in countries])
 # email_confirm_widget = deform.widget.CheckedInputWidget(
 #             subject='Email address',
 #             confirm_subject='Confirm your Email address',
@@ -270,7 +280,7 @@ class EditRequestSchema(colander.Schema):
         title='Citizenships',
         description='Please select your country or countries of citizenship',
         #validator=valid_countries,
-        widget=widget,
+        widget=deferred_citizenships_widget,
         oid='citizenships',
     )
 
