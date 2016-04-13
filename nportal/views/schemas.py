@@ -259,7 +259,7 @@ class AddAccountSchema(colander.Schema):
         description='Select one of the following options '
                     'that best describes your U.S. citizenship status',
         validator=colander.OneOf([x[0] for x in citizen_types]),
-        widget=deform.widget.RadioChoiceWidget(values=citizen_types),
+        widget=widget.RadioChoiceWidget(values=citizen_types),
         oid='citizenStatus'
     )
 
@@ -268,10 +268,7 @@ class AddAccountSchema(colander.Schema):
         title='Citizenships',
         description='Please select your country or countries of citizenship',
         validator=valid_countries,
-        widget=widget.Select2Widget(
-            values=country_codes,
-            multiple=True,
-            ),
+        widget=widget.Select2Widget(values=country_codes, multiple=True),
         oid='citizenships',
     )
 
@@ -281,8 +278,7 @@ class AddAccountSchema(colander.Schema):
         title='Country of birth',
         description='Please enter/select your country of birth',
         validator=valid_country,
-        widget=widget.Select2Widget(
-            values=country_codes),
+        widget=widget.Select2Widget(values=country_codes),
         oid='birthCountry',
     )
 
