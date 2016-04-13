@@ -1,29 +1,21 @@
 import os
 from datetime import datetime
-from hashids import Hashids
 import transaction
 import logging
+import colander
 from sqlalchemy.orm import lazyload
 from sqlalchemy.orm import joinedload
 # from sqlalchemy.orm import (scoped_session, sessionmaker)
 from zope.sqlalchemy import ZopeTransactionExtension
-import colander
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.config import (Configurator, settings)
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
-from pyramid.httpexceptions import (
-    HTTPMovedPermanently,
-    HTTPFound,
-    HTTPNotFound,
-    )
-from deform import (ZPTRendererFactory,
-                    Form,
+from pyramid.httpexceptions import HTTPFound
+
+from deform import (Form,
                     widget,
                     ValidationFailure)
-    # decorator, default_renderer, field, form,
-# import colander
-from pkg_resources import resource_filename
 
 from nportal.models import (
     DBSession,
@@ -48,17 +40,17 @@ log = logging.getLogger(__name__)
 #                                         expire_on_commit=False))
 sess = DBSession()
 
-# view flash session info
-req_session_factory = SignedCookieSessionFactory('itsaseekreet')
-config = Configurator()
-config.set_session_factory(req_session_factory)
+# # view flash session info
+# req_session_factory = SignedCookieSessionFactory('itsaseekreet')
+# config = Configurator()
+# config.set_session_factory(req_session_factory)
 
-# deform retail form additions
-resource_registry = widget.ResourceRegistry()
-deform_templates = resource_filename('deform', 'templates')
-tpath = os.getcwd()
-search_path = (tpath + '/nportal/templates', deform_templates)
-drenderer = ZPTRendererFactory(search_path)
+# # deform retail form additions
+# resource_registry = widget.ResourceRegistry()
+# deform_templates = resource_filename('deform', 'templates')
+# tpath = os.getcwd()
+# search_path = (tpath + '/nportal/templates', deform_templates)
+# drenderer = ZPTRendererFactory(search_path)
 
 
 def edit_layout():
@@ -71,22 +63,22 @@ def edit_layout():
 #     base = get_renderer('templates/_layout.pt').implementation()
 #     event.update({'base': base})
 
-@colander.deferred
-def deferred_country_widget(node, kw):
-    country_codes_data = kw.get('country_codes_data', [])
-    return widget.Select2Widget(values=country_codes_data)
-
-
-@colander.deferred
-def deferred_state_widget(node, kw):
-    us_states_data = kw.get('us_states_data', [])
-    return widget.Select2Widget(values=us_states_data)
-
-
-@colander.deferred
-def deferred_title_prefix_widget(node, kw):
-    title_prefix_data = kw.get('title_prefix_data', [])
-    return widget.Select2Widget(values=title_prefix_data)
+# @colander.deferred
+# def deferred_country_widget(node, kw):
+#     country_codes_data = kw.get('country_codes_data', [])
+#     return widget.Select2Widget(values=country_codes_data)
+#
+#
+# @colander.deferred
+# def deferred_state_widget(node, kw):
+#     us_states_data = kw.get('us_states_data', [])
+#     return widget.Select2Widget(values=us_states_data)
+#
+#
+# @colander.deferred
+# def deferred_title_prefix_widget(node, kw):
+#     title_prefix_data = kw.get('title_prefix_data', [])
+#     return widget.Select2Widget(values=title_prefix_data)
 
 
 class EditRequestsView(object):
@@ -104,6 +96,9 @@ class EditRequestsView(object):
         # see if the POST was a submission
         self.submitted = 'submit' in request.POST
         self.unid = self.request.matchdict['unid']
+        self.dbsession = DBSession()
+        self.data = self.dbsession.query(AccountRequests
+                                         ).filter_by(unid=self.unid).one()
 
     @view_config(route_name='req_edit',
                  renderer='../templates/req_edit.pt')
@@ -112,9 +107,8 @@ class EditRequestsView(object):
         """
         /radmin/request/{unid}
         """
-        dbsession = DBSession()
-        unid = self.request.matchdict['unid']
-        data = dbsession.query(AccountRequests).filter_by(unid=unid).one()
+        unid = self.unid
+        data = self.data
         all_countries = country_codes
         # TODO: do a check for came_from also
         success = False
@@ -133,23 +127,17 @@ class EditRequestsView(object):
             captured = None
             log.debug('processing: %s', unid)
 
-            schema = EditRequestSchema().bind(
-                countries=[(i[0], i[1]) for i in all_countries],
-            )
-            dbsession = DBSession()
-            data = dbsession.query(AccountRequests).options(
-                joinedload('citizenships')).filter_by(unid=unid).one()
+            schema = EditRequestSchema()
+            # dbsession = DBSession()
+            # data = dbsession.query(AccountRequests).options(joinedload('citizenships')).filter_by(unid=unid).one()
             appstruct = data.__dict__
+            del appstruct['_sa_instance_state']
 
-            import pdb; pdb.set_trace()
-            # del appstruct['_sa_instance_state']
-
-            appstruct['citizenships'] = ','.join([cc.code for cc
-                                                  in data.citizenships])
-
+            # appstruct['citizenships'] = [(i.code, i.name
+            #                               for i in data.citizenships)]
 
             form = Form(schema,
-                        data=appstruct,
+                        data=data,
                         action=request.route_url('req_edit', unid=unid),
                         form_id='req_edit')
 
@@ -167,19 +155,15 @@ class EditRequestsView(object):
             view_url = request.route_url('req_edit',
                                          unid=unid,
                                          page_title="Request Updated")
-
             return HTTPFound(view_url,
                              action=request.route_url('req_edit', unid=unid),
                              data=appstruct)
-            # return HTTPMovedPermanently(location=view_url)
-            # return self.request_received_view()
-            # return view_url
 
-
-        rev_status = [i[0] for i in approval_status]
-        schema = EditRequestSchema().bind(   ## validator=uid_validator
-            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M')
-        )
+        # Not an update, so simply display the account req data
+        schema = EditRequestSchema().bind(
+            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
+            countries=country_codes
+            )
 
         title = "Review Request"
         # flash_msg = None
@@ -189,16 +173,13 @@ class EditRequestsView(object):
         action_url = rurl('req_edit', unid=unid)
 
         appstruct = data.__dict__
-
-        import pdb; pdb.set_trace()
-
-        as_citizenships = appstruct['citizenships']
-        clist = [dbsession.query(AccountRequests).filter_by(unid=i).first()
-                     for i in as_citizenships]
-        appstruct['citizenships'] = clist
+        dc = appstruct['citizenships']
+        appstruct['citizenships'] = [(i.code, i.name) for i in dc]
+        # appstruct['citizenships'] = clist
         # appstruct['couTimestamp'] = data.couTimestamp
-        appstruct['citizenships'] = ','.join([cc.code for cc
-                                              in data.citizenships])
+        # appstruct['citizenships'] = ','.join([cc.code for cc
+        #                                       in data.citizenships])
+        # import pdb; pdb.set_trace()
 
         form = Form(schema,
                     buttons=('submit',),
