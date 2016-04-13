@@ -324,7 +324,7 @@ class AddAccountSchema(colander.Schema):
         description="Please provide your desired User ID here.<sup>1</sup>"
                     "(3 to 16 characters, all lower case.)",
         validator=colander.Length(min=3, max=16),
-        widget=widget.TextInputWidget(placeholder="example: jsmythe"),
+        widget=widget.g(placeholder="example: jsmythe"),
         missing=unicode(''),
         oid='preferredUID'
     )
