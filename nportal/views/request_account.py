@@ -234,9 +234,9 @@ def _add_new_request(appstruct, request):
     if not cn:
         cn = "%s, %s" % (givenName, sn)
 
-    # ccodes = dict(country_codes[1:])
-    sess_c = DBSession()
-    citz = [sess_c.query(Citizenships).filter(Citizenships.code == i).one()
+    import pdb; pdb.set_trace()
+    ccodes = dict(country_codes[1:])
+    citz = [sess.query(Citizenships).filter(Citizenships.code == i).one()
             for i in citizenships]
     submission = AccountRequests(
         unid=unid,

@@ -11,8 +11,9 @@ from pyramid.session import SignedCookieSessionFactory
 from pyramid.config import (Configurator, settings)
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
-from pyramid.httpexceptions import HTTPFound
-
+from pyramid.httpexceptions import (HTTPFound, HTTPNotFound)
+from pyramid.security import authenticated_userid
+import deform
 from deform import (Form,
                     widget,
                     ValidationFailure)
@@ -38,7 +39,7 @@ log = logging.getLogger(__name__)
 # sqlalchemy setup
 # DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
 #                                         expire_on_commit=False))
-sess = DBSession()
+# sess = DBSession()
 
 # # view flash session info
 # req_session_factory = SignedCookieSessionFactory('itsaseekreet')
@@ -80,6 +81,18 @@ def edit_layout():
 #     title_prefix_data = kw.get('title_prefix_data', [])
 #     return widget.Select2Widget(values=title_prefix_data)
 
+def merge_dbsession_with_post(session, post):
+    for key, value in post:
+        setattr(session, key, value)
+    return session
+
+
+def merge_appstruct(adbsession, appstruct):
+    for key in appstruct.keys():
+        setattr(adbsession, key, appstruct[key])
+    return adbsession
+
+
 
 class EditRequestsView(object):
     """
@@ -87,18 +100,18 @@ class EditRequestsView(object):
     def __init__(self, request):
         self.request = request
         renderer = get_renderer("../templates/_layout.pt")
-        self.layout = edit_layout()
-        self.title = "Request Review Form"
-
-        # self.request.session.flash('')
+        self.layout = renderer.implementation().macros['layout']
         self.session = request.session
-
-        # see if the POST was a submission
-        self.submitted = 'submit' in request.POST
-        self.unid = self.request.matchdict['unid']
         self.dbsession = DBSession()
-        self.data = self.dbsession.query(AccountRequests
-                                         ).filter_by(unid=self.unid).one()
+
+    # @property
+    # def req_edit_form(self):
+    #     schema = EditRequestSchema()
+    #     return deform.Form(schema, buttons=('submit',))
+    #
+    # @property
+    # def reqts(self):
+    #     return self.req_edit_form.get_widget_resources()
 
     @view_config(route_name='req_edit',
                  renderer='../templates/req_edit.pt')
@@ -107,84 +120,77 @@ class EditRequestsView(object):
         """
         /radmin/request/{unid}
         """
-        unid = self.unid
-        data = self.data
-        all_countries = country_codes
-        # TODO: do a check for came_from also
-        success = False
-        if data is None:
-            title = "Review Request"
-            flash_msg = "There was an error processing the request"
-            self.request.session.flash(flash_msg)
-            rurl = self.request.route_url
-            action_url = rurl('req_list')
-            return dict(title=title, success=False)
+        unid = self.request.matchdict['unid']
+        obj = DBSession.query(AccountRequests).filter_by(unid=unid).one()
+        request = self.request
+        sess = self.dbsession
+        title = "Request Review - %s" % unid
+        if obj is None:
+            return HTTPNotFound('No Account Request exists with that ID.')
 
-        if self.submitted:
-            log.debug('processing submission')
-            request = self.request
-            controls = request.POST.items()
-            captured = None
-            log.debug('processing: %s', unid)
-
-            schema = EditRequestSchema()
-            # dbsession = DBSession()
-            # data = dbsession.query(AccountRequests).options(joinedload('citizenships')).filter_by(unid=unid).one()
-            appstruct = data.__dict__
-            del appstruct['_sa_instance_state']
-
-            # appstruct['citizenships'] = [(i.code, i.name
-            #                               for i in data.citizenships)]
-
-            form = Form(schema,
-                        data=data,
-                        action=request.route_url('req_edit', unid=unid),
-                        form_id='req_edit')
-
-            try:
-                # try to validate the submitted values
-                captured = form.validate(controls)
-
-            except ValidationFailure as e:
-                # the submitted values could not be validated
-                flash_msg = u"Please address the errors indicated below!"
-                request.session.flash(flash_msg)
-                return dict(form=form, data=appstruct, page_title=self.title)
-
-            unid = _update_request(appstruct, data, request)
-            view_url = request.route_url('req_edit',
-                                         unid=unid,
-                                         page_title="Request Updated")
-            return HTTPFound(view_url,
-                             action=request.route_url('req_edit', unid=unid),
-                             data=appstruct)
-
-        # Not an update, so simply display the account req data
+        title = "edit allocation - %s" % unid
         schema = EditRequestSchema().bind(
-            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
+            cou=obj.couTimestamp.strftime('%Y-%m-%d %H:%M'),
             countries=country_codes
-            )
+        )
+        action_url = self.request.route_url('req_edit',
+                          #logged_in=authenticated_userid(self.request),
+                          unid=unid)
 
-        title = "Review Request"
-        # flash_msg = None
-        # self.request.session.flash(flash_msg)
-
-        rurl = self.request.route_url
-        action_url = rurl('req_edit', unid=unid)
-
-        appstruct = data.__dict__
-        dc = appstruct['citizenships']
-        appstruct['citizenships'] = [(i.code, i.name) for i in dc]
-        # appstruct['citizenships'] = clist
-        # appstruct['couTimestamp'] = data.couTimestamp
-        # appstruct['citizenships'] = ','.join([cc.code for cc
-        #                                       in data.citizenships])
-        # import pdb; pdb.set_trace()
 
         form = Form(schema,
                     buttons=('submit',),
-                    action=action_url,
-                    appstruct=appstruct)
+                    action=action_url)
+
+        if 'submit' in request.params:
+            log.debug('processing submission')
+            controls = request.POST.items()
+            log.debug('processing: %s', controls.unid)
+
+            try:
+                # try to validate the submitted values
+                appstruct = form.validate(controls)
+
+            except deform.ValidationFailure as e:
+                # the submitted values could not be validated
+                flash_msg = u"Please address the errors indicated below!"
+                request.session.flash(flash_msg)
+                return dict(form=e.render(),
+                            data=obj,
+                            page_title=title)
+
+            # all good
+            citizenships = appstruct['citizenships']
+            clist = [sess.query().filter_by(citizenships=i).first()
+                     for i in citizenships]
+            appstruct['citizenships'] = clist
+
+            record = merge_appstruct(obj, appstruct)
+
+            _update_request(record)
+
+            flash_msg = u"Request Updated"
+            request.session.flash(flash_msg)
+            view_url = request.route_url(
+                'req_edit',
+                unid=unid,
+                page_title="Request Updated",
+                # logged_in=authenticated_userid(self.request)
+            )
+            action = request.route_url('req_edit', unid=unid)
+
+            return HTTPFound(view_url,
+                             action=action,
+                             data=appstruct,
+                             flash_msg=flash_msg)
+
+        # not a submission, view
+        unid = request.matchdict['unid']
+        dbsession = DBSession()
+        data = dbsession.query(AccountRequests
+                               ).options(joinedload('citizenships')
+                                         ).filter_by(unid=unid).one()
+        appstruct = data.__dict__
 
         return dict(title=title,
                     action=action_url,
@@ -193,7 +199,7 @@ class EditRequestsView(object):
                     success=True)
 
 
-def _update_request(appstruct, data, request):
+def _update_request(appstruct):
     ai = appstruct.items()
     ai = dict(ai)
     dbsess = DBSession()

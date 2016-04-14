@@ -53,13 +53,17 @@ sn_widget = widget.TextInputWidget(
 
 
 class AddAccountSchema(colander.Schema):
+    """
+
+    """
     # couTimestamp
     cou = colander.SchemaNode(
         colander.Boolean(),
-        title='COU Policy Acceptance',
+        title='Security and Acceptable Use Policy Acceptance',
         description='Terms and Conditions Agreement - Check this if '
-            'you have read and agree to the cyber security policies.',
-        widget=deform.widget.CheckboxWidget(),
+                    'you have read and agree to abide by the Center\'s '
+                    'Security and Acceptable Use Policies.',
+        widget=widget.CheckboxWidget(),
         validator=cou_validator,
         oid='cou'
         )
@@ -324,7 +328,7 @@ class AddAccountSchema(colander.Schema):
         description="Please provide your desired User ID here.<sup>1</sup>"
                     "(3 to 16 characters, all lower case.)",
         validator=colander.Length(min=3, max=16),
-        widget=widget.g(placeholder="example: jsmythe"),
+        widget=widget.TextInputWidget(placeholder="example: jsmythe"),
         missing=unicode(''),
         oid='preferredUID'
     )

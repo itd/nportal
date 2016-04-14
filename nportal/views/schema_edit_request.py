@@ -2,6 +2,7 @@ import deform
 import deform.widget
 from deform import (widget)  # decorator, default_renderer, field, form,
 import colander
+from pyramid.renderers import get_renderer
 
 # import htmllaundry
 # from htmllaundry import sanitize
@@ -13,14 +14,78 @@ from validators import (cyber_validator,
                         valid_country,
                         valid_countries)
 
-from .lists import (title_prefixes,
+from .lists import (approval_status,
                     citizen_types,
-                    employer_types,
                     country_codes,
+                    country_codes,
+                    employer_types,
                     has_account,
-                    approval_status
+                    has_account,
+                    title_prefixes,
+                    us_states
                     )
 
+
+def site_layout():
+    renderer = get_renderer("../templates/_layout.pt")
+    layout = renderer.implementation().macros['layout']
+    return layout
+
+
+def add_base_template(event):
+    base = get_renderer('templates/_layout.pt').implementation()
+    event.update({'base': base})
+
+
+@colander.deferred
+def deferred_country_widget(node, kw):
+    country_codes_data = kw.get('country_codes_data', [])
+    return widget.Select2Widget(values=country_codes_data)
+
+
+@colander.deferred
+def deferred_state_widget(node, kw):
+    us_states_data = kw.get('us_states_data', [])
+    return widget.Select2Widget(values=us_states_data)
+
+
+@colander.deferred
+def deferred_title_prefix_widget(node, kw):
+    title_prefix_data = kw.get('title_prefix_data', [])
+    return widget.Select2Widget(values=title_prefix_data)
+
+
+@colander.deferred
+def deferred_review_status_widget(node, kw):
+    return widget.RadioChoiceWidget(values=approval_status)
+
+
+@colander.deferred
+def deferred_review_status_validator(node, kw):
+    return colander.OneOf([x[0] for x in approval_status])
+
+
+@colander.deferred
+def deferred_citizenships_widget(node, kw):
+    countries = kw.get('countries', [])
+    return widget.SelectWidget(values=countries)
+
+
+@colander.deferred
+def deferred_citizenships_validator(node, kw):
+    countries = kw.get('countries', [])
+    return colander.OneOf([x[0] for x in countries])
+# email_confirm_widget = deform.widget.CheckedInputWidget(
+#             subject='Email address',
+#             confirm_subject='Confirm your Email address',
+#             )
+#
+# pref_email_confirm_widget = deform.widget.CheckedInputWidget(
+#             subject='Optional Preferred Email',
+#             confirm_subject='Confirm your optional Email address',
+#             )
+
+sn_widget = widget.TextInputWidget(css_class='form-control')
 
 @colander.deferred
 def deferred_country_widget(node, kw):
@@ -60,68 +125,27 @@ def deferred_citizenships_widget(node, kw):
 def deferred_citizenships_validator(node, kw):
     countries = kw.get('countries', [])
     return colander.OneOf([x[0] for x in countries])
-# email_confirm_widget = deform.widget.CheckedInputWidget(
-#             subject='Email address',
-#             confirm_subject='Confirm your Email address',
-#             )
-#
-# pref_email_confirm_widget = deform.widget.CheckedInputWidget(
-#             subject='Optional Preferred Email',
-#             confirm_subject='Confirm your optional Email address',
-#             )
 
-sn_widget = widget.TextInputWidget(css_class='form-control')
+
+# sn_widget = widget.TextInputWidget(css_class='form-control')
 
 
 class EditRequestSchema(colander.Schema):
-    # couTimestamp
-    # cou = colander.SchemaNode(
-    #     colander.Boolean(),
-    #     title='COU Policy Acceptance',
-    #     description='Terms and Conditions Agreement - Check this if '
-    #                 'you have read and agree to the cyber security policies.',
-    #     widget=widget.TextInputWidget(),
-    #     oid='cou'
-    #     )
-
-    #   storTimestamp
-    # stor = colander.SchemaNode(
-    #     colander.Boolean(),
-    #     title='Data Security Policy Acceptance',
-    #     description='Check this if you have read and agree '
-    #                 'to the Center\'s storage policies.',
-    #     widget=widget.HiddenWidget(),
-    #     validator=stor_validator,
-    #     oid='stor'
-    # )
     #   cybeTimestamp
-    # cyber = colander.SchemaNode(
-    #     colander.Boolean(),
-    #     title='Cyber Security Policy Acceptance',
-    #     description='Check this if you have read and agree to abide by '
-    #                 'the Center\'s Cyber Security policies.',
-    #     widget=deform.widget.CheckboxWidget(),
-    #     validator=cyber_validator,
-    #     oid='cyber'
-    # )
-
-    # titlePrefix = colander.SchemaNode(
-    #     colander.String(),
-    #     title='Honorary',
-    #     description='If you prefer to use n honorary, enter it here.',
-    #     # validator=colander.ContainsOnly([x[0] for x in title_prefixes]),
-    #     #validator=colander.Length(min=1, max=64),
-    #     widget=widget.TextInputWidget(placeholder="Dr., Mr., Ms., etc."),
-    #     missing=unicode(''),
-    #     oid='titlePrefix'
-    # )
+    couTimestamp = colander.SchemaNode(
+        colander.Boolean(),
+        title='Security and Acceptable Use Policy Acceptance',
+        description='date',
+        widget=widget.DateInputWidget(),
+        oid='couTimestamp'
+    )
 
     givenName = colander.SchemaNode(
         colander.String(),
         title='Given/First name',
         description='Your given or first name',
         validator=colander.Length(min=1, max=64),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='givenName'
     )
 
@@ -130,7 +154,7 @@ class EditRequestSchema(colander.Schema):
         title='Middle name/initial',
         description='Middle name or initial',
         validator=colander.Length(min=0, max=64),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         missing=unicode(''),
         oid='middleName'
     )
@@ -140,7 +164,7 @@ class EditRequestSchema(colander.Schema):
         title='Family/Last Name',
         description='family Name / Last Name',
         validator=colander.Length(min=1, max=64),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='sn'
     )
 
@@ -149,7 +173,7 @@ class EditRequestSchema(colander.Schema):
         title='Suffix',
         description='(Sr. Jr. IV, etc.)',
         validator=colander.Length(min=0, max=32),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         missing=unicode(''),
         oid='suffix'
     )
@@ -159,7 +183,7 @@ class EditRequestSchema(colander.Schema):
         title='Common or Nick Name',
         description='Your full name. How you want to be addressed.',
         validator=colander.Length(min=3, max=64),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         missing=unicode(''),
         oid='cn'
     )
@@ -169,7 +193,7 @@ class EditRequestSchema(colander.Schema):
         title='Street Address',
         description='',
         validator=colander.Length(min=0, max=200),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='street'
     )
 
@@ -178,7 +202,7 @@ class EditRequestSchema(colander.Schema):
         title='City',
         description='',
         validator=colander.Length(min=1, max=128),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='lcity'
     )
 
@@ -187,7 +211,7 @@ class EditRequestSchema(colander.Schema):
         title='State/Province',
         description='',
         validator=colander.Length(min=1, max=128),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='l'
     )
 
@@ -196,7 +220,7 @@ class EditRequestSchema(colander.Schema):
         title='Post/ZIP Code',
         description='',
         validator=colander.Length(min=2, max=64),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='postalCode'
     )
 
@@ -204,7 +228,7 @@ class EditRequestSchema(colander.Schema):
         colander.String(),
         title='Country',
         description='',
-        widget=widget.HiddenWidget(),
+        widget=widget.Select2Widget(values=country_codes),
         validator=valid_country,
         oid='country'
     )
@@ -213,7 +237,7 @@ class EditRequestSchema(colander.Schema):
         colander.String(),
         title='EMail',
         description='Your primary email account',
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='mail'
     )
     #
@@ -231,7 +255,7 @@ class EditRequestSchema(colander.Schema):
         title='Phone number',
         description='Please provide your primary telephone number',
         validator=phone_validator,
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='phone'
     )
 
@@ -241,18 +265,17 @@ class EditRequestSchema(colander.Schema):
         description='For contact and verification',
         validator=phone_validator,
         missing=unicode(''),
-        #widget=widget.TextInputWidget(),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='cell'
     )
 
     employerType = colander.SchemaNode(
         colander.String(),
         # validator=colander.OneOf([x[0] for x in employer_types]),
-        widget=widget.HiddenWidget(),
+        validator=colander.OneOf([x[0] for x in employer_types]),
+        widget=deform.widget.RadioChoiceWidget(values=employer_types),
         title='Employer Type',
-        description='Select the employer type from the list below that '
-                    'is most appropriate to your request',
+        description='',
         oid="employerType"
     )
 
@@ -261,7 +284,7 @@ class EditRequestSchema(colander.Schema):
         title='Employer/Institution/Sponsor',
         description='Provided employer or institution name',
         validator=colander.Length(min=3, max=128),
-        widget=widget.HiddenWidget(),
+        widget=widget.TextInputWidget(),
         oid='employerName'
     )
 
@@ -271,7 +294,7 @@ class EditRequestSchema(colander.Schema):
         description='Select one of the following options '
                     'that best describes your U.S. citizenship status',
         validator=colander.OneOf([x[0] for x in citizen_types]),
-        widget=widget.HiddenWidget(),
+        widget=widget.RadioChoiceWidget(values=citizen_types),
         oid='citizenStatus'
     )
 
@@ -289,7 +312,7 @@ class EditRequestSchema(colander.Schema):
         title='Country of birth',
         description='Please enter/select your country of birth',
         validator=valid_country,
-        widget=widget.HiddenWidget(),
+        widget=widget.Select2Widget(values=country_codes),
         oid='birthCountry',
     )
 
@@ -307,15 +330,10 @@ class EditRequestSchema(colander.Schema):
     justification = colander.SchemaNode(
         colander.String(),
         title='Justification',
-        widget=widget.HiddenWidget(),
+        widget=widget.TextAreaWidget(),
         missing=unicode(''),
         validator=colander.Length(max=1000),
-        description="If you don't have an account on NREL HPC systems, "
-                    "we need some additional information. Please provide "
-                    "the project handles or titles of the project allocations "
-                    "you are associated with. "
-                    "If you don't have an allocation, please tell us "
-                    "why you are requesting NREL HPC login credentials.",
+        description="The provided justification/comments for new acount.",
         oid='comments'
     )
 
@@ -332,12 +350,10 @@ class EditRequestSchema(colander.Schema):
     comments = colander.SchemaNode(
         colander.String(),
         title='Additional Notes or Comments',
-        widget=widget.HiddenWidget(),
+        widget=widget.TextAreaWidget(),
         missing=unicode(''),
         validator=colander.Length(max=1000),
-        description='If you think we need any additional '
-                'information to process or approve your request, '
-                'please let us know.',
+        description='Additional information',
         oid='comments'
     )
 
