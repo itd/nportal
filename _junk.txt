@@ -699,3 +699,65 @@ def includeme(config):
         </form>
 
 
+        # see if the POST was a submission
+        # self.submitted = 'submit' in request.POST
+        # self.unid = self.request.matchdict['unid']
+        # self.dbsession = DBSession()
+        # self.data = self.dbsession.query(AccountRequests
+        #                                  ).filter_by(unid=self.unid).one()
+
+        # unid = self.unid
+        # data = self.data
+        # all_countries = country_codes
+        # # TODO: do a check for came_from also
+        # success = False
+        # if data is None:
+        #     title = "Review Request"
+        #     flash_msg = "There was an error processing the request"
+        #     self.request.session.flash(flash_msg)
+        #     rurl = self.request.route_url
+        #     action_url = rurl('req_list')
+        #     return dict(title=title, success=False)
+
+
+            # schema = EditRequestSchema()
+            # dbsession = DBSession()
+            # data = dbsession.query(AccountRequests).options(joinedload('citizenships')).filter_by(unid=unid).one()
+            # appstruct = data.__dict__
+            # del appstruct['_sa_instance_state']
+            # appstruct['citizenships'] = [(i.code, i.name
+            #                               for i in data.citizenships)]
+
+            form = Form(schema,
+                        data=data,
+                        action=request.route_url('req_edit', unid=unid),
+                        form_id='req_edit')
+
+        # Not an update, so simply display the account req data
+        schema = EditRequestSchema().bind(
+            cou=data.couTimestamp.strftime('%Y-%m-%d %H:%M'),
+            countries=country_codes
+            )
+
+
+        title = "Review Request"
+        # flash_msg = None
+        # self.request.session.flash(flash_msg)
+
+        rurl = request.route_url
+        action_url = rurl('req_edit', unid=unid)
+
+        appstruct = {data.__dict__
+        dc = appstruct['citizenships']
+        appstruct['citizenships'] = [(i.code, i.name) for i in dc]
+        # appstruct['citizenships'] = clist
+        # appstruct['couTimestamp'] = data.couTimestamp
+        # appstruct['citizenships'] = ','.join([cc.code for cc
+        #                                       in data.citizenships])
+        # import pdb; pdb.set_trace()
+
+        form = Form(schema,
+                    buttons=('submit',),
+                    action=action_url,
+                    appstruct=appstruct)
+
