@@ -1,23 +1,83 @@
 <html>
 <body>
 <div metal:use-macro="view.layout">
-<div metal:fill-slot="content" class="main-content">
+  <div metal:fill-slot="content" class="main-content">
+    <div class="container-fluid">
+
+      <div class="row">
+        <h2 tal:content="page_title | nothing"></h2>
+        <p tal:content="page_description | nothing"></p>
+      </div>
+
+      <!--!<div tal:content="structure form"></div>!-->
+      <div class="row">
+        <div class="col-md-12">
+          <h1><span tal:replace="data.givenName"/>
+            <span tal:replace="data.middleName"/> <span tal:replace="data.sn"/>
+            <span tal:replace="data.suffix"/></h1>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <form class="form-horizontal">
+
+            <div class="form-group">
+              <label for="givenName"
+                     class="col-md-4 control-label">First</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="givenName"
+                    tal:attributes="value data.givenName" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="middleName"
+                     class="col-md-4 control-label">Middle</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="middleName"
+                    tal:attributes="value data.middleName" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sn" class="col-md-4 control-label">Last</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="sn"
+                    tal:attributes="value data.sn" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="suffix" class="col-md-4 control-label">Suffix</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="suffix"
+                    tal:attributes="value data.suffix" readonly>
+              </div>
+            </div>
+
+          </form>
+        </div>
 
 
-  <div class="row">
-    <h2 tal:content="page_title | nothing"></h2>
-    <p tal:content="page_description | nothing"></p>
+        <div class="col-md-4">
+          <p>Citizenships:</p>
+          <ul>
+            <li tal:repeat="c data.citizenships"><span tal:replace="c.name"/>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-4">
+        </div>
+
+
+      </div>
+      <div>
+      </div>
+    </div>
   </div>
-
-
-
-
-  <div tal:content="structure form"></div>
-
-
-
-
-</div>
 </div>
 </body>
 </html>

@@ -116,7 +116,7 @@ class EditRequestsView(object):
         /radmin/request/{unid}
         """
         unid = self.request.matchdict['unid']
-        obj = DBSession.query(AccountRequests).filter_by(unid=unid).one()
+        obj = DBSession.query(AccountRequests).options(joinedload('citizenships')).filter_by(unid=unid).one()
         request = self.request
         sess = self.dbsession
         title = "Request Review - %s" % unid
@@ -126,15 +126,17 @@ class EditRequestsView(object):
         title = "edit allocation - %s" % unid
         schema = EditRequestSchema().bind(
             cou=obj.couTimestamp.strftime('%Y-%m-%d %H:%M'),
-            countries=country_codes
+            countries=country_codes,
+            request=request,
         )
         action_url = self.request.route_url('req_edit',
                           #logged_in=authenticated_userid(self.request),
                           unid=unid)
 
-
+        submit = deform.Button(name='submit', css_class='red')
+        # return deform.Form(schema, buttons=(submit,))
         form = Form(schema,
-                    buttons=('submit',),
+                    buttons=(submit,),
                     action=action_url)
 
         if 'submit' in request.params:
@@ -185,12 +187,30 @@ class EditRequestsView(object):
         data = dbsession.query(AccountRequests
                                ).options(joinedload('citizenships')
                                          ).filter_by(unid=unid).one()
-        appstruct = data.__dict__
+        aps = data.__dict__
+        schema = EditRequestSchema().bind(
+            countries=country_codes,
+            request=request,
+            citz=[(i.code, i.name) for i in aps['citizenships']]
+        )
+        form = Form(schema,
+                    buttons=(submit,),
+                    action=action_url)
+
+        acs = aps['citizenships']
+        cit_list = [dict([('code', i.code), ('name', i.name)]) for i in acs]
+
+        aps['citizenships'] = cit_list
+        # submit = deform.Button(name='submit', css_class='red')
+        # # return deform.Form(schema, buttons=(submit,))
+        # form = Form(schema,
+        #             buttons=(submit,),
+        #             action=action_url)
 
         return dict(title=title,
                     action=action_url,
-                    form=form,
-                    data=appstruct,
+                    form=form.render(appstruct=aps),
+                    data=aps,
                     success=True)
 
 

@@ -68,7 +68,9 @@ def deferred_review_status_validator(node, kw):
 @colander.deferred
 def deferred_citizenships_widget(node, kw):
     countries = kw.get('countries', [])
-    return widget.SelectWidget(values=countries)
+    return widget.SelectWidget(values=countries,
+                               multiple=True,
+                               readonly=True)
 
 
 @colander.deferred
@@ -118,7 +120,7 @@ def deferred_review_status_validator(node, kw):
 @colander.deferred
 def deferred_citizenships_widget(node, kw):
     countries = kw.get('countries', [])
-    return widget.SelectWidget(values=countries)
+    return widget.SelectWidget(values=countries, multiple=True)
 
 
 @colander.deferred
@@ -127,16 +129,21 @@ def deferred_citizenships_validator(node, kw):
     return colander.OneOf([x[0] for x in countries])
 
 
+@colander.deferred
+def deferred_citz_default(node, kw):
+    return kw.get('citz', [])
+
+
 # sn_widget = widget.TextInputWidget(css_class='form-control')
 
 
 class EditRequestSchema(colander.Schema):
     #   cybeTimestamp
     couTimestamp = colander.SchemaNode(
-        colander.Boolean(),
+        colander.DateTime(),
         title='Security and Acceptable Use Policy Acceptance',
         description='date',
-        widget=widget.DateInputWidget(),
+        widget=widget.DateInputWidget(readonly=True),
         oid='couTimestamp'
     )
 
@@ -303,6 +310,7 @@ class EditRequestSchema(colander.Schema):
         title='Citizenships',
         description='Please select your country or countries of citizenship',
         #validator=valid_countries,
+        default=deferred_citz_default,
         widget=deferred_citizenships_widget,
         oid='citizenships',
     )
