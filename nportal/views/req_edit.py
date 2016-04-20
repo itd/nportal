@@ -36,11 +36,6 @@ from .lists import (title_prefixes,
 
 log = logging.getLogger(__name__)
 
-# sqlalchemy setup
-# DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension(),
-#                                         expire_on_commit=False))
-# sess = DBSession()
-
 # # view flash session info
 # req_session_factory = SignedCookieSessionFactory('itsaseekreet')
 # config = Configurator()
