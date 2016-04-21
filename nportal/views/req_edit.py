@@ -94,7 +94,7 @@ class EditRequestsView(object):
     """
     def __init__(self, request):
         self.request = request
-        renderer = get_renderer("../templates/_layout.pt")
+        renderer = get_renderer("../templates/_layout_admin.pt")
         self.layout = renderer.implementation().macros['layout']
         self.session = request.session
         self.dbsession = DBSession()
