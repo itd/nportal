@@ -15,3 +15,4 @@ Getting Started
 
 
 initialize_nportal_db development.ini
+
