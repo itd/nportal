@@ -251,4 +251,11 @@ fieldset {
   padding: 1em 1em 0 1em;
   margin: 1em auto;
 }
+
+.just-comm {
+  background-color: #a8a8a1;
+  opacity: 1;
+  padding: 0.5em;
+  color: #333;
+}
 /* end */
