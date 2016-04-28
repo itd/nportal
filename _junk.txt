@@ -761,3 +761,33 @@ def includeme(config):
                     action=action_url,
                     appstruct=appstruct)
 
+
+
+
+          <div class="row-fluid form-box">
+            <div class="col-sm-4">
+              <div class="form-horizontal">
+
+                <div class="form-group">
+                  <label for="employerType"
+                  class="col-sm-3 control-label">employerType</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="employerType"
+                    tal:attributes="value data.employerType" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="employerName"
+                  class="col-sm-3 control-label">employerName</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="employerName"
+                    tal:attributes="value data.employerName" readonly>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div style="clear: both; height: 1px;"></div>
+          </div> <!-- end row 3 -->
+
