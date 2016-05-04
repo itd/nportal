@@ -88,6 +88,7 @@ class AccountRequests(Base):
     approvalTimestamp = Column(DateTime, nullable=True, default=None)
     approvalStatus = Column(Integer, nullable=True, default=None)
     approvedBy = Column(Text, nullable=True, default=None)
+    # notes = Column(Text, nullable=True, default=None)
 
     def __repr__(self):
         return "<AccountRequests(id='%s', unid='%s', subTimeStamp='%s')>" % (

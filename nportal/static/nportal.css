@@ -258,4 +258,9 @@ fieldset {
   padding: 0.5em;
   color: #333;
 }
+
+.just-comm {
+  min-height: 3em;
+}
+
 /* end */

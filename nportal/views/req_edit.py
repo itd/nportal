@@ -16,6 +16,7 @@ from pyramid.security import authenticated_userid
 import deform
 from deform import (Form,
                     widget,
+                    Button,
                     ValidationFailure)
 
 from nportal.models import (
@@ -23,7 +24,7 @@ from nportal.models import (
     AccountRequests
     )
 
-from schema_edit_request import EditRequestSchema
+from req_edit_schema import EditRequestSchema
 from validators import uid_validator
 from .lists import (title_prefixes,
                     citizen_types,
@@ -87,6 +88,10 @@ def merge_appstruct(adbsession, appstruct):
         setattr(adbsession, key, appstruct[key])
     return adbsession
 
+def record_to_appstruct(ob):
+    return dict([(k, ob.__dict__[k])
+                 for k in sorted(ob.__dict__)
+                 if '_sa_' != k[:4]])
 
 
 class EditRequestsView(object):
@@ -109,7 +114,7 @@ class EditRequestsView(object):
     #     return self.req_edit_form.get_widget_resources()
 
     @view_config(route_name='req_edit',
-                 renderer='../templates/req_edit.pt')
+                 renderer='../templates/req_edit_retail.pt')
     def edit_request(self):
 
         """
@@ -142,7 +147,7 @@ class EditRequestsView(object):
         if 'submit' in request.params:
             log.debug('processing submission')
             controls = request.POST.items()
-            log.debug('processing: %s', controls.unid)
+            log.debug('processing edit: %s', request.matchdict['unid'])
 
             try:
                 # try to validate the submitted values
@@ -152,6 +157,7 @@ class EditRequestsView(object):
                 # the submitted values could not be validated
                 flash_msg = u"Please address the errors indicated below!"
                 request.session.flash(flash_msg)
+                # import pdb; pdb.set_trace()
                 return dict(form=e.render(),
                             data=obj,
                             page_title=title)
@@ -188,6 +194,9 @@ class EditRequestsView(object):
                                ).options(joinedload('citizenships')
                                          ).filter_by(unid=unid).one()
         aps = data.__dict__
+        # approvalStatusValues
+        aps['approvalStatusValues'] = approval_status
+
         schema = EditRequestSchema().bind(
             countries=country_codes,
             request=request,
@@ -198,7 +207,8 @@ class EditRequestsView(object):
                     action=action_url)
 
         acs = aps['citizenships']
-        cit_list = [dict([('code', i.code), ('name', i.name)]) for i in acs]
+        #cit_list = [dict([('code', i.code), ('name', i.name)]) for i in acs]
+        cit_list = [(i.code, i.name) for i in acs]
 
         aps['citizenships'] = cit_list
         # submit = deform.Button(name='submit', css_class='red')
@@ -207,9 +217,19 @@ class EditRequestsView(object):
         #             buttons=(submit,),
         #             action=action_url)
 
+        appstruct = record_to_appstruct(data)
+
+        # import pdb; pdb.set_trace()
+        cancel = Button(name='cancel', css_class='foo', value='cancelled')
+        submit = Button(name='submit', css_class='red')
+
+        import pdb; pdb.set_trace()
+
         return dict(title=title,
                     action=action_url,
-                    form=form.render(appstruct=aps),
+                    form=form.render(appstruct=aps,
+                                     action=action_url,
+                                     buttons=(submit, cancel),),
                     data=aps,
                     success=True)
 

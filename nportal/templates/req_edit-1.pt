@@ -26,6 +26,9 @@
             <div style="clear: both; height: 1px;"></div>
           </div>
 
+
+          <form id="req_edit" method="POST" class="deform" accept-charset="utf-8"
+            tal:attributes="action action">
           <div class="row-fluid form-box">
 
             <div class="col-sm-4">
@@ -280,13 +283,86 @@
           </div> <!-- end row 3 -->
 
 
-          Approval
-          Approver
-          ApprovalDate
-          AdminNotes
+
+
+          <div class="row-fluid form-box">
+
+
+            <div class="col-sm-6">
+              <div class="form-horizontal">
+
+                <div class="form-group" tal:define="field form['approvalStatus']">
+                  <div class="col-sm-3">
+                    <label for="approvalStatus"
+                           class="col-sm-3">${structure:field.title}<span class="req" tal:condition="field.required">*</span>
+                    </label>
+                  </div>
+                  <div class="col-sm-9">
+                    ${structure:field.serialize()}
+                    <ul tal:condition="field.error">
+                        <li tal:repeat="error field.error.messages()">
+                            ${structure:error}
+                        </li>
+                    </ul>
+                  </div>
+                </div>
+
+
+                <div class="form-group" tal:condition="data.approvalTimestamp">
+                  <label for="approvalTimestamp"
+                  class="col-sm-3 control-label">approvalTimestamp</label>
+                  <div class="col-sm-9">
+                    <span tal:replace="python:data.approvalTimestamp.strftime('%Y-%m-%d %-I:%M %p')"/>
+                  </div>
+                </div>
+
+
+                <div class="form-group" tal:condition="data.approvedBy">
+                  <label for="approvedBy"
+                  class="col-sm-3 control-label">approvedBy</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="approvedBy"
+                    tal:attributes="value data.approvedBy" readonly>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <label for="UserID"
+                  class="col-sm-3 control-label">Assigned UserID</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="UserID"
+                    tal:attributes="value data.UserID">
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
 
 
 
+
+            <div style="clear: both; height: 1px;"></div>
+          </div> <!-- end row 4 -->
+
+          <!--?Approval-->
+          <!--?Approver-->
+          <!--?ApprovalDate-->
+          <!--?AdminNotes-->
+
+          <div class="row-fluid form-box">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button id="deformsubmit" name="submit" type="submit"
+                      class="btn btn-primary " value="submit">
+                Submit Update
+              </button>
+            </div>
+            <div style="clear: both; height: 1px;"></div>
+          </div> <!-- end row 4 -->
+
+
+        </form>
         </div><!--!container -->
       </div>
     </div>
