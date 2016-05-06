@@ -70,7 +70,7 @@ def deferred_citizenships_widget(node, kw):
     countries = kw.get('countries', [])
     return widget.SelectWidget(values=countries,
                                multiple=True,
-                               readonly=True)
+                               )
 
 
 @colander.deferred
@@ -88,6 +88,7 @@ def deferred_citizenships_validator(node, kw):
 #             )
 
 sn_widget = widget.TextInputWidget(css_class='form-control')
+
 
 @colander.deferred
 def deferred_country_widget(node, kw):
@@ -120,7 +121,8 @@ def deferred_review_status_validator(node, kw):
 @colander.deferred
 def deferred_citizenships_widget(node, kw):
     countries = kw.get('countries', [])
-    return widget.SelectWidget(values=countries, multiple=True)
+    citz = kw.get('citz', [])
+    return widget.SelectWidget(values=citz, multiple=True)
 
 
 @colander.deferred
@@ -131,7 +133,13 @@ def deferred_citizenships_validator(node, kw):
 
 @colander.deferred
 def deferred_citz_default(node, kw):
-    return kw.get('citz', [])
+    return kw.get('citz_vals')
+
+
+@colander.deferred
+def deferred_birthcountry_widget(node, kw):
+    countries = kw.get('country_codes', [])
+    return widget.SelectWidget(values=countries)
 
 
 # sn_widget = widget.TextInputWidget(css_class='form-control')
@@ -143,7 +151,7 @@ class EditRequestSchema(colander.Schema):
         colander.DateTime(),
         title='Security and Acceptable Use Policy Acceptance',
         description='date',
-        widget=widget.DateInputWidget(readonly=True),
+        widget=widget.DateInputWidget(),
         oid='couTimestamp'
     )
 
@@ -235,7 +243,7 @@ class EditRequestSchema(colander.Schema):
         colander.String(),
         title='Country',
         description='',
-        widget=widget.Select2Widget(values=country_codes),
+        widget=widget.TextInputWidget(values=country_codes),
         validator=valid_country,
         oid='country'
     )
@@ -309,7 +317,7 @@ class EditRequestSchema(colander.Schema):
         colander.Set(),
         title='Citizenships',
         description='Please select your country or countries of citizenship',
-        #validator=valid_countries,
+        # validator=valid_countries,
         default=deferred_citz_default,
         widget=deferred_citizenships_widget,
         oid='citizenships',
@@ -320,7 +328,8 @@ class EditRequestSchema(colander.Schema):
         title='Country of birth',
         description='Please enter/select your country of birth',
         validator=valid_country,
-        widget=widget.Select2Widget(values=country_codes),
+        # widget=widget.Select2Widget(values=country_codes),
+        widget=widget.TextInputWidget(),
         oid='birthCountry',
     )
 
@@ -341,7 +350,7 @@ class EditRequestSchema(colander.Schema):
         widget=widget.TextAreaWidget(),
         missing=unicode(''),
         validator=colander.Length(max=1000),
-        description="The provided justification/comments for new acount.",
+        description="The provided justification/comments for new account.",
         oid='comments'
     )
 

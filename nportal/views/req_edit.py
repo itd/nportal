@@ -21,7 +21,8 @@ from deform import (Form,
 
 from nportal.models import (
     DBSession,
-    AccountRequests
+    AccountRequests,
+    Citizenships
     )
 
 from req_edit_schema import EditRequestSchema
@@ -121,14 +122,16 @@ class EditRequestsView(object):
         /radmin/request/{unid}
         """
         unid = self.request.matchdict['unid']
-        obj = DBSession.query(AccountRequests).options(joinedload('citizenships')).filter_by(unid=unid).one()
+        obj = DBSession.query(AccountRequests
+                              ).options(joinedload('citizenships')
+                                        ).filter_by(unid=unid).one()
         request = self.request
         sess = self.dbsession
         title = "Request Review - %s" % unid
         if obj is None:
             return HTTPNotFound('No Account Request exists with that ID.')
 
-        title = "edit allocation - %s" % unid
+        title = "Edit Req "
         schema = EditRequestSchema().bind(
             cou=obj.couTimestamp.strftime('%Y-%m-%d %H:%M'),
             countries=country_codes,
@@ -140,9 +143,7 @@ class EditRequestsView(object):
 
         submit = deform.Button(name='submit', css_class='red')
         # return deform.Form(schema, buttons=(submit,))
-        form = Form(schema,
-                    buttons=(submit,),
-                    action=action_url)
+        form = Form(schema)
 
         if 'submit' in request.params:
             log.debug('processing submission')
@@ -153,24 +154,29 @@ class EditRequestsView(object):
                 # try to validate the submitted values
                 appstruct = form.validate(controls)
 
-            except deform.ValidationFailure as e:
+            except deform.ValidationFailure, e:
                 # the submitted values could not be validated
                 flash_msg = u"Please address the errors indicated below!"
                 request.session.flash(flash_msg)
-                # import pdb; pdb.set_trace()
-                return dict(form=e.render(),
+
+                return dict(form=form,
                             data=obj,
-                            page_title=title)
+                            page_title=title,
+                            action=request.route_url('req_edit', unid=unid))
+
+            # citizenships = appstruct['citizenships']
+            # clist = [sess.query().filter_by(citizenships=i).first()
+            #          for i in citizenships]
+            # appstruct['citizenships'] = clist
+            #
+            # record = merge_dbsession_with_post(obj, appstruct)
 
             # all good
-            citizenships = appstruct['citizenships']
-            clist = [sess.query().filter_by(citizenships=i).first()
-                     for i in citizenships]
-            appstruct['citizenships'] = clist
-
-            record = merge_appstruct(obj, appstruct)
-
-            _update_request(record)
+            appstruct['citizenships'] = obj.citizenships
+            appstruct['couTimestamp'] = obj.couTimestamp
+            appstruct['subTimestamp'] = obj.subTimestamp
+            appstruct['storTimestamp'] = obj.storTimestamp
+            _update_request(appstruct, obj)
 
             flash_msg = u"Request Updated"
             request.session.flash(flash_msg)
@@ -182,10 +188,7 @@ class EditRequestsView(object):
             )
             action = request.route_url('req_edit', unid=unid)
 
-            return HTTPFound(view_url,
-                             action=action,
-                             data=appstruct,
-                             flash_msg=flash_msg)
+            return HTTPFound(view_url)
 
         # not a submission, view
         unid = request.matchdict['unid']
@@ -195,16 +198,14 @@ class EditRequestsView(object):
                                          ).filter_by(unid=unid).one()
         aps = data.__dict__
         # approvalStatusValues
-        aps['approvalStatusValues'] = approval_status
+        # aps['approvalStatusValues'] = approval_status
 
         schema = EditRequestSchema().bind(
             countries=country_codes,
             request=request,
-            citz=[(i.code, i.name) for i in aps['citizenships']]
+            citz=[(i.code, i.name) for i in aps['citizenships']],
+            citz_vals=[i.code for i in aps['citizenships']]
         )
-        form = Form(schema,
-                    buttons=(submit,),
-                    action=action_url)
 
         acs = aps['citizenships']
         #cit_list = [dict([('code', i.code), ('name', i.name)]) for i in acs]
@@ -218,30 +219,32 @@ class EditRequestsView(object):
         #             action=action_url)
 
         appstruct = record_to_appstruct(data)
-
-        # import pdb; pdb.set_trace()
         cancel = Button(name='cancel', css_class='foo', value='cancelled')
         submit = Button(name='submit', css_class='red')
 
-        import pdb; pdb.set_trace()
+        form = Form(schema,
+                    appstruct=aps,
+                    buttons=(submit,),
+                    action=action_url)
 
         return dict(title=title,
                     action=action_url,
-                    form=form.render(appstruct=aps,
-                                     action=action_url,
-                                     buttons=(submit, cancel),),
+                    form=form,
                     data=aps,
                     success=True)
 
 
-def _update_request(appstruct):
-    ai = appstruct.items()
-    ai = dict(ai)
+def _update_request(appstruct, obj):
+    ai = appstruct
+    # ai = dict(ai)
     dbsess = DBSession()
-
+    unid = obj.unid
+    rec = DBSession.query(AccountRequests
+                      ).options(joinedload('citizenships')
+                                ).filter_by(unid=unid).one()
     # now = now.strftime('%y%m%d%H%M%S')
     now = datetime.now()
-    unid = ai['unid']
+
     givenName = ai['givenName']
     middleName = ai['middleName']
     sn = ai['sn']
@@ -259,9 +262,8 @@ def _update_request(appstruct):
     employerType = ai['employerType']
     employerName = ai['employerName']
     citizenStatus = ai['citizenStatus']
-    # citizenships = [dbsess.query(CountryCodes
-    #                 ).filter(CountryCodes.code == i).one()
-    #                 for i in ai['citizenships']]
+    citizenships = ai['citizenships']
+    #[dbsess.query(Citizenships).filter(Citizenships.code == i).one() for i in ai['citizenships']]
     birthCountry = ai['birthCountry']
     nrelUserID = ai['nrelUserID']
     preferredUID = ai['preferredUID']
@@ -273,43 +275,37 @@ def _update_request(appstruct):
     approvalStatus = ai['approvalStatus']
     UserID = ai['UserID']
 
-    if not cn:
-        cn = "%s, %s" % (givenName, sn)
-
-    submission = AccountRequests(
-        unid=unid,
-        givenName=givenName,
-        middleName=middleName,
-        sn=sn,
-        suffix=suffix,
-        cn=cn,
-        street=street,
-        lcity=lcity,
-        st=st,
-        postalCode=postalCode,
-        country=country,
-        mail=mail,
-        # mailPreferred=mailPreferred,
-        phone=phone,
-        cell=cell,
-        employerType=employerType,
-        employerName=employerName,
-        citizenStatus=citizenStatus,
-        # citizenships=citizenships,
-        birthCountry=birthCountry,
-        nrelUserID=nrelUserID,
-        preferredUID=preferredUID,
-        justification=justification,
-        comments=comments,
-        approvalStatus=approvalStatus,
-        UserID=UserID,
-        subTimestamp=subTimestamp,
-        couTimestamp=couTimestamp,
-        storTimestamp=storTimestamp,
-        )
+    rec.unid = unid
+    rec.givenName = givenName
+    rec.middleName = middleName
+    rec.sn = sn
+    rec.suffix = suffix
+    rec.cn = cn
+    rec.street = street
+    rec.lcity = lcity
+    rec.st = st
+    rec.postalCode = postalCode
+    rec.country = country
+    rec.mail = mail
+    # mailPreferred = mailPreferred
+    rec.phone = phone
+    rec.cell = cell
+    rec.employerType = employerType
+    rec.employerName = employerName
+    rec.citizenStatus = citizenStatus
+    # obj.citizenships = citizenships
+    rec.birthCountry = birthCountry
+    rec.nrelUserID = nrelUserID
+    rec.preferredUID = preferredUID
+    rec.justification = justification
+    rec.comments = comments
+    rec.approvalStatus = approvalStatus
+    rec.UserID = UserID
+    rec.subTimestamp = subTimestamp
+    rec.couTimestamp = couTimestamp
+    rec.storTimestamp = storTimestamp
 
     # write the data
-    dbsess.add(submission)
     transaction.commit()
     # return the unid for processing in next form
     return str(unid)
