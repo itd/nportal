@@ -263,4 +263,18 @@ fieldset {
   min-height: 3em;
 }
 
+
+.edit-form .label {
+  font-size: 95%;
+  color: #111;
+ }
+
+.edit-form .radio input[type="radio"],
+.edit-form .radio-inline input[type="radio"],
+.edit-form .checkbox input[type="checkbox"],
+.edit-form .checkbox-inline input[type="checkbox"] {
+  margin: 0;
+  position: relative;
+}
+
 /* end */

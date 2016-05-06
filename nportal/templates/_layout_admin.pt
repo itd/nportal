@@ -85,7 +85,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li tal:condition="logged_in | nothing"><a
-              href="${request.application_url}/my_allocations"> My Allocations</a></li>
+              href="${request.application_url}/my_allocations"> My Reqs</a></li>
               <!--! class='ttb' data-toggle="tooltip" title=""
                             data-original-title="Requires authentication" -->
 
